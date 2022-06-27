@@ -1,0 +1,456 @@
+/* タグレベルの共通スタイル */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $c-gray--lighter;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+  -webkit-tap-highlight-color: transparent;
+}
+
+span {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input {
+  border: none;
+  &:focus {
+    outline: none;
+  }
+  &:-webkit-autofill {
+    box-shadow: 0 0 0 1000px white inset;
+  }
+}
+
+select,
+textarea {
+  border: none;
+  &:focus {
+    outline: none;
+  }
+}
+
+select {
+  background-color: #fff;
+}
+
+textarea {
+  resize: none;
+}
+
+/* 認証画面共通スタイル */
+.auth {
+  margin: 50px auto 0;
+  width: 80%;
+  max-width: 500px;
+  color: $c-blue;
+
+  &__form {
+    background-color: #fff;
+    @include flex(column);
+    border-radius: 5px;
+    @include shadow(2);
+  }
+  
+  &__form-title {
+    width: 100%;
+    color: #fff;
+    background-color: $c-blue;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-weight: bold;
+    padding: 10px 15px;
+  }
+
+  &__form-inner {
+    width: 100%;
+    padding: 20px 5%;
+    text-align: right;
+  }
+
+  @include mq() {
+    margin-top: 100px;
+    width: 100%;
+
+    &__button {
+      width: 100%;
+    }
+  }
+}
+
+/* 店舗一覧画面(一般用、代表者用)共通スタイル */
+.shop-index {
+  width: 100%;
+  margin-top: 50px;
+
+  &__shops {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px 10px;
+  }
+
+  &__message {
+    margin-top: 100px;
+    text-align: center;
+  }
+}
+
+@include mq() {
+  .shop-index {
+    &__shops {
+      margin-top: 180px;
+      grid-template-columns: repeat(1, 1fr);
+      grid-gap: 20px 0;
+      &--representative {
+        margin-top: 0px;
+      }
+    }
+
+    &__message {
+      margin-top: 170px;
+      &--representative {
+        margin-top: 50px;
+      }
+    }
+  }
+}
+
+/* 個別店舗ページ共通スタイル */
+.individual-shop {
+  @include flex($jc: space-between, $ai: stretch);
+
+  &__detail {
+    width: 45%;
+    margin-top: 60px;
+    position: relative;
+  }
+
+  &__name-wrapper {
+    @include flex($jc: flex-start);
+  }
+
+  &__back {
+    cursor: pointer;
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 10px;
+    background-color: #fff;
+    border-radius: 3px;
+    @include shadow(1);
+    transform: translateY(-0.1em);
+    @include flex();
+  }
+
+  &__name {
+    font-weight: bold;
+    font-size: $fz-mid-large;
+  }
+
+  &__img {
+    width: 100%;
+    margin: 10px 0;
+    text-align: center;
+    & > img {
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__region,
+  &__genre,
+  &__description {
+    font-size: $fz-smaller;
+  }
+
+  &__description {
+    margin-top: 20px;
+    line-height: 1.3em;
+    white-space: pre-wrap;
+  }
+
+  &__course-header {
+    margin-top: 20px;
+    font-size: $fz-mid-large;
+    font-weight: bold;
+  }
+
+  &__course {
+    margin: 20px 0;
+    padding: 20px 0;
+    border-top: 1px solid $c-tp;
+  }
+
+  &__course-name {
+    font-size: $fz-mid-large;
+  }
+
+  &__course-price {
+    margin-left: 20px;
+  }
+
+  &__course-description {
+    margin-top: 1em;
+    margin-left: 1em;
+  }
+
+  @include mq() {
+    @include flex(column, $jc: center, $ai: stretch);
+    
+    &__back {
+      width: 2em;
+      height: 2em;
+      margin-right: 20px;
+    }
+  
+    &__name {
+      font-weight: bold;
+      font-size: $fz-large;
+    }
+
+    &__detail {
+      width: 100%;
+      max-width: 500px;
+      margin: 80px auto 30px;
+    }
+
+    &__img {
+      margin: 30px auto;
+    }
+
+    &__region,
+    &__genre,
+    &__description {
+      font-size: $fz-normal;
+    }
+
+    &__course-header {
+      margin-top: 40px;
+      font-size: $fz-large;
+    }
+
+    &__reservation {
+      width: 100%;
+    }
+  }
+}
+
+/* モーダル用共通スタイル */
+.modal {
+  @include modal();
+  overflow-y: auto;
+
+  &__card {
+    @include flex(column, flex-start, stretch);
+    color: #fff;
+    background-color: $c-blue;
+    width: 50%;
+    max-height: 90vh;
+    padding: 20px;
+    border-radius: 5px;
+    @include shadow(2);
+    position: relative;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      width: 0px;
+      height: 0px;
+    }
+
+    &--shop {
+      width: 70%;
+    }
+
+    &--qr {
+      width: fit-content;
+      @include flex(column, flex-start, center);
+    }
+  }
+
+  &__card-row {
+    width: 100%;
+    @include flex($jc: space-between, $ai: flex-start);
+    padding: 10px 0;
+  }
+
+  &__header {
+    font-size: $fz-mid-large;
+    
+    &--qr {
+      padding-right: 50px;
+      margin-bottom: 25px;
+    }
+  }
+
+  &__cross {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 18px;
+    right: 20px;
+  }
+
+  &__texts {
+    width: 50%;
+  }
+
+  &__others {
+    width: 45%;
+  }
+
+  &__item {
+    margin: 10px 0;
+    flex-grow: 1;
+  }
+
+  &__item-label {
+    margin-bottom: 5px;
+  }
+
+  &__image-select {
+    cursor: pointer;
+    display: inline-block;
+    font-size: $fz-smaller;
+    background-color: #fff;
+    color: #000;
+    padding: 3px 5px;
+    margin: 3px 0;
+  }
+
+  &__textarea {
+    width: 100%;
+  }
+
+  &__select {
+    width: 120px;
+  }
+
+  &__button {
+    background-color: $c-blue--dark !important;
+    color: #fff !important;
+    margin: 0px auto;
+  }
+
+  &__new-image {
+    margin: 5px auto;
+    height: 100px;
+    @include flex();
+    & > img {
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__stars {
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  &__star {
+    width: 25px;
+    height: 25px;
+  }
+
+  &__review {
+    width: 100%;
+    @include flex();
+  }
+
+  &__review-title,
+  &__review-content {
+    width: 100%;
+    background-color: $c-blue--light;
+    padding: 10px;
+    border-radius: 5px;
+    &-label {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+  }
+
+  &__review-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  &__review-content {
+    min-height: 100px;
+    max-height: 150px;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+
+  @include mq() {
+    &__card {
+      width: calc(100% - 60px);
+      max-width: 500px;
+      margin: 0 auto;
+
+      &--qr {
+        width: fit-content;
+      }
+    }
+
+    &__cross {
+      width: 30px;
+      height: 30px;
+    }
+
+    &__card-row {
+      width: 100%;
+      @include flex(column, $ai: flex-start);
+    }
+
+    &__select,
+    &__input,
+    &__image-select {
+      padding: 10px 5px;
+    }
+
+    &__texts, 
+    &__others {
+      width: 100%;
+    }
+
+    &__reservation-card,
+    &__review-card {
+      width: calc(100% - 60px);
+      max-width: 500px;
+    }
+  }
+}
+
+/* その他細々したものの共通スタイル */
+.card-large {
+  color: #fff;
+  background-color: $c-blue;
+  width: 50%;
+  min-height: 350px;
+  height: fit-content;
+  padding: 20px 20px 50px;
+  border-radius: 5px;
+  @include shadow(2);
+  position: relative;
+
+  @include mq() {
+    width: calc(100% - 60px);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+.error-message {
+  width: 100%;
+  color: $c-red;
+  display: block;
+  font-size: $fz-smallest;
+  font-weight: bold;
+  margin-top: 3px;
+}

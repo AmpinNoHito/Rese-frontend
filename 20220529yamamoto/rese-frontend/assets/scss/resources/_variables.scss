@@ -1,0 +1,40 @@
+/* 色彩関係の変数 */
+$c-blue--dark: #0022d4;
+$c-blue: #3b5aff;
+$c-blue--light: #4e6aff;
+
+$c-red: #ef454a;
+
+$c-gray: #8d8d8d;
+$c-gray--light: #c4c4c4;
+$c-gray--lighter: #f3f3f3;
+
+$c-tp--dark: rgba(0, 0, 0, 0.7);
+$c-tp: rgba(0, 0, 0, 0.2);
+
+/* フォント関係の変数 */
+$fz-largest: 2em;
+$fz-larger: 1.8em;
+$fz-large: 1.5em;
+$fz-mid-large: 1.2em;
+$fz-normal: 1em;
+$fz-small: 0.9em;
+$fz-smaller: 0.8em;
+$fz-smallest: 0.6em;
+
+/* メディアクエリ用変数 */
+$mq-breakpoints: (
+  'xs': 421px,
+  'sm': 576px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  'xxl': 1920px,
+) !default;
+
+/* transition用変数 */
+$tr-02: all 0.2s ease;
+$tr-04: all 0.4s ease;
+$tr-06: all 0.6s ease;
+$tr-08: all 0.8s ease;
+$tr-1: all 1s ease;
