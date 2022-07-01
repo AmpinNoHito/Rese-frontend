@@ -21,114 +21,120 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue';
 import auth from '~/middleware/auth';
-export default {
+import { reservation, sendData } from '~/types/api';
+import { Stripe } from 'stripe';
+
+export default Vue.extend({
   middleware: [auth],
-  async asyncData ({query, $axios, $config}) {
-    const res = await $axios.$get(`/api/reservations/${query.rs}`);
-    const reservation = res.data;
+  async asyncData ({app, query}) {
+    const reservation: reservation = await app.$repositories.reservation.getById(+query.rs);
     return {
       reservation: reservation,
       total: reservation.number * reservation.course.price,
-      pk: $config.stripePK,
+    }
+  },
+  data() {
+    return {
+      reservation: {} as reservation,
+      total: 0 as number,
+      pk: this.$config.stripePK as string,
     }
   },
   methods: {
-    checkout () {
-      this.$refs.checkoutRef.redirectToCheckout();
-    },
-    submit () {
+    submit (): void {
       /* Stripeにカード情報を送信、トークンを取得 */
-      this.$refs.elementRef.submit();
+      (this as any).$refs?.elementRef?.submit();
     },
-    async tokenCreated (token) {
+    async tokenCreated (token: Stripe.Token): Promise<void> {
       /* 取得したトークン等から送信用データを作成 */
-      const sendData = {
+      const sendData: sendData = {
         amount: this.total,
         source: token.id,
       }
 
       try {
-        const res = await this.$axios.post(`/api/reservations/pay/${this.$route.query.rs}`, sendData);
-        alert(`${res.data.message}\n\nマイページに遷移します。`);
+        const successMessage: string = await this.$repositories.reservation.pay(this.reservation.id, sendData);
+        alert(`${successMessage}\n\nマイページに遷移します。`);
         this.$router.push('/mypage');
-      } catch (error) {
-        this.alertErrorMessage(error.response);
+      } catch (error: any) {
+        this.$alertErrorMessage(error.response);
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
-  .pay {
-    @include flex();
+.pay {
+  @include flex();
 
-    &__inner {
-      color: #fff;
-      background-color: $c-blue;
-      width: 50%;
-      min-height: 350px;
-      height: fit-content;
-      padding: 20px 20px 50px;
-      border-radius: 5px;
-      @include shadow(2);
-      position: relative;
+  &__inner {
+    color: #fff;
+    background-color: $c-blue;
+    width: 50%;
+    min-height: 350px;
+    height: fit-content;
+    padding: 20px 20px 50px;
+    border-radius: 5px;
+    @include shadow(2);
+    position: relative;
+  }
+
+  &__header {
+    font-size: $fz-mid-large;
+    margin-bottom: 10px;
+  }
+
+  &__confirmation {
+    margin-bottom: 20px;
+    background-color: $c-blue--light;
+    padding: 15px 25px;
+    border-radius: 5px;
+    width: 100%;
+  }
+
+  &__confirmation-item {
+    margin: 10px 0;
+    position: relative;
+
+    & > span {
+      position: absolute;
+      left: 80px;
     }
 
-    &__header {
+    &--total {
+      margin-top: 20px;
       font-size: $fz-mid-large;
-      margin-bottom: 10px;
-    }
-
-    &__confirmation {
-      margin-bottom: 20px;
-      background-color: $c-blue--light;
-      padding: 15px 25px;
-      border-radius: 5px;
-      width: 100%;
-    }
-
-    &__confirmation-item {
-      margin: 10px 0;
-      position: relative;
+      text-align: right;
 
       & > span {
-        position: absolute;
-        left: 80px;
-      }
-
-      &--total {
-        margin-top: 20px;
-        font-size: $fz-mid-large;
-        text-align: right;
-
-        & > span {
-          position: relative;
-          left: 0;
-          margin-left: 20px;
-        }
-      }
-    }
-
-    &__button {
-        background-color: $c-blue--dark !important;
-        position: absolute;
+        position: relative;
         left: 0;
-        bottom: 0;
-        right: 0;
-        display: inline-block;
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    @include mq() {
-      &__inner {
-        margin-top: 100px;
-        width: 100%;
-        max-width: 500px;
+        margin-left: 20px;
       }
     }
   }
+
+  &__button {
+      background-color: $c-blue--dark !important;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: inline-block;
+      padding-top: 10px;
+      padding-bottom: 10px;
+  }
+
+  @include mq() {
+    &__inner {
+      margin-top: 100px;
+      width: 100%;
+      max-width: 500px;
+    }
+  }
+}
 </style>

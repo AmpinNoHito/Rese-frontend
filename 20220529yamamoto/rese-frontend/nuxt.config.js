@@ -31,13 +31,14 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/axios',
-    '~/plugins/utils',
     '~/plugins/errors',
-    '~/plugins/imageProcessing',
+    '~/plugins/utils',
     '~/plugins/modal',
+    '~/plugins/processImage',
     '~/plugins/persistedstate',
     '~/plugins/vue-qrcode-reader',
     '~/plugins/vue-stripe',
+    '~/repository/repositories',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -62,31 +63,16 @@ export default {
     baseURL: process.env.API_URL,
   },
 
-  auth: {
-    strategies: {
-      laravelSanctum: {
-        provider: 'laravel/sanctum',
-        url: process.env.API_URL,
-        token: {
-          property: "token",
-          global: true,
-          required: true,
-          type: 'Bearer'
-        },
-        user: {
-          property: 'user',
-        },
-        endpoints: {
-          login: { url: '/api/auth/login', method: 'post', propertyName: 'token' },
-          logout: { url: '/api/auth/logout', method: 'post', propertyName: 'token' },
-          user: { url: '/api/auth/user', method: 'get', propertyName: 'user'},
-        },
-      },
-    },
-  },
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
+  buildModules: [
+    '@nuxt/typescript-build',
+    'nuxt-typed-vuex',
+  ],
+  
   build: {
+    transpile: [
+      /typed-vuex/,
+    ],
   },
 
 
@@ -102,6 +88,7 @@ export default {
     apiUrl: process.env.API_URL || 'http://localhost:8000',
     storageUrl: process.env.STORAGE_URL || 'http://localhost:8000/storage/images',
     stripePK: process.env.STRIPE_PK,
+    stripeSK: process.env.STRIPE_SK,
   },
 
   env: {

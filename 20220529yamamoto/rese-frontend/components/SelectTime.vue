@@ -30,13 +30,16 @@
   </select>
 </template>
 
-<script>
-  export default {
-    props: ['selectedTime'],
-    methods: {
-      changed(e) {
-        this.$emit('timeChanged', e.target.value);
-      },
+<script lang="ts">
+import Vue from "vue";
+
+export default Vue.extend({
+  props: {selectedTime: String},
+  methods: {
+    changed(e: Event): void {
+      const target = e.target as HTMLInputElement;
+      this.$emit('timeChanged', target.value);
     },
-  };
+  },
+});
 </script>

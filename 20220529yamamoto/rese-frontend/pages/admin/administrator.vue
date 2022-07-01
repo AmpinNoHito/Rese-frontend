@@ -33,35 +33,39 @@
   </div>
 </template>
 
-<script>
-  import administrator from '~/middleware/administrator';
-  export default {
-    middleware: [administrator],
-    data(){
-      return {
-        form:{
-          name:'',
-          email:'',
-          password:''
-        },
-        errors: {
-          name: '',
-          email: '',
-          password: '',
-        }
+<script lang="ts">
+import Vue from 'vue';
+import administrator from '~/middleware/administrator';
+import { sendData } from '~/types/api';
+import { errorsObject } from '~/types/errors';
+
+export default Vue.extend({
+  middleware: [administrator],
+  data(){
+    return {
+      form:{
+        name: '',
+        email: '',
+        password: '',
+      } as sendData,
+      errors: {
+        name: [],
+        email: [],
+        password: [],
+      } as errorsObject,
+    }
+  },
+  methods:{
+    async register(): Promise<void> {
+      try {
+        /* 新規店舗代表者登録処理 */
+        await this.$repositories.user.registerRepresentative(this.form);
+        alert('新規店舗代表者が登録されました。\nアドレス検証用のメールをご確認いただくよう、代表者にお伝えください。');
+        Object.keys(this.form).forEach(key => this.form[key] = '');
+      } catch (error: any) {
+        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
       }
     },
-    methods:{
-      async register(){
-        try {
-          /* 新規店舗代表者登録処理 */
-          await this.$axios.post('/api/admin/representatives', this.form);
-          alert('新規店舗代表者が登録されました。\nアドレス検証用のメールをご確認いただくよう、代表者にお伝えください。');
-          Object.keys(this.form).forEach(key => this.form[key] = '');
-        } catch (error) {
-          this.errorHandling(error.response);
-        }
-      },
-    }
-  };
+  }
+});
 </script>

@@ -1,9 +1,14 @@
 import Vue from 'vue';
+import Stripe from 'stripe';
 import {
   StripePlugin,
   StripeCheckout,
   StripeElementCard,
 } from '@vue-stripe/vue-stripe';
+
+declare global {
+  interface Window { Stripe: Stripe }
+}
 
 export default async () => {
   Vue.component('StripeCheckout', StripeCheckout);

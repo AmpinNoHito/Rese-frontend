@@ -30,32 +30,36 @@
   </div>
 </template>
 
-<script>
-  export default {
-    data(){
-      return {
-        form:{
-          name:'',
-          email:'',
-          password:''
-        },
-        errors: {
-          name: [],
-          email: [],
-          password: [],
-        }
+<script lang="ts">
+import Vue from 'vue';
+import { sendData } from '~/types/api';
+import { errorsObject } from '~/types/errors';
+
+export default Vue.extend({
+  data(){
+    return {
+      form:{
+        name:'' as string,
+        email:'' as string,
+        password:'' as string,
+      } as sendData,
+      errors: {
+        name: [],
+        email: [],
+        password: [],
+      } as errorsObject,
+    }
+  },
+  methods:{
+    async register(): Promise<void> {
+      try {
+        /* 新規登録処理 */
+        await this.$repositories.user.register(this.form);
+        this.$router.push('/thanks');
+      } catch (error: any) {
+        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
       }
     },
-    methods:{
-      async register(){
-        try {
-          /* 新規登録処理 */
-          const res = await this.$axios.post('/api/auth/register', this.form);
-          this.$router.push('/thanks');
-        } catch (error) {
-          this.errorHandling(error.response);
-        }
-      },
-    }
   }
+});
 </script>

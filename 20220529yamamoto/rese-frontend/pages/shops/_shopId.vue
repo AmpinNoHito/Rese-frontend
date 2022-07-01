@@ -11,7 +11,7 @@
       <span class="individual-shop__region">#{{shop.region.name}}</span>
       <span class="individual-shop__genre">#{{shop.genre.name}}</span>
       <p class="individual-shop__description">{{shop.description}}</p>
-      <p class="individual-shop__course-header">コース一覧</p>
+      <p class="individual-shop__course-header" v-if="courses.length">コース一覧</p>
       <div class="individual-shop__course" v-for="course in courses" :key="course.id">
         <p class="individual-shop__course-name">{{course.name}} <span class="individual-shop__course-price">¥{{course.price}}</span></p>
         <p class="individual-shop__course-description">{{course.description}}</p>
@@ -39,79 +39,100 @@
   </div>
 </template>
 
-<script>
-  export default {
-    async asyncData({$axios, $getTodaysDate, params, query}) {
-      /* 店舗データ取得 */
-      const res = await $axios.$get(`/api/shops/${params.shopId}`);
-      const shop = res.data;
-      const today = $getTodaysDate();
+<script lang="ts">
+import Vue from 'vue';
+import { shop, course, sendData, user } from '~/types/api';
+import { errorsObject } from '~/types/errors';
 
-      return {
-        shop: shop,
-        courses: shop.courses ? shop.courses: [],
-        today: today,
-        /* クエリパラメータのdtがあればその値をセット、なければ今日の日付 */
-        date: (query.dt) ? query.dt : today,
-        /* クエリパラメータのtm、nmがunselected以外であればその値をセット(遷移前のinputの値を復元) */
-        time: (query.tm !== 'unselected') ? query.tm : '',
-        number: (query.nm !== 'unselected') ? query.nm : '',
-        selectedCourseIndex: (query.sc !== 'unselected') ? query.sc: '',
-        errors: {
-          datetime: null,
-          number: null,
-        },
-      };
+export default Vue.extend({
+  async asyncData({app, params, query}) {
+    /* 店舗データ取得 */
+    const shop: shop = await app.$repositories.shop.getById(+params.shopId);
+    const today: string = app.$getTodaysDate();
+
+    return {
+      shop: shop,
+      courses: shop.courses ? shop.courses: [],
+      today: today,
+      /* クエリパラメータのdtがあればその値をセット、なければ今日の日付 */
+      date: (query.dt) ?? today,
+      /* クエリパラメータのtm、nmがunselected以外であればその値をセット(遷移前のinputの値を復元) */
+    };
+  },
+  data() {
+    return {
+      shop: {} as shop,
+      courses: [] as (course|undefined)[],
+      today: '' as string,
+      date: '' as string,
+      time: 
+        (this.$route.query.tm && this.$route.query.tm !== 'unselected') ?
+        this.$route.query.tm as string :
+        '' as string,
+      number: 
+        (this.$route.query.nm && this.$route.query.nm !== 'unselected') ?
+        this.$route.query.nm as string:
+        '' as string,
+      selectedCourseIndex: 
+        (this.$route.query.sc && this.$route.query.sc !== 'unselected') ?
+        +this.$route.query.sc as (number | undefined) : 
+        undefined as (number | undefined),
+      errors: {
+        datetime: [],
+        number: [],
+      } as errorsObject,
+    }
+  },
+  methods: {
+    /* 予約情報を登録 */
+    async registerReservation() {
+      /** ログインしていない場合はログイン画面に遷移
+       *  ログインして戻ってきたあとに入力値を復元できるよう、クエリパラメータを活用
+       **/
+      if (!this.$accessor.loggedIn) {
+        let query = {
+          sh: this.shop.id.toString(),
+          dt: this.date,
+          tm: this.time ?? 'unselected',
+          nm: this.number ?? 'unselected',
+          sc: this.selectedCourseIndex?.toString() ?? 'unselected',
+        }
+
+        this.$router.push({path: '/login', query: query});
+        return;
+      }
+      /* 入力値から送信用データを作成 */
+      const user = this.$accessor.user as user;
+      const sendData: sendData = {
+        user_id: user.id,
+        shop_id: this.shop.id,
+        datetime: (this.date && this.time) ? `${this.date} ${this.time}` : '',
+        number: this.number?.slice(0, -1) as string,
+      }
+
+      /* コースが選択されている場合はコースのIdも追加 */
+      if (this.selectedCourseIndex !== undefined) {
+          sendData.course_id = this.courses[this.selectedCourseIndex]?.id;
+      }
+
+      try {
+        /* 予約実行 */
+        const newReservation = await this.$repositories.reservation.register(sendData);
+
+        let query = {
+          rs: (sendData.course_id !== undefined) ? newReservation.id.toString() : '',
+          ch: '0',
+        };
+
+        /* dt、tm、nmに値がある場合はクエリパラメータのchを'1'に設定し、/doneからの遷移先を制御 */
+        if (this.$route.query.dt && this.$route.query.tm && this.$route.query.nm) {
+          query.ch = '1';
+        }
+        this.$router.push({path: '/done', query: query});
+      } catch (error: any) {
+        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+      }
     },
-    methods: {
-      /* 予約情報を登録 */
-      async registerReservation() {
-        /** ログインしていない場合はログイン画面に遷移
-         *  ログインして戻ってきたあとに入力値を復元できるよう、クエリパラメータを活用
-         **/
-        if (!this.$store.state.user) {
-          this.$router.push(
-            {
-              path: '/login',
-              query: {
-                sh: this.shop.id,
-                dt: this.date,
-                tm: (this.time) ? this.time : 'unselected',
-                nm: (this.number) ? this.number: 'unselected',
-                sc: (this.selectedCourseIndex) ? this.selectedCourseIndex: 'unselected',
-              }
-            }
-          );
-          return;
-        }
-        /* 入力値から送信用データを作成 */
-        const sendData = {
-          user_id: this.$store.state.user.id,
-          shop_id: this.shop.id,
-          datetime: (this.date && this.time) ? `${this.date} ${this.time}` : '',
-          number: this.number?.slice(0, -1),
-          course_id: this.courses[this.selectedCourseIndex]?.id,
-        }
-
-        try {
-          /* 予約実行 */
-          const res =  await this.$axios.post('/api/reservations', sendData);
-
-          const query = {};
-          /* コースが選択されている場合は、新規予約のIDを遷移先のクエリパラメータに設定し、/doneの表示を制御 */
-          if (sendData.course_id) {
-            query.rs = res.data.newData.id;
-          }
-
-          /* クエリパラメータのdt、tm、nmに値がある場合はクエリパラメータのchを1に設定し、/doneからの遷移先を制御 */
-          if (this.$route.query.dt && this.$route.query.tm && this.$route.query.nm) {
-            query.ch = 1;
-          }
-          this.$router.push({path: '/done', query: query});
-        } catch (error) {
-          this.errorHandling(error.response);
-        }
-      },
-    },
-  }
+  },
+});
 </script>

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "jsx":"preserve",
+    "target": "es2018",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": [
+      "esnext",
+      "esnext.asynciterable",
+      "dom"
+    ],
+    "esModuleInterop": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./*"
+      ],
+      "@/*": [
+        "./*"
+      ]
+    },
+    "types": [
+      "@types/node",
+      "@types/qrcode",
+      "@nuxt/types",
+      "@nuxtjs/auth-next",
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

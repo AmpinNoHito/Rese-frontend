@@ -24,13 +24,18 @@
   </select>
 </template>
 
-<script>
-  export default {
-    props: ['selectedNumber'],
-    methods: {
-      changed(e) {
-        this.$emit('numberChanged', e.target.value);
-      },
+<script lang="ts">
+import Vue from "vue";
+
+export default Vue.extend({
+  props: {
+    selectedNumber: String,
+  },
+  methods: {
+    changed(e: Event): void {
+      const target = e.target as HTMLInputElement;
+      this.$emit('numberChanged', target.value);
     },
-  };
+  },
+});
 </script>
