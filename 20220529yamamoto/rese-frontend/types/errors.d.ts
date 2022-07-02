@@ -1,3 +1,3 @@
-export interface errorsObject {
+export interface errors {
   [key: string]: (string | null)[],
 }

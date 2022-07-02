@@ -1,35 +1,35 @@
 import { Plugin } from '@nuxt/types';
-import { errorsObject } from '~/types/errors';
+import { errors } from '~/types/errors';
 import { Context, Inject } from "@nuxt/types/app";
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $initializeErrors(keys: string[]): errorsObject;
-    $errorHandling(keys: string[], errorResponse: any): errorsObject;
+    $initializeErrors(keys: string[]): errors;
+    $handleError(keys: string[], errorResponse: any): errors;
     $alertErrorMessage(errorResponse: any): void;
   }
 }
 
 declare module '@nuxt/types' {
   interface NuxtAppOptions {
-    $initializeErrors(keys: string[]): errorsObject;
-    $errorHandling(keys: string[], errorResponse: any): errorsObject;
+    $initializeErrors(keys: string[]): errors;
+    $handleError(keys: string[], errorResponse: any): errors;
     $alertErrorMessage(errorResponse: any): void;
   }
 }
 
 declare module 'vuex/types/index' {
   interface Store<S> {
-    $initializeErrors(keys: string[]): errorsObject;
-    $errorHandling(keys: string[], errorResponse: any): errorsObject;
+    $initializeErrors(keys: string[]): errors;
+    $handleError(keys: string[], errorResponse: any): errors;
     $alertErrorMessage(errorResponse: any): void;
   }
 }
 
 const errors: Plugin = (context: Context, inject: Inject) => {
   /* エラーを初期化 */
-  inject('initializeErrors', (keys: string[]): errorsObject => {
-    let errors:errorsObject = {};
+  inject('initializeErrors', (keys: string[]): errors => {
+    let errors: errors = {};
     keys.forEach(key => {
       errors[key] = []; 
     });
@@ -45,9 +45,9 @@ const errors: Plugin = (context: Context, inject: Inject) => {
   });
 
   /* バリデーションエラーの処理 */
-  inject('errorHandling', (keys: string[], errorResponse: any): errorsObject => {
-    const validationErrors: errorsObject = errorResponse?.data?.errors;
-    let errors:errorsObject = {};
+  inject('handleError', (keys: string[], errorResponse: any): errors => {
+    const validationErrors: errors = errorResponse?.data?.errors;
+    let errors: errors = {};
 
     if (!validationErrors) {
       keys.forEach(key => {

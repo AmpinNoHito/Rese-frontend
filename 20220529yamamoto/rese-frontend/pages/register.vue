@@ -33,10 +33,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { sendData } from '~/types/api';
-import { errorsObject } from '~/types/errors';
+import { errors } from '~/types/errors';
 
 export default Vue.extend({
-  data(){
+  data() {
     return {
       form:{
         name:'' as string,
@@ -47,17 +47,17 @@ export default Vue.extend({
         name: [],
         email: [],
         password: [],
-      } as errorsObject,
+      } as errors,
     }
   },
   methods:{
     async register(): Promise<void> {
       try {
         /* 新規登録処理 */
-        await this.$repositories.user.register(this.form);
+        await this.$service.auth.register(this.form);
         this.$router.push('/thanks');
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
   }

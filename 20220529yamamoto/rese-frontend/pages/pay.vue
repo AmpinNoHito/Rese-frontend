@@ -7,14 +7,14 @@
         <p class="pay__confirmation-item">Number<span>{{reservation.number}}人</span></p>
         <p class="pay__confirmation-item">Course<span>{{reservation.course.name}}</span></p>
         <p class="pay__confirmation-item">Price<span>¥{{reservation.course.price}}/人</span></p>
-        <p class="pay__confirmation-item pay__confirmation-item--total">Total<span>¥{{total}}</span></p>
+        <p class="pay__confirmation-item pay__confirmation-item--amount">Total<span>¥{{amount}}</span></p>
       </div>
       <p class="pay__header">カード情報入力欄</p>
       <stripe-element-card
       ref="elementRef"
       :pk="pk"
       :testMode="true"
-      @token="tokenCreated">
+      @token="pay">
     </stripe-element-card>
     <ButtonBasic class="pay__button" @clicked="submit">支払う</ButtonBasic>
     </div>
@@ -24,23 +24,19 @@
 <script lang="ts">
 import Vue from 'vue';
 import auth from '~/middleware/auth';
-import { reservation, sendData } from '~/types/api';
+import { reservation } from '~/types/api';
 import { Stripe } from 'stripe';
 
 export default Vue.extend({
   middleware: [auth],
-  async asyncData ({app, query}) {
-    const reservation: reservation = await app.$repositories.reservation.getById(+query.rs);
-    return {
-      reservation: reservation,
-      total: reservation.number * reservation.course.price,
-    }
+  async asyncData ({ app, query }) {
+    return await app.$service.pay.getData(+query.rs);
   },
   data() {
     return {
       reservation: {} as reservation,
-      total: 0 as number,
-      pk: this.$config.stripePK as string,
+      amount: 0,
+      pk: this.$config.stripePK,
     }
   },
   methods: {
@@ -48,16 +44,9 @@ export default Vue.extend({
       /* Stripeにカード情報を送信、トークンを取得 */
       (this as any).$refs?.elementRef?.submit();
     },
-    async tokenCreated (token: Stripe.Token): Promise<void> {
-      /* 取得したトークン等から送信用データを作成 */
-      const sendData: sendData = {
-        amount: this.total,
-        source: token.id,
-      }
-
+    async pay (token: Stripe.Token): Promise<void> {
       try {
-        const successMessage: string = await this.$repositories.reservation.pay(this.reservation.id, sendData);
-        alert(`${successMessage}\n\nマイページに遷移します。`);
+        await this.$service.pay.pay(this.reservation.id, token, this.amount);
         this.$router.push('/mypage');
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
@@ -105,7 +94,7 @@ export default Vue.extend({
       left: 80px;
     }
 
-    &--total {
+    &--amount {
       margin-top: 20px;
       font-size: $fz-mid-large;
       text-align: right;

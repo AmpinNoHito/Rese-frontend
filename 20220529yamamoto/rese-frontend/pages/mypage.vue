@@ -46,56 +46,47 @@
     </div>
     <div 
       class="modal modal--reservation"
-      @click.self="
-        $hideModal('reservation');
-        errors = $initializeErrors(Object.keys(errors));
-      ">
+      @click.self="hideModalAndInitErrors('reservation')">
       <CardReservation
         class="modal__reservation-card"
-        v-if="reservation.selectedReservationId"
-        :date="reservation.date"
+        v-if="newReservation.selectedReservationId"
+        :date="newReservation.date"
         :today="today"
-        :time="reservation.time"
-        :number="reservation.number"
-        :courses="reservation.courses"
-        :selectedCourseIndex="reservation.selectedCourseIndex"
-        :shopName="reservation.name"
+        :time="newReservation.time"
+        :number="newReservation.number"
+        :courses="newReservation.courses"
+        :selectedCourseIndex="newReservation.selectedCourseIndex"
+        :shopName="newReservation.name"
         :datetimeErrors="errors.datetime"
         :numberErrors="errors.number"
         :showCross="true"
-        @dateChanged="reservation.date = $setData($event)"
-        @timeChanged="reservation.time = $setData($event)"
-        @courseChanged="reservation.selectedCourseIndex = $setData($event)"
-        @numberChanged="reservation.number = $setData($event)"
+        @dateChanged="newReservation.date = $setData($event)"
+        @timeChanged="newReservation.time = $setData($event)"
+        @courseChanged="newReservation.selectedCourseIndex = $setData($event)"
+        @numberChanged="newReservation.number = $setData($event)"
         @buttonClicked="updateReservation"
-        @crossClicked="
-          $hideModal('reservation');
-          errors = $initializeErrors(Object.keys(errors));
-        ">
+        @crossClicked="hideModalAndInitErrors('reservation')">
         <template v-slot:header>予約変更</template>
         <template v-slot:button>変更する</template>
       </CardReservation>
     </div>
-    <div class="modal modal--review" @click.self="$hideModal('review'); errors = $initializeErrors(Object.keys(errors));">
+    <div class="modal modal--review" @click.self="hideModalAndInitErrors('review')">
       <CardReview
         class="modal__review-card"
-        :rate="review.rate"
-        :title="review.title"
-        :content="review.content"
+        :rate="newReview.rate"
+        :title="newReview.title"
+        :content="newReview.content"
         :rateErrors="errors.rate"
         :titleErrors="errors.title"
         :contentErrors="errors.content"
-        :isNewReview="review.isNew"
+        :isNewReview="newReview.isNew"
         @registerButtonClicked="registerReview"
         @updateButtonClicked="updateReview"
-        @starClicked="review.rate = $setData($event)"
-        @titleChanged="review.title = $setData($event)"
-        @contentChanged="review.content = $setData($event)"
+        @starClicked="newReview.rate = $setData($event)"
+        @titleChanged="newReview.title = $setData($event)"
+        @contentChanged="newReview.content = $setData($event)"
         @deleteClicked="deleteReview()"
-        @crossClicked="
-          $hideModal('review'); 
-          errors = $initializeErrors(Object.keys(errors));
-        "/>
+        @crossClicked="hideModalAndInitErrors('review')"/>
     </div>
   </div>
 </template>
@@ -104,76 +95,45 @@
 import Vue from 'vue';
 import auth from '~/middleware/auth';
 import QRCode from 'qrcode';
-import { shop, reservation, course, sendData, user } from '~/types/api';
-import { errorsObject } from '~/types/errors';
+import { shop, reservation, course, sendData, user, newReservation, newReview } from '~/types/api';
+import { errors } from '~/types/errors';
 import { Context } from '@nuxt/types';
 
 export default Vue.extend({
   middleware: [auth],
-  async asyncData({ app: { $repositories, $accessor, $getTodaysDate } }: Context) {
-    const user = $accessor.user as user;
-    /* 予約データ取得 */
-    const reservationData: reservation[] = await $repositories.reservation.getByUserId(user.id);
-    
-    /* 予約データがあれば */
-    const reservations: reservation[] = [];
-    const histories: reservation[] = [];
-    if (reservationData.length) {
-      reservationData.forEach(reservation => {
-        reservation.visit_completed ?
-          /* まだ来店していない場合 */
-          histories.push(reservation) :
-          /* 来店済みの場合 */
-          reservations.push(reservation);
-      })
-
-      reservationData.filter(reservation => reservation.visit_completed === 1).reverse();
-    }
-
-    /* お気に入り店舗取得 */
-    const favoriteShops: shop[] = await $repositories.shop.getFavoriteShops(user.id);
-
-    /* 今日の日付を取得 */
-    const today: string = $getTodaysDate();
-
-    return {
-      /* ページ表示用基本データ */
-      reservations: reservations,
-      histories: histories,
-      favoriteShops: (favoriteShops?.length) ? favoriteShops : [],
-      today: today,
-      userId: user.id,
-    }
+  async asyncData({ app }: Context) {
+    return await app.$service.mypage.getData(app);
   },
   data() {
     return {
       /* ページ表示用基本データ */
+      userId: 0 as number,
       reservations: [] as reservation[],
       histories: [] as reservation[],
-      favoriteShops: [] as (number | null)[],
+      favoriteShops: [] as shop[],
       today: '' as string,
       qrcode: '',
       /* 表示内容決定用フラグ */
       showHistory: false,
       /* 予約内容変更処理用データ */
-      reservation: {
-        name: '' as string,
-        date: '' as string,
-        time: '' as string,
-        number: '' as string,
-        courses: [] as (course[] | undefined),
-        selectedCourseIndex: undefined as (number | undefined),
-        selectedReservationId: 0 as number,
-      },
+      newReservation: {
+        name: '',
+        date: '',
+        time: '',
+        number: '',
+        courses: [],
+        selectedCourseIndex: undefined,
+        selectedReservationId: 0,
+      } as newReservation,
       /* レビュー作成、編集用データ */
-      review: {
-        rate: 0 as number,
-        title: '' as string,
-        content: '' as string,
-        selectedHistoryId: 0 as number,
-        selectedReviewId: 0 as number,
+      newReview: {
+        rate: 0,
+        title: '',
+        content: '',
+        selectedHistoryId: 0,
+        selectedReviewId: 0,
         isNew: true,
-      },
+      } as newReview,
       /* バリデーションエラー格納用データ */
       errors: {
         datetime: [],
@@ -181,161 +141,53 @@ export default Vue.extend({
         rate: [],
         title: [],
         content: [],
-      } as errorsObject,
-      /* ユーザーId */
-      userId: 0 as number,
+      } as errors,
     }
   },
   methods: {
     showReservationModal(selectedReservation: reservation): void {
-      /* 予約変更モーダル内のインプットに、選択された予約の情報を初期値として代入 */
-      this.reservation.date = selectedReservation.datetime.slice(0, 10);
-      this.reservation.time = selectedReservation.datetime.slice(11, -3);
-      this.reservation.number = `${selectedReservation.number}人`;
-      this.reservation.name = selectedReservation.shop.name;
-      this.reservation.courses = selectedReservation.shop.courses;
-
-      /* 変更する予約のidを記録 */
-      this.reservation.selectedReservationId = selectedReservation.id;
-
-      /* コースが選ばれている予約が選択された場合は、コースのインデックスを取得 */
-      if (selectedReservation.course_id) {
-        const selectedCourseIndex = selectedReservation.shop.courses?.findIndex(course => course.id === selectedReservation.course_id) as number;
-        this.reservation.selectedCourseIndex = selectedCourseIndex;
-      } else {
-        this.reservation.selectedCourseIndex = undefined;
-      }
-
+      this.newReservation = this.$service.mypage.setNewReservationData(selectedReservation);
       this.$showModal('reservation');
     },
     async updateReservation(): Promise<void> {
-      /* 入力値から送信用データを作成 */
-      const newDatetime: string = 
-        (this.reservation.date && this.reservation.time) ?
-        `${this.reservation.date} ${this.reservation.time}` : 
-        '';
-      const newNumber: number = +this.reservation.number.slice(0, -1);
-      
-      const sendData: sendData = {
-        datetime: newDatetime,
-        number: newNumber,
-        course_id: null,
-      }
-
-      /* コースが選択されていれば送信データに追加 */
-      const newCourseIndex: (number | undefined) = this.reservation.selectedCourseIndex;
-      if (newCourseIndex !== undefined) {
-        const courses = this.reservation.courses as course[];
-        sendData.course_id = courses[newCourseIndex].id;
-      }
-
-      try {
-        /* 予約内容変更処理 */
-        await this.$repositories.reservation.update(this.reservation.selectedReservationId, sendData);
-        alert('予約内容を変更しました。');
-        this.updateDisplay('reservation');
-        this.$initializeErrors(Object.keys(this.errors));
+      try{
+        this.reservations = await this.$service.mypage.updateReservation(this.newReservation, this.userId);
+        this.hideModalAndInitErrors('reservation');
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
     async deleteReservation(args: number[]): Promise<void> {
-      const [index, reservationId] = args;
-      const ch = confirm('予約を取り消しますか？');
-      if (!ch) return;
-
-      /* dataの配列とDBから削除 */
       try {
-        await this.$repositories.reservation.delete(reservationId);
-        this.reservations.splice(index, 1);
+        this.$service.mypage.deleteReservation(args, this.reservations);
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }
     },
     showReviewModal(selectedHistory: reservation): void {
-      /* 新規レビューか否かを確認 */
-      if (!selectedHistory.review) {
-        this.review.isNew = true;
-      } else {
-        this.review.isNew = false;
-      }
-
-      /* インプットに初期値を設定 */
-      this.review.rate = (selectedHistory.review) ? selectedHistory.review.rate : 0;
-      this.review.title = selectedHistory.review?.title;
-      const textarea = document.querySelector('.card-review__textarea') as HTMLTextAreaElement;
-      if (selectedHistory.review?.content) {
-        this.review.content = selectedHistory.review?.content;
-        textarea.value = selectedHistory.review?.content;
-      } else {
-        this.review.content = '';
-        textarea.value = '';
-      }
-
-      /* 選択された予約履歴、レビューのIdを記録 */
-      this.review.selectedHistoryId = selectedHistory.id;
-      this.review.selectedReviewId = selectedHistory.review?.id;
-
+      this.newReview = this.$service.mypage.setNewReviewData(selectedHistory);
       this.$showModal('review');
     },
     async registerReview(): Promise<void> {
-      /* 入力値から送信用データを作成 */
-      const sendData: sendData = {
-        reservation_id: this.review.selectedHistoryId,
-        rate: this.review.rate,
-      }
-
-      /* タイトルと内容は値がある場合のみ送信 */
-      if (this.review.title) {
-        sendData.title = this.review.title;
-      }
-      if (this.review.content) {
-        sendData.content = this.review.content;
-      }
-
       try {
-        /* 新規作成実行 */
-        await this.$repositories.review.register(sendData);
-        alert('新規レビューを投稿しました。');
-        this.errors = this.$initializeErrors(Object.keys(this.errors));
-        this.updateDisplay('review');
+        this.histories = await this.$service.mypage.registerReview(this.newReview, this.userId)
+        this.hideModalAndInitErrors('review');
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
     async updateReview(): Promise<void> {
-      /* 入力値から送信用データを作成 */
-      const sendData: sendData = {
-        rate: this.review.rate,
-      }
-
-      /* タイトルと内容は値がある場合のみ送信 */
-      if (this.review.title) {
-        sendData.title = this.review.title;
-      }
-      if (this.review.content) {
-        sendData.content = this.review.content;
-      }
-
-      try {
-        /* レビュー内容変更処理 */
-        await this.$repositories.review.update(this.review.selectedReviewId, sendData);
-        alert('レビュー内容を変更しました。');
-        this.updateDisplay('review');
+      try{
+        this.histories = await this.$service.mypage.updateReview(this.newReview, this.userId);
+        this.hideModalAndInitErrors('review');
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
     async deleteReview(): Promise<void> {
-      /* 削除するか確認 */
-      const ch = confirm('レビューを削除しますか？');
-      if (!ch) return;
-
-      /* DBから削除 */
       try {
-        await this.$repositories.review.delete(this.review.selectedReviewId);
-        alert('レビューを削除しました。');
-        this.updateDisplay('review');
+        this.histories = await this.$service.mypage.deleteReview(this.newReview.selectedReviewId, this.histories, this.userId);
+        this.hideModalAndInitErrors('review');
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }
@@ -344,33 +196,23 @@ export default Vue.extend({
       /* 予約Id、ユーザーIdを含むQRコードを生成 */
       try {
         this.qrcode = await QRCode.toDataURL(`${selectedReservation.id},${selectedReservation.user_id}`);
+        this.$showModal('qr');
       } catch (error: any) {
         alert('エラーが発生しました。時間をおいてから再度お試しください。');
-        /* 確認用ログ */
-        console.log(error);
         return;
       }
-
-      this.$showModal('qr');
     },
     async deleteFavorite(index: number, shopId: number): Promise<void> {
-      const ch = confirm('お気に入り店舗から削除しますか？');
-      if (!ch) return;
-      
-      /* dataの配列とDBから削除 */
       try {
-        await this.$repositories.favorite.delete(this.userId, shopId);
-        this.favoriteShops.splice(index, 1);
+        await this.$service.mypage.deleteFavorite(index, this.userId, shopId, this.favoriteShops);
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }
     },
-    async updateDisplay(modalModifier: string) {
-      const reservationData = await this.$repositories.reservation.getByUserId(this.userId);
-      this.reservations = reservationData.filter(reservation => reservation.visit_completed === 0);
-      this.histories = reservationData.filter(reservation => reservation.visit_completed === 1);
-      this.$hideModal(modalModifier);
-    },
+    hideModalAndInitErrors(modifier: string): void {
+      this.errors = this.$initializeErrors(Object.keys(this.errors));
+      this.$hideModal(modifier);
+    }
   },
 });
 </script>

@@ -79,3 +79,37 @@ export interface reservation {
 export interface sendData {
   [key: string]: (string | number | undefined | null),
 }
+
+export interface newShop {
+  name: string,
+  representative_id?: number,
+  description: string,
+  base64EncodedImage?: (string | undefined),
+  region_id: number,
+  genre_id: number,
+}
+
+export interface newCourse {
+  name: (string | undefined),
+  price: (number | undefined),
+  description: (string | undefined),
+}
+
+export interface newReservation {
+  name: string,
+  date: string,
+  time: string,
+  number: string,
+  courses?: (course[] | undefined),
+  selectedCourseIndex: (number | undefined),
+  selectedReservationId?: number,
+}
+
+export interface newReview {
+  rate: number,
+  title: string,
+  content: string,
+  selectedHistoryId: number,
+  selectedReviewId: number,
+  isNew: boolean,
+}

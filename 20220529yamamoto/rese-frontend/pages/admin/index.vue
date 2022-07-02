@@ -63,8 +63,8 @@
               <p class="modal__item-label">画像選択</p>
               <label class="modal__image-select" for="file">画像を選択する</label>
               <input type="file" id="file" @change="setImage" hidden>
-              <div v-if="newShop.image" class="modal__new-image">
-                <img :src="newShop.image"/>
+              <div v-if="previewImage" class="modal__new-image">
+                <img :src="previewImage"/>
               </div>
               <p class="error-message" v-if="errors.image.length">※{{errors.image[0]}}</p>
             </div>
@@ -78,72 +78,48 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, sendData, user } from '~/types/api';
+import { shop, newShop } from '~/types/api';
 import representative from "~/middleware/representative";
-import { errorsObject } from '~/types/errors';
+import { errors } from '~/types/errors';
 import { Context } from '@nuxt/types';
+
 export default Vue.extend({
   middleware: [representative],
-  async asyncData({ app: {$repositories, $accessor} }: Context) {
-    /* 登録店舗一覧取得 */
-    const representative = $accessor.user as user;
-    const shops = await $repositories.shop.getByRepresentativeId(representative.id);
-
-    return {
-      shops: shops ?? [],
-      representativeId: representative.id,
-    }
+  async asyncData({ app }: Context) {
+    return await app.$service.adminIndex.getData(app);
   },
   data() {
     return {
       shops: [] as shop[],
-      representativeId: 0 as number,
-      file: undefined as (File | undefined),
+      previewImage: undefined as (string | undefined),
       /* 新規店舗登録用データ */
       newShop: {
-        name: '' as string,
-        description: '' as string,
-        image: undefined as (string | undefined),
-        region_id: undefined as (number | undefined),
-        genre_id: undefined as (number | undefined),
-      },
+        name: '',
+        representative_id: 0,
+        description: '',
+        base64EncodedImage: undefined,
+        region_id: 0,
+        genre_id: 0,
+      } as newShop,
       errors: {
         name: [],
         description: [],
         image: [],
         region_id: [],
         genre_id: [],
-      } as errorsObject,
+      } as errors,
     }
   },
   methods: {
     async setImage(e: Event): Promise<void> {
-      const result: [(string | undefined), (File | undefined)] = await this.$processImage(e);
-      if (result[0] === undefined && result[1] === undefined) {
-        return;
-      } else {
-        [this.newShop.image, this.file] = result;
-      }
+      this.newShop.base64EncodedImage = this.previewImage = await this.$processImage(e);
     },
-    async registerShop(): Promise<void> {
-      /* 入力値から送信用データを作成 */
-      const sendData: sendData = {
-        name: this.newShop.name,
-        representative_id: this.representativeId,
-        description: this.newShop.description,
-        region_id: this.newShop.region_id,
-        genre_id: this.newShop.genre_id,
-        base64EncodedImage: this.newShop.image,
-      };
-      
+    async registerShop(): Promise<void> {      
       try {
-        /* 新規店舗登録処理 */
-        await this.$repositories.shop.register(sendData);
-        alert('新規店舗が登録されました。');
+        this.shops = await this.$service.adminIndex.registerShop(this.newShop);
         this.$hideModal('shop');
-        location.reload();
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
   },

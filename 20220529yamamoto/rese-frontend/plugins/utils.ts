@@ -7,6 +7,7 @@ declare module 'vue/types/vue' {
     $getTodaysDate(): string,
     $stopScroll(): void
     $restartScroll(): void
+    $processImage(e: Event): Promise<(string | undefined)>,
   }
 }
 
@@ -16,6 +17,7 @@ declare module '@nuxt/types' {
     $getTodaysDate(): string,
     $stopScroll(): void
     $restartScroll(): void
+    $processImage(e: Event): Promise<(string | undefined)>,
   }
 }
 
@@ -25,6 +27,7 @@ declare module 'vuex/types/index' {
     $getTodaysDate(): string,
     $stopScroll(): void
     $restartScroll(): void
+    $processImage(e: Event): Promise<(string | undefined)>,
   }
 }
 
@@ -52,6 +55,28 @@ const utils: Plugin = (context: Context, inject: Inject) => {
     body.style.overflow = 'auto';
   };
 
+  const processImage = async (e: Event): Promise<(string | undefined)> => {
+    const target = e.target as HTMLInputElement;
+    const file: File = (target.files as FileList)[0];
+    
+    if (!file) {  // ファイルが選択されなかった場合
+      return undefined;
+    }
+  
+    if (!file.type.match('image.*')) {  // 画像以外のファイルが選択された場合
+      alert('画像ファイルを選択してください。');
+      return undefined;
+    }
+  
+    /* ファイルを画像として読み込む */
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    await new Promise<void>(resolve => reader.onload = () => resolve());
+    const resultImage: string = reader.result as string;
+    return resultImage;
+  };
+
+  inject('processImage', processImage);
   inject('setData', setData);
   inject('getTodaysDate', getTodaysDate);
   inject('stopScroll', stopScroll);

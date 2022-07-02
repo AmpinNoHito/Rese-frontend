@@ -35,7 +35,7 @@ export const mutations = mutationTree(state, {
 });
 
 export const actions = actionTree({state, mutations}, {
-  clearState({commit}) {
+  clearSearchKeys({commit}) {
     commit('setRegionSearchId', undefined);
     commit('setGenreSearchId', undefined);
     commit('setSearchWord', undefined);

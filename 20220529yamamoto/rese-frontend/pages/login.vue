@@ -25,8 +25,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { user, sendData } from '~/types/api';
-import { errorsObject } from '~/types/errors';
+import { sendData, user } from '~/types/api';
+import { RawLocation } from 'vue-router';
+import { errors } from '~/types/errors';
 
 export default Vue.extend({
   data() {
@@ -38,37 +39,18 @@ export default Vue.extend({
       errors: {
         email: [],
         password: [],
-      } as errorsObject,
+      } as errors,
     };
   },
   methods: {
     async login(): Promise<void> {
       try {
-        /* ログイン処理 */
-        const token: string = await this.$repositories.user.login(this.form);
+        const [token, user, location]: [string, user, RawLocation] = await this.$service.auth.login(this.form, this.$route.query);
         this.$accessor.setToken(`Bearer ${token}`);
-
-        const user: user = await this.$repositories.user.getUser();
         this.$accessor.setUser(user);
-        /** 予約画面から遷移してきた場合は予約画面に戻る 
-         *  入力情報を復元できるようにクエリパラメータを渡す
-         */
-        const query = this.$route.query;
-        if (Object.keys(query).length) {
-          this.$router.push({
-            path: `/shops/${query.sh}`,
-            query: {
-              dt: query.dt as string, // 日付(date)
-              tm: query.tm as string, // 時間(time)
-              nm: query.nm as string, // 人数(number)
-              sc: query.sc as string, // コース(selected course)
-            }
-          });
-        } else {
-          this.$router.push('/');
-        }
+        this.$router.push(location);
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
   },

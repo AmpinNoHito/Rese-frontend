@@ -36,7 +36,7 @@
         <div class="default-layout__links" v-if="$accessor.loggedIn">
           <span
             class="default-layout__link"
-            @click="$accessor.clearState(); $router.push('/'); hideMenu();">
+            @click="$accessor.clearSearchKeys(); $router.push('/'); hideMenu();">
             Home
           </span>
           <span
@@ -51,16 +51,16 @@
             Mypage
           </nuxt-link>
           <nuxt-link
-            v-if="$accessor.loggedIn.group === 100"
+            v-if="$accessor.user.group === 100"
             class="default-layout__link"
-            to="/admin/administrator"
+            to="/admin/register"
             @click.native="hideMenu">
             Create Representatives
           </nuxt-link>
           <nuxt-link
-            v-if="$accessor.loggedIn.group === 10"
+            v-if="$accessor.user.group === 10"
             class="default-layout__link"
-            to="/admin/representative"
+            to="/admin"
             @click.native="hideMenu">
             Your Shops
           </nuxt-link>
@@ -85,10 +85,9 @@ export default Vue.extend({
     },
     async logout(): Promise<void> {
       try {
-        await this.$repositories.user.logout();
+        await this.$service.auth.logout();
         this.$accessor.setUser({});
         this.$accessor.setToken(undefined);
-        alert('ログアウトしました。');
         this.$router.push('/');
       } catch (error: any) {
         this.$alertErrorMessage(error.response);

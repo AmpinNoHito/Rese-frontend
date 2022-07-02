@@ -51,12 +51,12 @@
           <div class="modal__texts">
             <div class="modal__item">
               <p class="modal__item-label">店名</p>
-              <input class="modal__input" type="text" :value="newShopData.name" @change="changeName">
+              <input class="modal__input" type="text" :value="newShop.name" @change="changeName">
               <p class="error-message" v-if="errors.name.length">※{{errors.name[0]}}</p>
             </div>
             <div class="modal__item">
               <p class="modal__item-label">店舗概要</p>
-              <textarea class="modal__textarea" cols="30" rows="10" :value="newShopData.description" @change="changeDescription"></textarea>
+              <textarea class="modal__textarea" cols="30" rows="10" :value="newShop.description" @change="changeDescription"></textarea>
               <p class="error-message" v-if="errors.description.length">※{{errors.description[0]}}</p>
             </div>
           </div>
@@ -65,12 +65,12 @@
               <p class="modal__item-label">地域・ジャンル</p>
               <SelectRegion
                 class="modal__select"
-                :regions="[shop.region_id]"
+                :regions="[newShop.region_id]"
                 :admin="true"
                 @changed="changeRegionId($event)"/>
               <SelectGenre
                 class="modal__select"
-                :genres="[shop.genre_id]"
+                :genres="[newShop.genre_id]"
                 :admin="true"
                 @changed="changeGenreId($event)"/>
             </div>
@@ -78,14 +78,14 @@
               <p class="modal__item-label">画像変更</p>
               <label class="modal__image-select" for="file">画像を変更する</label>
               <input type="file" id="file" @change="setImage" hidden>
-              <div v-if="newShopData.image" class="modal__new-image">
-                <img :src="newShopData.image"/>
+              <div v-if="previewImage" class="modal__new-image">
+                <img :src="previewImage"/>
               </div>
-              <p class="error-message" v-if="errors.image.length">※{{errors.image[0]}}</p>
+              <p class="error-message" v-if="errors.image.length">※{{errors.base64EncodedImage[0]}}</p>
             </div>
           </div>
         </div>
-        <ButtonBasic class="modal__button" @clicked="updateShopInfo">更新</ButtonBasic>
+        <ButtonBasic class="modal__button" @clicked="updateShop">更新</ButtonBasic>
       </div>
     </div>
     <div
@@ -103,18 +103,18 @@
         <div class="modal__card-row">
           <div class="modal__item">
             <p class="modal__item-label">コース名</p>
-            <input class="modal__input" type="text" v-model="newCourseData.name">
+            <input class="modal__input" type="text" v-model="newCourse.name">
             <p class="error-message" v-if="errors.name.length">※{{errors.name[0]}}</p>
           </div>
           <div class="modal__item">
             <p class="modal__item-label">価格</p>
-            <input class="modal__input" type="text" v-model="newCourseData.price">
+            <input class="modal__input" type="text" v-model="newCourse.price">
             <p class="error-message" v-if="errors.price.length">※{{errors.price[0]}}</p>
           </div>
         </div>
         <div class="modal__item">
           <p class="modal__item-label">コース概要</p>
-          <textarea class="modal__textarea" cols="30" rows="10" v-model="newCourseData.description"></textarea>
+          <textarea class="modal__textarea" cols="30" rows="10" v-model="newCourse.description"></textarea>
           <p class="error-message" v-if="errors.description.length">※{{errors.description[0]}}</p>
         </div>
         <ButtonBasic class="modal__button" @clicked="registerCourse">登録</ButtonBasic>
@@ -152,7 +152,7 @@
     </div>
     <div class="code-reader" @click.self="hideCodeReader">
       <div class="code-reader__inner">
-        <qrcode-stream v-if="codeReader" @decode="onDecode" @init="onInit"/>
+        <qrcode-stream v-if="codeReader" @decode="registerVisit" @init="readQRCode"/>
       </div>
       <ButtonBasic class="code-reader__button" @clicked="hideCodeReader">戻る</ButtonBasic>
     </div>
@@ -161,56 +161,16 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, reservation, course, review, sendData, user } from '~/types/api';
-import { errorsObject } from '~/types/errors';
+import { shop, reservation, course, review, user, newCourse, newShop } from '~/types/api';
+import { errors } from '~/types/errors';
 import representative from '~/middleware/representative';
-type newCourseData = {
-[key: string]: (string | number | undefined),
-}
 
 export default Vue.extend({
   middleware: [representative],
-  async asyncData({ params, app: { $repositories, $accessor } }) {
+  async asyncData({ params, app: { $service, $accessor } }) {
     /* 店舗データ取得 */
     const representative = $accessor.user as user;
-    const shop: shop = await $repositories.shop.getByIdAsRepresentative(+params.shopId, representative.id);
-    /* 予約データがあれば */
-    let reservations: reservation[] = [];
-    let histories: reservation[] = [];
-    if (shop?.reservations) {
-      const sortedReservations: reservation[] = shop.reservations.sort((a, b) => (a.datetime < b.datetime) ? -1 : 1);
-      /* まだ来店済みでない予約を配列に */
-      reservations = sortedReservations.filter(reservation => reservation.visit_completed === 0);
-      /* 来店済みの予約を配列に */
-      histories = sortedReservations.filter(reservation => reservation.visit_completed === 1).reverse();
-    }
-    /* 過去の予約履歴があり */
-    const reviews: review[] = [];
-    if (histories?.length) {
-      /* 予約履歴にレビューがついている場合 */
-      histories.forEach(history => {
-          if (history.review) {
-              /* レビューを配列に */
-              reviews.push(history.review);
-          }
-      });
-    }
-    return {
-      representativeId: representative.id,
-      shop: shop,
-      courses: shop.courses ?? [],
-      reservations: (reservations?.length) ? reservations : [],
-      histories: (histories?.length) ? histories : [],
-      reviews: (reviews?.length) ? reviews : [],
-      selectedReview: reviews[0],
-      /* 店舗情報更新用データ */
-      newShopData: {
-        name: shop.name,
-        description: shop.description,
-        regionId: shop.region_id,
-        genreId: shop.genre_id,
-      },
-    };
+    return await $service.adminShop.getData(representative.id, +params.shopId);
   },
   data() {
     return {
@@ -221,125 +181,71 @@ export default Vue.extend({
       histories: [] as reservation[],
       reviews: [] as review[],
       codeReader: false,
-      selectedReview: {} as review,
+      selectedReview: undefined as (review | undefined),
       selectedReservation: {} as reservation,
       showHistory: false,
-      file: undefined as (File | undefined),
-      newShopData: { // 店舗情報更新用データ 
-        name: '' as string,
-        description: '' as string,
-        image: undefined as (string | undefined),
-        regionId: undefined as (number | undefined),
-        genreId: undefined as (number | undefined),
-      },
-      newCourseData: { // 新規コース登録用データ
+      previewImage: undefined as (string | undefined),
+      newShop: { // 店舗情報更新用データ 
+        name: '',
+        description: '',
+        base64EncodedImage: undefined,
+        region_id: 0,
+        genre_id: 0,
+      } as newShop,
+      newCourse: { // 新規コース登録用データ
         name: undefined as (string | undefined),
         price: undefined as (number | undefined),
         description: undefined as (string | undefined),
-      } as newCourseData,
+      } as newCourse,
       errors: {
         name: [],
         description: [],
         image: [],
         price: [],
-      } as errorsObject,
+      } as errors,
     }
   },
   methods: {
-    async setImage(e: Event): Promise<void> {
-      const result: [(string | undefined), (File | undefined)] = await this.$processImage(e);
-      if (result[0] === undefined && result[1] === undefined) {
-        return;
-      } else {
-        [this.newShopData.image, this.file] = result;
-      }
+    async setImage(e: Event): Promise<void> { 
+      this.newShop.base64EncodedImage = this.previewImage = await this.$processImage(e);
     },
     changeName(e: Event): void {
       const target = e.target as HTMLInputElement;
-      this.newShopData.name = target.value;
+      this.newShop.name = target.value;
     },
     changeDescription(e: Event): void {
       const target = e.target as HTMLInputElement;
-      this.newShopData.description = target.value;
+      this.newShop.description = target.value;
     },
     changeRegionId(value: number): void {
-      this.newShopData.regionId = value;
+      this.newShop.region_id = value;
     },
     changeGenreId(value: number): void {
-      this.newShopData.genreId = value;
+      this.newShop.genre_id = value;
     },
-    async updateShopInfo(): Promise<void> {
-      /* 入力値から送信用データを作成 */
-      const sendData: sendData = {
-        name: this.newShopData.name,
-        description: this.newShopData.description,
-        region_id: this.newShopData.regionId,
-        genre_id: this.newShopData.genreId,
-      };
-
-      /* 新規画像はある場合のみ送信 */
-      if (this.newShopData.image) {
-        sendData.base64EncodedImage = this.newShopData.image;
-      }
-      
+    async updateShop(): Promise<void> {
       try {
-        /* 店舗情報変更処理 */
-        await this.$axios.put(`/api/admin/shops/${this.shop.id}`, sendData);
-        alert('店舗情報が変更されました。');
+        this.shop = await this.$service.adminShop.updateShop(this.shop.id, this.newShop);
         this.errors = this.$initializeErrors(Object.keys(this.errors));
-        this.updateDisplay();
         this.$hideModal('shop');
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
     async registerCourse (): Promise<void> {
-      /* 入力値から送信用データを作成 */
-      const sendData = {
-        shop_id: this.shop.id,
-        name: this.newCourseData.name,
-        price: this.newCourseData.price,
-        description: this.newCourseData.description,
-      }
-
       try {
-        /* 登録処理 */
-        await this.$axios.post('/api/admin/courses', sendData);
-        alert('コースが正常に登録されました。');
-        this.errors = this.$initializeErrors(Object.keys(this.errors));
-        Object.keys(this.newCourseData).forEach((key: string) => this.newCourseData[key] = undefined);
-        this.updateDisplay();
+        [this.courses, this.newCourse] = await this.$service.adminShop.registerCourse(this.shop.id, this.newCourse);
         this.$hideModal('course');
       } catch (error: any) {
-        console.log(error.response);
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
     async deleteCourse(courseId: number): Promise<void> {
-      /* 削除するか確認 */
-      const ch = confirm('コースを削除しますか？');
-      if (!ch) return;
-
       try {
-        await this.$axios.delete(`/api/admin/courses/${courseId}`);
+        this.courses = await this.$service.adminShop.deleteCourse(this.shop.id, courseId);
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }
-
-      this.updateDisplay();
-    },
-    async updateDisplay(): Promise<void> {
-      const shop: shop = await this.$repositories.shop.getByIdAsRepresentative(+this.$route.params.shopId, this.representativeId);
-      this.courses = (shop.courses) ?? [];
-
-      if (this.shop?.reservations) {
-        const sortedData: reservation[] = this.shop.reservations.sort((a, b) => (a.datetime < b.datetime) ? -1 : 1);
-        /* まだ来店済みでない予約を配列に */
-        this.reservations = sortedData.filter(reservation => reservation.visit_completed === 0);
-        /* 来店済みの予約を配列に */
-        this.histories = sortedData.filter(reservation => reservation.visit_completed === 1).reverse();
-      }
-
     },
     showCodeReader(reservation: reservation): void {
       this.selectedReservation = reservation;
@@ -354,38 +260,22 @@ export default Vue.extend({
       modal.classList.remove('is-shown');
       this.$restartScroll();
     },
-    async onInit(promise: Promise<void>): Promise<void> {
+    async readQRCode(promise: Promise<void>): Promise<void> {
       try {
         await promise;
       } catch (error) {
-        alert('エラーが発生しました。デバイスの設定をご確認のうえ再度お試しください。');
+        alert('エラーが発生しました。デバイスのカメラ設定をご確認のうえ再度お試しください。');
         this.hideCodeReader();
       }
     },
-    onDecode(result: string): void {
-      const ids: string[] = result.split(',');
-      const reservationId: number = +ids[0];
-      const userId: number = +ids[1];
-      /* QRコードの情報と予約情報が一致しなければアラート発出 */
-      if (this.selectedReservation.id !== reservationId || this.selectedReservation.user_id !== userId) {
-        alert('予約情報がQRコードと一致しません。予約内容をご確認の上再度お試しください。');
-        return;
-      }
-      
-      /* 一致すれば来店処理 */
-      this.completeVisit(reservationId);
-    },
-    async completeVisit(reservationId: number): Promise<void> {
+    async registerVisit(decodedResult: string): Promise<void> {
       try {
-        await this.$repositories.reservation.visit(reservationId);
-        alert('来店処理が完了しました。');
-        location.reload();
+        [this.reservations, this.histories] = await this.$service.adminShop.registerVisit(decodedResult, this.selectedReservation, this.representativeId);
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }
-
       this.hideCodeReader();
-    }
+    },
   },
 });
 </script>

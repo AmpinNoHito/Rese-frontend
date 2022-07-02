@@ -37,7 +37,7 @@
 import Vue from 'vue';
 import administrator from '~/middleware/administrator';
 import { sendData } from '~/types/api';
-import { errorsObject } from '~/types/errors';
+import { errors } from '~/types/errors';
 
 export default Vue.extend({
   middleware: [administrator],
@@ -52,18 +52,16 @@ export default Vue.extend({
         name: [],
         email: [],
         password: [],
-      } as errorsObject,
+      } as errors,
     }
   },
   methods:{
     async register(): Promise<void> {
       try {
-        /* 新規店舗代表者登録処理 */
-        await this.$repositories.user.registerRepresentative(this.form);
-        alert('新規店舗代表者が登録されました。\nアドレス検証用のメールをご確認いただくよう、代表者にお伝えください。');
-        Object.keys(this.form).forEach(key => this.form[key] = '');
+        /* 新規店舗代表者登録処理 & フォーム初期化 */
+        this.form = await this.$service.auth.registerRepresentative(this.form);
       } catch (error: any) {
-        this.errors = this.$errorHandling(Object.keys(this.errors), error.response);
+        this.errors = this.$handleError(Object.keys(this.errors), error.response);
       }
     },
   }

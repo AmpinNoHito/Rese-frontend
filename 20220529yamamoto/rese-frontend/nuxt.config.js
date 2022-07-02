@@ -34,11 +34,11 @@ export default {
     '~/plugins/errors',
     '~/plugins/utils',
     '~/plugins/modal',
-    '~/plugins/processImage',
     '~/plugins/persistedstate',
     '~/plugins/vue-qrcode-reader',
     '~/plugins/vue-stripe',
-    '~/repository/repositories',
+    '~/repository/index',
+    '~/service/index',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
