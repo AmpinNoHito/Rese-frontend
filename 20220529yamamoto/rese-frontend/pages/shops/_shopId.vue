@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, course, sendData, user, newReservation } from '~/types/api';
+import { shop, course, user, newReservation } from '~/types/api';
 import { errors } from '~/types/errors';
 
 export default Vue.extend({

@@ -95,7 +95,7 @@
 import Vue from 'vue';
 import auth from '~/middleware/auth';
 import QRCode from 'qrcode';
-import { shop, reservation, course, sendData, user, newReservation, newReview } from '~/types/api';
+import { shop, reservation, newReservation, newReview } from '~/types/api';
 import { errors } from '~/types/errors';
 import { Context } from '@nuxt/types';
 
@@ -193,7 +193,6 @@ export default Vue.extend({
       }
     },
     async showQRCode(selectedReservation: reservation): Promise<void> {
-      /* 予約Id、ユーザーIdを含むQRコードを生成 */
       try {
         this.qrcode = await QRCode.toDataURL(`${selectedReservation.id},${selectedReservation.user_id}`);
         this.$showModal('qr');
