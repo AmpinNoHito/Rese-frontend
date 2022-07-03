@@ -150,7 +150,7 @@
         <p class="modal__review-content">{{(selectedReview.content) ? selectedReview.content : 'コメントなし'}}</p>
       </div>
     </div>
-    <div class="code-reader" @click.self="hideCodeReader">
+    <div class="code-reader modal--code-reader" @click.self="hideCodeReader">
       <div class="code-reader__inner">
         <qrcode-stream v-if="codeReader" @decode="registerVisit" @init="readQRCode"/>
       </div>
@@ -250,14 +250,12 @@ export default Vue.extend({
     showCodeReader(reservation: reservation): void {
       this.selectedReservation = reservation;
       this.codeReader = true;
-      const modal = document.querySelector('.code-reader') as HTMLElement;
-      modal.classList.add('is-shown');
+      this.$showModal('code-reader');
       this.$stopScroll();
     },
     hideCodeReader(): void {
-      const modal = document.querySelector('.code-reader') as HTMLElement;
       this.codeReader = false;
-      modal.classList.remove('is-shown');
+      this.$hideModal('code-reader');
       this.$restartScroll();
     },
     async readQRCode(promise: Promise<void>): Promise<void> {
