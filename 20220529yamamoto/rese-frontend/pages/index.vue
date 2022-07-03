@@ -6,13 +6,13 @@
           class="home__select"
           :regions="regions"
           :admin="false"
-          @changed="changeRegionSearchId($event); searchShops();"
+          @changed="changeRegionSearchId($event); searchShops()"
         />
         <SelectGenre
           class="home__select"
           :genres="genres"
           :admin="false"
-          @changed="changeGenreSearchId($event); searchShops();"
+          @changed="changeGenreSearchId($event); searchShops()"
         />
       </div>
       <div class="home__input-wrapper">
@@ -22,7 +22,8 @@
           type="text"
           placeholder="Search..."
           v-model="searchWord"
-          @input="$accessor.setSearchWord(searchWord); searchShops();"/>
+          @input="$accessor.setSearchWord(searchWord); searchShops()"
+        />
       </div>
     </form>
     <p class="shop-index__message" v-if="!searchResults.length">該当する店舗はありません。</p>
