@@ -2,7 +2,7 @@ import { newShop, sendData, shop, user } from "~/types/api";
 import adminIndexServiceInterface from "./adminIndexServiceInterface";
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import { NuxtAppOptions } from "@nuxt/types";
-import { adminIndexInitData } from "~/types/pageInitData";
+import { adminIndexInitData } from "~/types/pageData";
 
 export default class adminIndexService implements adminIndexServiceInterface {
   readonly shopRepository: shopRepositoryInterface;
@@ -12,18 +12,18 @@ export default class adminIndexService implements adminIndexServiceInterface {
   }
 
   async getData({ $accessor }: NuxtAppOptions): Promise<adminIndexInitData> {
-    const data = {} as adminIndexInitData;
-    data.newShop = {} as newShop;
-
     const representative = $accessor.user as user;
-    data.newShop.representative_id = representative.id;
-    data.newShop.name = data.newShop.description = '';
-    data.newShop.genre_id = data.newShop.region_id = 0;
-
     try {
-      const shops = await this.shopRepository.getByRepresentativeId(representative.id); 
-      data.shops = shops ?? [];
-      return data;
+      const shops = await this.shopRepository.getByRepresentativeId(representative.id);
+      return {
+        shops: shops ?? [],
+        newShop: {
+          name: '',
+          description: '',
+          region_id: 0,
+          genre_id: 0, 
+        },
+      } 
     } catch (error: any) {
       throw error;
     }

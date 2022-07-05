@@ -1,6 +1,6 @@
 import { shop } from "~/types/api";
 import { NuxtAppOptions } from '@nuxt/types';
-import { indexInitData } from "~/types/pageInitData";
+import { indexInitData } from "~/types/pageData";
 
 export default interface indexServiceInterface {
   getData({ $accessor } :NuxtAppOptions): Promise<indexInitData>;

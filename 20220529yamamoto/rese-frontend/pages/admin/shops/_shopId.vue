@@ -34,7 +34,7 @@
       :isRepresentative="true"
       @toggleSwitchClicked="showHistory = !showHistory;"
       @codeReaderButtonClicked="showCodeReader($event)"
-      @reviewButtonClicked="selectedReview = $event.review; $showModal('review');"/>
+      @reviewButtonClicked="showReviewModal($event)"/>
     <div 
       class="modal modal--shop"
       @click.self="$hideModal('shop'); errors = $initializeErrors(Object.keys(errors));">
@@ -89,7 +89,7 @@
       </div>
     </div>
     <div
-      class="modal modal--shop modal--course"
+      class="modal modal--course"
       @click.self="$hideModal('course'); errors = $initializeErrors(Object.keys(errors));">
       <div class="modal__card">
         <img
@@ -120,7 +120,7 @@
         <ButtonBasic class="modal__button" @clicked="registerCourse">登録</ButtonBasic>
       </div>
     </div>
-    <div class="modal modal--review" v-if="selectedReview" @click.self="$hideModal('review')">
+    <div class="modal modal--review" @click.self="$hideModal('review')">
       <div class="modal__card">
         <img
           class="modal__cross"
@@ -161,9 +161,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, reservation, course, review, user, newCourse, newShop } from '~/types/api';
-import { errors } from '~/types/errors';
+import { shop, reservation, review, user } from '~/types/api';
 import representative from '~/middleware/representative';
+import { adminShopData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [representative],
@@ -174,36 +174,39 @@ export default Vue.extend({
   },
   data() {
     return {
-      representativeId: 0 as number,
+      representativeId: 0,
       shop: {} as shop,
-      courses: [] as course[],
-      reservations: [] as reservation[],
-      histories: [] as reservation[],
-      reviews: [] as review[],
+      courses: [],
+      reservations: [],
+      histories: [],
       codeReader: false,
-      selectedReview: undefined as (review | undefined),
       selectedReservation: {} as reservation,
       showHistory: false,
-      previewImage: undefined as (string | undefined),
+      previewImage: undefined,
+      selectedReview: {
+        rate: 0,
+        title: '',
+        content: '',
+      },
       newShop: { // 店舗情報更新用データ 
         name: '',
         description: '',
         base64EncodedImage: undefined,
         region_id: 0,
         genre_id: 0,
-      } as newShop,
+      },
       newCourse: { // 新規コース登録用データ
-        name: undefined as (string | undefined),
-        price: undefined as (number | undefined),
-        description: undefined as (string | undefined),
-      } as newCourse,
+        name: undefined,
+        price: undefined,
+        description: undefined,
+      },
       errors: {
         name: [],
         description: [],
         image: [],
         price: [],
-      } as errors,
-    }
+      },
+    } as adminShopData;
   },
   methods: {
     async setImage(e: Event): Promise<void> { 
@@ -246,6 +249,14 @@ export default Vue.extend({
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }
+    },
+    showReviewModal(review: review) {
+      this.selectedReview = {
+        rate: review.rate,
+        title: review.title,
+        content: review.content,
+      }
+      this.$showModal('review');
     },
     showCodeReader(reservation: reservation): void {
       this.selectedReservation = reservation;

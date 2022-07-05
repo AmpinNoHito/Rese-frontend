@@ -32,23 +32,22 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { sendData } from '~/types/api';
-import { errors } from '~/types/errors';
+import { authData } from '~/types/pageData';
 
 export default Vue.extend({
   data() {
     return {
       form:{
-        name:'' as string,
-        email:'' as string,
-        password:'' as string,
-      } as sendData,
+        name: '',
+        email: '',
+        password: '',
+      },
       errors: {
         name: [],
         email: [],
         password: [],
-      } as errors,
-    }
+      },
+    } as authData;
   },
   methods:{
     async register(): Promise<void> {

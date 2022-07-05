@@ -1,8 +1,8 @@
-import { reservation, sendData } from "~/types/api";
+import { sendData } from "~/types/api";
 import { Stripe } from 'stripe';
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
 import payServiceInterface from "./payServiceInterface";
-import { payInitData } from "~/types/pageInitData";
+import { payInitData } from "~/types/pageData";
 
 export default class payService implements payServiceInterface {
   readonly reservationRepository: reservationRepositoryInterface;
@@ -12,11 +12,12 @@ export default class payService implements payServiceInterface {
   }
 
   async getData(reservationId: number): Promise<payInitData> {
-    const data = {} as payInitData;
     try {
-      data.reservation = await this.reservationRepository.getById(reservationId);
-      data.amount = data.reservation.number * data.reservation.course.price;
-      return data;
+      const res = await this.reservationRepository.getById(reservationId);
+      return {
+        reservation: res.reservation,
+        amount: res.amount,
+      }
     } catch (error: any) {
       throw error;
     }

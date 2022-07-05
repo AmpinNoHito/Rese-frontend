@@ -95,9 +95,9 @@
 import Vue from 'vue';
 import auth from '~/middleware/auth';
 import QRCode from 'qrcode';
-import { shop, reservation, newReservation, newReview } from '~/types/api';
-import { errors } from '~/types/errors';
+import { reservation } from '~/types/api';
 import { Context } from '@nuxt/types';
+import { mypageData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [auth],
@@ -107,11 +107,11 @@ export default Vue.extend({
   data() {
     return {
       /* ページ表示用基本データ */
-      userId: 0 as number,
-      reservations: [] as reservation[],
-      histories: [] as reservation[],
-      favoriteShops: [] as shop[],
-      today: '' as string,
+      userId: 0,
+      reservations: [],
+      histories: [],
+      favoriteShops: [],
+      today: '',
       qrcode: '',
       /* 表示内容決定用フラグ */
       showHistory: false,
@@ -124,7 +124,7 @@ export default Vue.extend({
         courses: [],
         selectedCourseIndex: undefined,
         selectedReservationId: 0,
-      } as newReservation,
+      },
       /* レビュー作成、編集用データ */
       newReview: {
         rate: 0,
@@ -133,7 +133,7 @@ export default Vue.extend({
         selectedHistoryId: 0,
         selectedReviewId: 0,
         isNew: true,
-      } as newReview,
+      },
       /* バリデーションエラー格納用データ */
       errors: {
         datetime: [],
@@ -141,8 +141,8 @@ export default Vue.extend({
         rate: [],
         title: [],
         content: [],
-      } as errors,
-    }
+      },
+    } as mypageData;
   },
   methods: {
     showReservationModal(selectedReservation: reservation): void {
@@ -186,7 +186,7 @@ export default Vue.extend({
     },
     async deleteReview(): Promise<void> {
       try {
-        this.histories = await this.$service.mypage.deleteReview(this.newReview.selectedReviewId, this.histories, this.userId);
+        this.histories = await this.$service.mypage.deleteReview(this.newReview.selectedReviewId as number, this.histories, this.userId);
         this.hideModalAndInitErrors('review');
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
@@ -194,7 +194,7 @@ export default Vue.extend({
     },
     async showQRCode(selectedReservation: reservation): Promise<void> {
       try {
-        this.qrcode = await QRCode.toDataURL(`${selectedReservation.id},${selectedReservation.user_id}`);
+        this.qrcode = await QRCode.toDataURL(`${selectedReservation.id},${selectedReservation.user.id}`);
         this.$showModal('qr');
       } catch (error: any) {
         alert('エラーが発生しました。時間をおいてから再度お試しください。');

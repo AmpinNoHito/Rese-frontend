@@ -1,5 +1,6 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
 import { shop, sendData } from "~/types/api";
+import { adminShopResponse, favoriteShopResponse, shopIndexResponse, shopResponse } from "~/types/axiosResponse";
 import shopRepositoryInterface from "./shopRepositoryInterface";
 
 export default class shopRepository implements shopRepositoryInterface {
@@ -17,19 +18,27 @@ export default class shopRepository implements shopRepositoryInterface {
     }
   }
 
-  async index(): Promise<shop[]> {
+  async index(): Promise<shopIndexResponse> {
     try {
       const res = await this.axios.get('/api/shops');
-      return res.data.data as shop[];
+      console.log(res.data.data);
+      return {
+        shops: res.data.data.shops,
+        regionIds: res.data.data.regionIds,
+        genreIds: res.data.data.genreIds,
+      };
     } catch (error: any) {
       throw error;
     }
   }
 
-  async getById(id: number): Promise<shop> {
+  async getById(id: number): Promise<shopResponse> {
     try {
       const res = await this.axios.get(`/api/shops/${id}`);
-      return res.data.data as shop;
+      return {
+        shop: res.data.data,
+        courses: res.data.data.courses,
+      }
     } catch (error) {
       throw error;
     }
@@ -38,25 +47,34 @@ export default class shopRepository implements shopRepositoryInterface {
   async getByRepresentativeId(representativeId: number): Promise<shop[]> {
     try {
       const res = await this.axios.get(`api/admin/shops/${representativeId}`);
-      return res.data.data as shop[];
+      return res.data.data.shops;
     } catch (error) {
       throw error;
     }
   }
 
-  async getByIdAsRepresentative(id: number, representativeId: number): Promise<shop> {
+  async getByIdAsRepresentative(id: number, representativeId: number): Promise<adminShopResponse> {
     try {
       const res = await this.axios.get(`api/admin/shops/${id}/${representativeId}`);
-      return res.data.data as shop;
+      console.log(res.data.data);
+      return {
+        shop: res.data.data,
+        courses: res.data.data.courses,
+        reservations: res.data.data.reservations,
+        histories: res.data.data.histories,
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  async getFavoriteShops(userId: number): Promise<shop[]> {
+  async getFavoriteShops(userId: number): Promise<favoriteShopResponse> {
     try {
       const res = await this.axios.get(`/api/shops/favorites/${userId}`);
-      return res.data.data as shop[];
+      return {
+        favoriteShops: res.data.data.shops,
+        ids: res.data.data.ids,
+      };
     } catch (error: any) {
       throw error;
     }

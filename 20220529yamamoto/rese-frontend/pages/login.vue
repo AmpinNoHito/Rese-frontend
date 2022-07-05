@@ -25,22 +25,22 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { sendData, user } from '~/types/api';
+import { user } from '~/types/api';
 import { RawLocation } from 'vue-router';
-import { errors } from '~/types/errors';
+import { authData } from '~/types/pageData';
 
 export default Vue.extend({
   data() {
     return {
       form: {
-        email: '' as string,
-        password: '' as string,
-      } as sendData,
+        email: '',
+        password: '',
+      },
       errors: {
         email: [],
         password: [],
-      } as errors,
-    };
+      },
+    } as authData;
   },
   methods: {
     async login(): Promise<void> {

@@ -1,9 +1,9 @@
-import { course, newReservation, sendData, shop } from "~/types/api";
+import { course, newReservation, sendData } from "~/types/api";
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
 import shopServiceInterface from "./shopServiceInterface";
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import { RawLocation } from "vue-router";
-import { shopInitData } from "~/types/pageInitData";
+import { shopInitData } from "~/types/pageData";
 import { NuxtAppOptions } from "@nuxt/types/app";
 
 
@@ -16,19 +16,19 @@ export default class shopService implements shopServiceInterface {
     this.reservationRepository = reservationRepository;
   }
 
-  async getData(shopId: number, app: NuxtAppOptions, [date, time, number, selectedCourseIndex]: (string | (string | null)[])[]): Promise<shopInitData> {
-    const data = {} as shopInitData;
-    data.newReservation = {} as newReservation;
-    
-    data.newReservation.date = date as string ?? app.$getTodaysDate();
-    data.newReservation.time = (time && time !== 'unselected') ? time as string : '';
-    data.newReservation.number = (number && number !== 'unselected') ? number as string : '';
-    data.newReservation.selectedCourseIndex = (selectedCourseIndex && selectedCourseIndex !== 'unselected') ?+selectedCourseIndex : undefined;
-
+  async getData(shopId: number, app: NuxtAppOptions, [date, time, number, selectedCourseIndex]: string[]): Promise<shopInitData> {
     try {
-      data.shop = await this.shopRepository.getById(shopId);
-      data.newReservation.courses = data.shop.courses ?? [];
-      return data;
+      const res = await this.shopRepository.getById(shopId);
+      return {
+        shop: res.shop,
+        newReservation: {
+          date: date ?? app.$getTodaysDate(),
+          time: (time && time !== 'unselected') ? time : '',
+          number: (number && number !== 'unselected') ? number : '',
+          selectedCourseIndex: (selectedCourseIndex && selectedCourseIndex !== 'unselected') ? +selectedCourseIndex : undefined,
+          courses: res.courses,
+        },
+      }
     } catch (error: any) {
       throw error;
     }

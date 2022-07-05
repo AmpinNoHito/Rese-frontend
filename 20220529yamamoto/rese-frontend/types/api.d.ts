@@ -1,79 +1,63 @@
 export interface user {
   id: number,
+  group: number
   name: string,
   email: string,
-  email_verified_at: string,
-  group: number
-  two_factor_recovery_codes: null
-  two_factor_secret: null
-  created_at: string,
-  updated_at: string,
 }
 
 export interface region {
   id: number,
   name: string,
-  created_at: string,
-  updated_at: string,
 }
 
 export interface genre {
   id: number,
   name: string,
-  created_at: string,
-  updated_at: string,
 }
 
 export interface course {
   id: number,
-  shop_id: number,
   name: string,
   price: number,
   description: string,
-  created_at: string,
-  updated_at: string,
 }
 
 export interface shop {
   id: number,
   representative_id: number,
-  region_id: number,
-  genre_id: number,
   name: string,
-  description: string,
-  image: string,
-  created_at: string,
-  updated_at: string,
   region: region,
   genre: genre,
+  description: string,
+  image: string,
   courses?: course[],
   reservations?: reservation[],
+  histories?: reservation[],
+  reviews?: review[],
 }
 
 export interface review {
   id: number,
-  reservation_id: number,
   rate: number,
   title: string,
   content: string,
-  created_at: string,
-  updated_at: string,
 }
 
 export interface reservation {
   id: number,
-  user_id: number,
-  shop_id: number,
-  course_id: null,
-  datetime: string,
-  number: number,
+  user: {
+    id: number,
+    name: string,
+  }
+  shop: shop,
+  course?: course,
+  review?: review,
+  date: string,
+  time: string,
+  number: string,
+  amount: number,
   visit_completed: number,
   advance_payment: number,
-  created_at: string,
-  updated_at: string,
-  shop: shop,
-  review: review,
-  course: course,
 }
 
 export interface sendData {
@@ -96,12 +80,12 @@ export interface newCourse {
 }
 
 export interface newReservation {
-  name: string,
+  name?: string,
   date: string,
   time: string,
   number: string,
   courses?: (course[] | undefined),
-  selectedCourseIndex: (number | undefined),
+  selectedCourseIndex?: number,
   selectedReservationId?: number,
 }
 
@@ -110,6 +94,6 @@ export interface newReview {
   title: string,
   content: string,
   selectedHistoryId: number,
-  selectedReviewId: number,
+  selectedReviewId?: number,
   isNew: boolean,
 }

@@ -21,12 +21,12 @@
         <p class="reservation-details__item-number">予約{{index + 1}}</p>
         <p v-if="isRepresentative" class="reservation-details__item-detail">Customer<span>{{reservation.user.name}}</span></p>
         <p v-if="!isRepresentative" class="reservation-details__item-detail">Shop<span>{{reservation.shop.name}}</span></p>
-        <p class="reservation-details__item-detail">Date<span>{{reservation.datetime | pickOutDate}}</span></p>
-        <p class="reservation-details__item-detail">Time<span>{{reservation.datetime | pickOutTime}}</span></p>
-        <p class="reservation-details__item-detail">Number<span>{{reservation.number}}人</span></p>
+        <p class="reservation-details__item-detail">Date<span>{{reservation.date}}</span></p>
+        <p class="reservation-details__item-detail">Time<span>{{reservation.time}}</span></p>
+        <p class="reservation-details__item-detail">Number<span>{{reservation.number}}</span></p>
         <p class="reservation-details__item-detail" v-if="reservation.course">Course<span>{{reservation.course.name}}</span></p>
         <p class="reservation-details__item-detail" v-if="reservation.course">Total
-          <span>¥{{reservation.course.price * reservation.number}}
+          <span>¥{{reservation.amount}}
             <span v-if="reservation.advance_payment">
               <br class="reservation-details__br">
               (支払済み)
@@ -75,9 +75,9 @@
         <p class="reservation-details__item-number">予約履歴{{index + 1}}</p>
         <p v-if="isRepresentative" class="reservation-details__item-detail">Customer<span>{{history.user.name}}</span></p>
         <p v-if="!isRepresentative" class="reservation-details__item-detail">Shop<span>{{history.shop.name}}</span></p>
-        <p class="reservation-details__item-detail">Date<span>{{history.datetime | pickOutDate}}</span></p>
-        <p class="reservation-details__item-detail">Time<span>{{history.datetime | pickOutTime}}</span></p>
-        <p class="reservation-details__item-detail">Number<span>{{history.number}}人</span></p>
+        <p class="reservation-details__item-detail">Date<span>{{history.date}}</span></p>
+        <p class="reservation-details__item-detail">Time<span>{{history.time}}</span></p>
+        <p class="reservation-details__item-detail">Number<span>{{history.number}}</span></p>
         <ButtonBasic
           v-if="!history.review && !isRepresentative"
           class="reservation-details__button reservation-details__button--review"
@@ -93,7 +93,7 @@
         <ButtonBasic
           v-if="history.review && isRepresentative"
           class="reservation-details__button reservation-details__button--review"
-          @clicked="reviewButtonClicked(history)">
+          @clicked="reviewButtonClicked(history.review)">
           レビュー表示
         </ButtonBasic>
       </div>
@@ -113,14 +113,6 @@ export default Vue.extend({
     historiesNum: Number,
     showHistory: Boolean,
     isRepresentative: Boolean,
-  },
-  filters: {
-    pickOutDate(value: string): string {
-      return value.slice(0, 10);
-    },
-    pickOutTime(value: string): string {
-      return value.slice(11, -3);
-    },
   },
   methods: {
     toggleSwitchClicked(): void {

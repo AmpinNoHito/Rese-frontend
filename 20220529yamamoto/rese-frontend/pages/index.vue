@@ -36,7 +36,7 @@
         :shopRegion="shop.region.name"
         :shopGenre="shop.genre.name"
         :shopId="shop.id"
-        :isFavorited="favoriteShopsId.includes(shop.id)"
+        :isFavorited="favoriteShopIds.includes(shop.id)"
         @linkClicked="$router.push(`/shops/${shop.id}`)"
         @regionClicked="searchByRegionTag(shop.region_id)"
         @genreClicked="searchByGenreTag(shop.genre_id)"
@@ -47,8 +47,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop } from '~/types/api';
 import { Context } from '@nuxt/types';
+import { indexData } from '~/types/pageData';
 
 export default Vue.extend({
   async asyncData({ app }: Context) {
@@ -56,21 +56,21 @@ export default Vue.extend({
   },
   data() {
     return {
-      shops: [] as shop[],
-      regions: [] as number[],
-      genres: [] as number[],
-      favoriteShopsId: [] as number[],
-      searchResults: [] as shop[],
-      regionSearchId: this.$accessor.regionSearchId as (number | undefined),
-      genreSearchId: this.$accessor.genreSearchId as (number | undefined),
-      searchWord: this.$accessor.searchWord as (string | undefined),
-      userId: 0 as number,
-    }
+      shops: [],
+      regions: [],
+      genres: [],
+      favoriteShopIds: [],
+      searchResults: [],
+      regionSearchId: this.$accessor.regionSearchId,
+      genreSearchId: this.$accessor.genreSearchId,
+      searchWord: this.$accessor.searchWord,
+      userId: 0,
+    } as indexData;
   },
   methods: {
     async toggleFavorite(shopId: number): Promise<void> {
       try {
-        this.favoriteShopsId = await this.$service.index.toggleFavorite(this.favoriteShopsId, shopId, this.userId);
+        this.favoriteShopIds = await this.$service.index.toggleFavorite(this.favoriteShopIds, shopId, this.userId);
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }

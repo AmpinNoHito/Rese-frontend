@@ -82,6 +82,7 @@ import { shop, newShop } from '~/types/api';
 import representative from "~/middleware/representative";
 import { errors } from '~/types/errors';
 import { Context } from '@nuxt/types';
+import { adminIndexData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [representative],
@@ -90,8 +91,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      shops: [] as shop[],
-      previewImage: undefined as (string | undefined),
+      shops: [],
+      previewImage: undefined,
       /* 新規店舗登録用データ */
       newShop: {
         name: '',
@@ -100,15 +101,15 @@ export default Vue.extend({
         base64EncodedImage: undefined,
         region_id: 0,
         genre_id: 0,
-      } as newShop,
+      },
       errors: {
         name: [],
         description: [],
         image: [],
         region_id: [],
         genre_id: [],
-      } as errors,
-    }
+      },
+    } as adminIndexData;
   },
   methods: {
     async setImage(e: Event): Promise<void> {

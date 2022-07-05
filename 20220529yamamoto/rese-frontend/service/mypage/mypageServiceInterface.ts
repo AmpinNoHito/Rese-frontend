@@ -1,6 +1,6 @@
 import { NuxtAppOptions } from "@nuxt/types";
 import { newReservation, newReview, reservation, shop } from "~/types/api";
-import { mypageInitData } from "~/types/pageInitData";
+import { mypageInitData } from "~/types/pageData";
 
 export default interface mypageServiceInterface {
   getData(app: NuxtAppOptions): Promise<mypageInitData>;

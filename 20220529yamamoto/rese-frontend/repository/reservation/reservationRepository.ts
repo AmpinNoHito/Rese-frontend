@@ -1,5 +1,6 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
 import { reservation, sendData } from "~/types/api";
+import { reservationResponse } from "~/types/axiosResponse";
 import reservationRepositoryInterface from "./reservationRepositoryInterface";
 
 export default class reservationRepository implements reservationRepositoryInterface {
@@ -18,19 +19,26 @@ export default class reservationRepository implements reservationRepositoryInter
     }
   }
 
-  async getById(id: number): Promise<reservation> {
+  async getById(id: number): Promise<{reservation: reservation, amount: number}> {
     try {
       const res = await this.axios.get(`/api/reservations/${id}`);
-      return res.data.data as reservation;
+      return {
+        reservation: res.data.data,
+        amount: res.data.data.amount,
+      };
     } catch (error: any) {
       throw error;
     }
   }
 
-  async getByUserId(userId: number): Promise<reservation[]> {
+  async getByUserId(userId: number): Promise<reservationResponse> {
     try {
       const res = await this.axios.get(`/api/reservations/user/${userId}`);
-      return res.data.data as reservation[];
+      console.log(res.data);
+      return {
+        reservations: res.data.data.reservations,
+        histories: res.data.data.histories,
+      };
     } catch (error: any) {
       throw error;
     }

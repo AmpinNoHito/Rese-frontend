@@ -38,6 +38,7 @@ import Vue from 'vue';
 import administrator from '~/middleware/administrator';
 import { sendData } from '~/types/api';
 import { errors } from '~/types/errors';
+import { authData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [administrator],
@@ -47,13 +48,13 @@ export default Vue.extend({
         name: '',
         email: '',
         password: '',
-      } as sendData,
+      },
       errors: {
         name: [],
         email: [],
         password: [],
-      } as errors,
-    }
+      },
+    } as authData;
   },
   methods:{
     async register(): Promise<void> {

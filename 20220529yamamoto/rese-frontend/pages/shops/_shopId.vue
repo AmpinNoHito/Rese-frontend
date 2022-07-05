@@ -41,28 +41,28 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, course, user, newReservation } from '~/types/api';
-import { errors } from '~/types/errors';
+import { shop, user } from '~/types/api';
+import { shopData } from '~/types/pageData';
 
 export default Vue.extend({
   async asyncData({app, params, query}) {
-    return await app.$service.shop.getData(+params.shopId, app, [query.dt, query.tm, query.nm, query.sc]);
+    return await app.$service.shop.getData(+params.shopId, app, [query.dt, query.tm, query.nm, query.sc] as string[]);
   },
   data() {
     return {
       shop: {} as shop,
       newReservation: {
-        courses: [] as (course | undefined)[],
+        courses: [],
         date: '',
         time: '',
         number: '',
         selectedCourseIndex: 0,
-      } as newReservation,
+      },
       errors: {
         datetime: [],
         number: [],
-      } as errors,
-    }
+      },
+    } as shopData;
   },
   methods: {
     /* 予約情報を登録 */

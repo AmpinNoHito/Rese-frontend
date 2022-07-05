@@ -4,7 +4,8 @@ import reservationRepositoryInterface from "~/repository/reservation/reservation
 import reviewRepositoryInterface from "~/repository/review/reviewRepositoryInterface";
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import { course, newReservation, newReview, reservation, sendData, shop, user } from "~/types/api";
-import { mypageInitData } from "~/types/pageInitData";
+import { reservationResponse } from "~/types/axiosResponse";
+import { mypageInitData } from "~/types/pageData";
 import mypageServiceInterface from "./mypageServiceInterface";
 
 export default class mypageService implements mypageServiceInterface{
@@ -21,52 +22,38 @@ export default class mypageService implements mypageServiceInterface{
   }
 
   async getData({ $accessor, $getTodaysDate }: NuxtAppOptions): Promise<mypageInitData> {
-    const data = {} as mypageInitData;
-
     const user = $accessor.user as user;
-    data.userId = user.id;
-    data.today = $getTodaysDate();
-
-    /* 予約データ取得 */
-    const reservationData: reservation[] = await this.reservationRepository.getByUserId(user.id);
-    
-    data.reservations = data.histories = [];
-    if (reservationData.length) {   // 予約データがあれば
-      /* 日付順にソートし */
-      const sortedReservations: reservation[] = reservationData.sort((a, b) => (a.datetime < b.datetime) ? -1 : 1);
-      /* まだ来店済みでない予約をreservationsとしてセット */
-      data.reservations = sortedReservations.filter(reservation => reservation.visit_completed === 0);
-      /* 来店済みの予約をhistoriesとしてセット */
-      data.histories = sortedReservations.filter(reservation => reservation.visit_completed === 1).reverse();
-    }
-
-    /* お気に入り店舗取得 */
-    data.favoriteShops = await this.shopRepository.getFavoriteShops(user.id);
-
-    return data;
+    const reservationResponse: reservationResponse = await this.reservationRepository.getByUserId(user.id);
+    const favoriteResponse = await this.shopRepository.getFavoriteShops(user.id);
+    return {
+      userId: user.id,
+      today: $getTodaysDate(),
+      reservations: reservationResponse.reservations,
+      histories: reservationResponse.histories,
+      favoriteShops: favoriteResponse.favoriteShops,
+    };
   }
 
   setNewReservationData(selectedReservation: reservation): newReservation {
-    const data = {} as newReservation;
-    /* 予約変更モーダル内のインプットに、選択された予約の情報を初期値として代入 */
-    data.date = selectedReservation.datetime.slice(0, 10);
-    data.time = selectedReservation.datetime.slice(11, -3);
-    data.number = `${selectedReservation.number}人`;
-    data.name = selectedReservation.shop.name;
-    data.courses = selectedReservation.shop.courses;
-
-    /* 変更する予約のidを記録 */
-    data.selectedReservationId = selectedReservation.id;
-
-    /* コースが選ばれている予約が選択された場合は、コースのインデックスも取得 */
-    if (selectedReservation.course_id) {
-      const selectedCourseIndex = selectedReservation.shop.courses?.findIndex(course => course.id === selectedReservation.course_id) as number;
-      data.selectedCourseIndex = selectedCourseIndex;
-    } else {
-      data.selectedCourseIndex = undefined;
+    let selectedCourseIndex: (number | undefined);
+    if (selectedReservation.course) { // 予約のコースが指定されている場合
+      const selectedCourse = selectedReservation.course as course;
+      selectedCourseIndex = selectedReservation.shop.courses?.findIndex(course => course.id === selectedCourse.id);
+    } else {  // 指定されていない場合
+      selectedCourseIndex = undefined;
     }
-
-    return data;
+    
+    return {
+      /* 予約変更モーダル内のインプットに、選択された予約の情報を初期値として代入 */
+      date: selectedReservation.date,
+      time: selectedReservation.time,
+      number: selectedReservation.number,
+      name: selectedReservation.shop.name,
+      courses: selectedReservation.shop.courses,
+      /* 変更する予約のidを記録 */
+      selectedReservationId: selectedReservation.id,
+      selectedCourseIndex: selectedCourseIndex,
+    };
   }
 
   async updateReservation(data: newReservation, userId: number): Promise<reservation[]> {
@@ -88,12 +75,9 @@ export default class mypageService implements mypageServiceInterface{
       /* 予約内容変更処理 */
       await this.reservationRepository.update(data.selectedReservationId as number, sendData);
       alert('予約内容を変更しました。');
-      /* 予約データを取得 */
-      const reservationData = await this.reservationRepository.getByUserId(userId);
-      /* 日付順にソート */
-      const sortedReservations: reservation[] = reservationData.sort((a, b) => (a.datetime < b.datetime) ? -1 : 1);
-      /* まだ来店済みでない予約を返却 */
-      return sortedReservations.filter(reservation => reservation.visit_completed === 0);
+      /* 変更後の予約データを取得 */
+      const res = await this.reservationRepository.getByUserId(userId);
+      return res.reservations;
     } catch (error: any) {
       throw error;
     }
@@ -113,25 +97,16 @@ export default class mypageService implements mypageServiceInterface{
   }
 
   setNewReviewData(selectedHistory: reservation): newReview {
-    const data = {} as newReview;
-
-    /* 新規レビューか否かを確認 */
-    if (!selectedHistory.review) {
-      data.isNew = true;
-    } else {
-      data.isNew = false;
-    }
-
-    /* インプットに初期値を設定 */
-    data.rate = (selectedHistory.review) ? selectedHistory.review.rate : 0;
-    data.title = (selectedHistory.review) ? selectedHistory.review.title : '';
-    data.content = (selectedHistory.review) ? selectedHistory.review.content : '';
-
-    /* 選択された予約履歴、レビューのIdを記録 */
-    data.selectedHistoryId = selectedHistory.id;
-    data.selectedReviewId = selectedHistory.review?.id;
-
-    return data;
+    return {
+      isNew: (!selectedHistory.review) ? true : false,
+      /* インプットに初期値を設定 */
+      rate: (selectedHistory.review) ? selectedHistory.review.rate : 0,
+      title: (selectedHistory.review) ? selectedHistory.review.title : '',
+      content: (selectedHistory.review) ? selectedHistory.review.content : '',
+      /* 選択された予約履歴、レビューのIdを記録 */
+      selectedHistoryId: selectedHistory.id,
+      selectedReviewId: selectedHistory.review?.id,
+    };
   }
 
   async registerReview(data: newReview, userId: number): Promise<reservation[]> {
@@ -153,12 +128,9 @@ export default class mypageService implements mypageServiceInterface{
       /* 新規作成実行 */
       await this.reviewRepository.register(sendData);
       alert('新規レビューを投稿しました。');
-      /* 予約データを取得 */
-      const reservationData = await this.reservationRepository.getByUserId(userId);
-      /* 日付順にソート */
-      const sortedReservations: reservation[] = reservationData.sort((a, b) => (a.datetime < b.datetime) ? -1 : 1);
-      /* 来店済みの予約を返却 */
-      return sortedReservations.filter(reservation => reservation.visit_completed === 1).reverse();
+      /* 変更後の予約データを取得 */
+      const res = await this.reservationRepository.getByUserId(userId);
+      return res.histories;
     } catch (error: any) {
       throw error;
     }
@@ -180,14 +152,11 @@ export default class mypageService implements mypageServiceInterface{
 
     try {
       /* レビュー内容変更処理 */
-      await this.reviewRepository.update(data.selectedReviewId, sendData);
+      await this.reviewRepository.update(data.selectedReviewId as number, sendData);
       alert('レビュー内容を変更しました。');
       /* 予約データを取得 */
-      const reservationData = await this.reservationRepository.getByUserId(userId);
-      /* 日付順にソート */
-      const sortedReservations: reservation[] = reservationData.sort((a, b) => (a.datetime < b.datetime) ? -1 : 1);
-      /* 来店済みの予約を返却 */
-      return sortedReservations.filter(reservation => reservation.visit_completed === 1).reverse();
+      const res = await this.reservationRepository.getByUserId(userId);
+      return res.histories;
     } catch (error: any) {
       throw error;
     }
@@ -203,11 +172,8 @@ export default class mypageService implements mypageServiceInterface{
       await this.reviewRepository.delete(id);
       alert('レビューを削除しました。');
       /* 予約データを取得 */
-      const reservationData = await this.reservationRepository.getByUserId(userId);
-      /* 日付順にソート */
-      const sortedReservations: reservation[] = reservationData.sort((a, b) => (a.datetime < b.datetime) ? -1 : 1);
-      /* 来店済みの予約を返却 */
-      return sortedReservations.filter(reservation => reservation.visit_completed === 1).reverse();
+      const res = await this.reservationRepository.getByUserId(userId);
+      return res.histories;
     } catch (error: any) {
       throw error;
     }

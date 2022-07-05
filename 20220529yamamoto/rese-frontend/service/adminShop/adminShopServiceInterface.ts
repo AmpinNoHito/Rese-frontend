@@ -1,5 +1,5 @@
 import { course, newCourse, newShop, reservation, shop } from "~/types/api";
-import { adminShopInitData } from "~/types/pageInitData";
+import { adminShopInitData } from "~/types/pageData";
 
 export default interface adminShopServiceInterface {
   getData(representativeId: number, shopId: number): Promise<adminShopInitData>;

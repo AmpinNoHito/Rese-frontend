@@ -4,7 +4,7 @@
       <p class="pay__header">お支払い内容</p>
       <div class="pay__confirmation">
         <p class="pay__confirmation-item">Shop<span>{{reservation.shop.name}}</span></p>
-        <p class="pay__confirmation-item">Number<span>{{reservation.number}}人</span></p>
+        <p class="pay__confirmation-item">Number<span>{{reservation.number}}</span></p>
         <p class="pay__confirmation-item">Course<span>{{reservation.course.name}}</span></p>
         <p class="pay__confirmation-item">Price<span>¥{{reservation.course.price}}/人</span></p>
         <p class="pay__confirmation-item pay__confirmation-item--amount">Total<span>¥{{amount}}</span></p>
@@ -12,7 +12,7 @@
       <p class="pay__header">カード情報入力欄</p>
       <stripe-element-card
       ref="elementRef"
-      :pk="pk"
+      :pk="stripePK"
       :testMode="true"
       @token="pay">
     </stripe-element-card>
@@ -24,8 +24,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import auth from '~/middleware/auth';
-import { reservation } from '~/types/api';
 import { Stripe } from 'stripe';
+import { payData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [auth],
@@ -34,10 +34,10 @@ export default Vue.extend({
   },
   data() {
     return {
-      reservation: {} as reservation,
+      reservation: {},
       amount: 0,
-      pk: this.$config.stripePK,
-    }
+      stripePK: this.$config.stripePK,
+    } as payData;
   },
   methods: {
     submit (): void {
