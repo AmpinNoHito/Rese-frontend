@@ -10,10 +10,10 @@ export default class favoriteRepository implements favoriteRepositoryInterface {
   }
 
   async register(sendData: sendData): Promise<void> {
-    await this.axios.post('/api/favorites', sendData);
+    return this.axios.post('/api/favorites', sendData);
   }
 
   async delete(userId: number, shopId: number): Promise<void> {
-    await this.axios.delete(`/api/favorites/${userId}/${shopId}`);
+    return this.axios.delete(`/api/favorites/${userId}/${shopId}`);
   }
 }

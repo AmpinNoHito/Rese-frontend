@@ -245,7 +245,7 @@ export default Vue.extend({
     },
     async deleteCourse(courseId: number): Promise<void> {
       try {
-        this.courses = await this.$service.adminShop.deleteCourse(this.shop.id, courseId);
+        this.courses = await this.$service.adminShop.deleteCourse(this.shop.id, courseId, this.courses);
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
       }

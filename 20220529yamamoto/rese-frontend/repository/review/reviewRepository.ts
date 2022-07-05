@@ -10,26 +10,14 @@ export default class reviewRepository implements reviewRepositoryInterface {
   }
 
   async register(sendData: sendData): Promise<void> {
-    try {
-      await this.axios.post('/api/reviews', sendData);
-    } catch (error: any) {
-      throw error;
-    }
+    return this.axios.post('/api/reviews', sendData);
   }
 
   async update(id: number, sendData: sendData): Promise<void> {
-    try {
-      await this.axios.put(`/api/reviews/${id}`, sendData);
-    } catch (error: any) {
-      throw error;
-    }
+    return this.axios.put(`/api/reviews/${id}`, sendData);
   }
 
   async delete(id: number): Promise<void> {
-    try {
-      await this.axios.delete(`/api/reviews/${id}`);
-    } catch (error: any) {
-      throw error;
-    }
+    return this.axios.delete(`/api/reviews/${id}`);
   }
 }

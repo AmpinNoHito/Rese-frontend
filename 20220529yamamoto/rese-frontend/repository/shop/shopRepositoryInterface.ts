@@ -1,12 +1,12 @@
 import { shop, sendData } from "~/types/api";
-import { adminShopResponse, favoriteShopResponse, shopIndexResponse, shopResponse } from "~/types/axiosResponse";
+import { shopCollectionResponse, shopResponse } from "~/types/axiosResponse";
 
 export default interface shopRepositoryInterface {
   register(sendData: sendData): Promise<void>;
-  index(): Promise<shopIndexResponse>;
+  index(): Promise<shopCollectionResponse>;
   getById(id: number): Promise<shopResponse>;
-  getByRepresentativeId(representativeId: number): Promise<shop[]>;
-  getByIdAsRepresentative(id: number, representativeId: number): Promise<adminShopResponse>;
-  getFavoriteShops(userId: number): Promise<favoriteShopResponse>;
+  getByRepresentativeId(representativeId: number): Promise<shopCollectionResponse>;
+  getByIdAsRepresentative(id: number, representativeId: number): Promise<shopResponse>;
+  getFavoriteShops(userId: number): Promise<shopCollectionResponse>;
   update(shopId: number, sendData: sendData): Promise<void>;
 }

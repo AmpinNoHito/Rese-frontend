@@ -30,7 +30,7 @@ export interface shop {
   genre: genre,
   description: string,
   image: string,
-  courses?: course[],
+  courses: course[],
   reservations?: reservation[],
   histories?: reservation[],
   reviews?: review[],

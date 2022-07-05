@@ -16,49 +16,61 @@ export default class indexService implements indexServiceInterface {
 
   async getData({ $accessor }: NuxtAppOptions): Promise<indexInitData> {
     const user = $accessor.user as user;
-    try {
-      const shopResponse = await this.shopRepository.index();
-      console.log(shopResponse);
-      let favoriteShopIds: number[] = [];
-      if ($accessor.loggedIn) {  // ログインしている場合はお気に入りのデータも取得
-        const favoriteShopResponse = await this.shopRepository.getFavoriteShops(user.id);
-        favoriteShopIds = favoriteShopResponse.ids;
-      }
-      return {
-        shops: shopResponse.shops,
-        regions: shopResponse.regionIds,
-        genres: shopResponse.genreIds,
-        favoriteShopIds: favoriteShopIds,
-        searchResults: shopResponse.shops,
-        userId: user.id ?? 0,
-      }
-    } catch (error: any) {
-      throw error;
+    const shopPromise = this.shopRepository.index();
+    if ($accessor.loggedIn) {  // ログインしている場合はお気に入りのデータも取得
+      const favoritePromise = this.shopRepository.getFavoriteShops(user.id);
+      return await Promise.all([shopPromise, favoritePromise])
+        .then(res => {
+          const shopResponse = res[0].data.data;
+          const favoriteResponse = res[1].data.data;
+          return  {
+            shops: shopResponse.shops,
+            regions: shopResponse.regionIds,
+            genres: shopResponse.genreIds,
+            favoriteShopIds: favoriteResponse.shopIds,
+            searchResults: shopResponse.shops,
+            userId: user.id ?? 0,
+          }
+        })
+        .catch(error => {
+          throw error;
+        });
+    } else {
+      return await Promise.resolve(shopPromise)
+        .then(res => {
+          const shopResponse = res.data.data;
+          return {
+            shops: shopResponse.shops,
+            regions: shopResponse.regionIds,
+            genres: shopResponse.genreIds,
+            favoriteShopIds: [],
+            searchResults: shopResponse.shops,
+            userId: user.id ?? 0,
+          }
+        })
+        .catch(error => {
+          throw error;
+        });
     }
   }
   
   async toggleFavorite(favoriteShopIds: number[], selectedShopId: number, userId: number): Promise<number[]> {
     const ch = favoriteShopIds.includes(selectedShopId);
     if (ch) { //店舗が既にお気に入りに追加されている場合は削除
-      try {
-        favoriteShopIds = favoriteShopIds.filter(favoriteShopId => favoriteShopId !== selectedShopId);
-        await this.favoriteRepository.delete(userId, selectedShopId);
-        } catch (error: any) {
+      favoriteShopIds = favoriteShopIds.filter(favoriteShopId => favoriteShopId !== selectedShopId);
+      await Promise.resolve(this.favoriteRepository.delete(userId, selectedShopId))
+        .catch(error => {
           favoriteShopIds.push(selectedShopId);
           throw error;
-        }
-      }
-    else {  //店舗がまだお気に入りに追加されていない場合は追加
-      try {
-        favoriteShopIds.push(selectedShopId);
-        await this.favoriteRepository.register({
-          user_id: userId,
-          shop_id: selectedShopId,
         });
-      } catch (error: any) {
+    } else {  //店舗がまだお気に入りに追加されていない場合は追加
+      const sendData = {user_id: userId, shop_id: selectedShopId};
+      favoriteShopIds.push(selectedShopId);
+      await Promise.resolve(this.favoriteRepository.register(sendData))
+      .catch(error => {
         favoriteShopIds = favoriteShopIds.filter(favoriteShopId => favoriteShopId !== selectedShopId);
         throw error;
-      }
+        });
     }
     return favoriteShopIds;
   };

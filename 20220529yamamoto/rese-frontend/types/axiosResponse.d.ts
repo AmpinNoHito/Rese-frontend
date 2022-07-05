@@ -1,29 +1,51 @@
-import { course, reservation, review, shop } from "./api";
+import { course, reservation, shop, user } from "./api";
 
-export interface shopIndexResponse {
-  shops: shop[],
-  regionIds: number[],
-  genreIds: number[],
+export interface userResponse {
+  data: {
+    user: user,
+  }
+}
+
+export interface tokenResponse {
+  data: {
+    token: string,
+  }
+}
+
+export interface shopCollectionResponse {
+  data: {
+    data: {
+      shops: shop[],
+      shopIds: number[],
+      regionIds: number[],
+      genreIds: number[],
+    }
+  }
 }
 
 export interface shopResponse {
-  shop: shop, 
-  courses: course[],
+  data: {
+    data: shop, 
+  }
 }
 
-export interface favoriteShopResponse {
-  favoriteShops: shop[],
-  ids: number[], 
-}
-
-export interface adminShopResponse {
-  shop: shop, 
-  courses: course[],
-  reservations: reservation[],
-  histories: reservation[]
+export interface reservationCollectionResponse {
+  data: {
+    data: {
+      reservations: reservation[],
+      histories: reservation[],
+    }
+  }
 }
 
 export interface reservationResponse {
-  reservations: reservation[],
-  histories: reservation[],
+  data: {
+    data: reservation,
+  }
+}
+
+export interface newReservationResponse {
+  data: {
+    newData: reservation,
+  }
 }

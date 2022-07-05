@@ -17,21 +17,23 @@ export default class shopService implements shopServiceInterface {
   }
 
   async getData(shopId: number, app: NuxtAppOptions, [date, time, number, selectedCourseIndex]: string[]): Promise<shopInitData> {
-    try {
-      const res = await this.shopRepository.getById(shopId);
-      return {
-        shop: res.shop,
-        newReservation: {
-          date: date ?? app.$getTodaysDate(),
-          time: (time && time !== 'unselected') ? time : '',
-          number: (number && number !== 'unselected') ? number : '',
-          selectedCourseIndex: (selectedCourseIndex && selectedCourseIndex !== 'unselected') ? +selectedCourseIndex : undefined,
-          courses: res.courses,
-        },
-      }
-    } catch (error: any) {
-      throw error;
-    }
+    return await Promise.resolve(this.shopRepository.getById(shopId))
+      .then(res => {
+        const shop = res.data.data;
+        return {
+          shop: shop,
+          newReservation: {
+            date: date ?? app.$getTodaysDate(),
+            time: (time && time !== 'unselected') ? time : '',
+            number: (number && number !== 'unselected') ? number : '',
+            selectedCourseIndex: (selectedCourseIndex && selectedCourseIndex !== 'unselected') ? +selectedCourseIndex : undefined,
+            courses: shop.courses,
+          },
+        }
+      })
+      .catch(error => {
+        throw error;
+      });
   };
 
   async registerReservation(data: newReservation, userId: number, shopId: number): Promise<RawLocation> {
@@ -60,18 +62,19 @@ export default class shopService implements shopServiceInterface {
       sendData.course_id = courses[data.selectedCourseIndex]?.id;
     }
 
-    try {
-      /* 予約実行 */
-      const newReservation = await this.reservationRepository.register(sendData);
-      return {
-        path: '/done', 
-        query: {  // コースが選択されている場合は予約Idをクエリパラメータで渡す
-          rs: (sendData.course_id !== undefined) ? newReservation.id.toString() : '',
-        }
-      };
-    } catch (error: any) {
-      throw error;
-    }
+    /* 予約実行 */
+    return await Promise.resolve(this.reservationRepository.register(sendData))
+      .then(res => {
+        const newReservation = res.data.newData;
+        return {
+          path: '/done', 
+          query: {  // コースが選択されている場合は予約Idをクエリパラメータで渡す
+            rs: (sendData.course_id !== undefined) ? newReservation.id.toString() : '',
+          }
+        };
+      })
+      .catch(error => {
+        throw error;
+      });
   }
-
 }

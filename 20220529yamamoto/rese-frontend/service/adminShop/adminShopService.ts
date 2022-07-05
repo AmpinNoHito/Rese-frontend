@@ -4,7 +4,6 @@ import { adminShopInitData } from "~/types/pageData";
 import adminShopServiceInterface from "./adminShopServiceInterface";
 import courseRepositoryInterface from "~/repository/course/courseRepositoryInterface";
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
-import { adminShopResponse } from "~/types/axiosResponse";
 
 export default class adminShopService implements adminShopServiceInterface {
   readonly shopRepository: shopRepositoryInterface;
@@ -18,24 +17,26 @@ export default class adminShopService implements adminShopServiceInterface {
   }
 
   async getData(representativeId: number, shopId: number): Promise<adminShopInitData> {
-    try {
-      const res = await this.shopRepository.getByIdAsRepresentative(shopId, representativeId);
-      return {
-        representativeId: representativeId,
-        shop: res.shop,
-        courses: res.courses ?? [],
-        newShop : { 
-          name: res.shop.name,
-          description: res.shop.description,
-          genre_id: res.shop.genre.id,
-          region_id: res.shop.region.id,
-        },
-        reservations: res.reservations ?? [],
-        histories: res.histories ?? [],
-      };
-    } catch (error) {
-      throw error;
-    }
+    return await Promise.resolve(this.shopRepository.getByIdAsRepresentative(shopId, representativeId))
+      .then(res => {
+        const shop = res.data.data;
+        return {
+          representativeId: representativeId,
+          shop: shop,
+          courses: shop.courses ?? [],
+          newShop : { 
+            name: shop.name,
+            description: shop.description,
+            genre_id: shop.genre.id,
+            region_id: shop.region.id,
+          },
+          reservations: shop.reservations ?? [],
+          histories: shop.histories ?? [],
+        };
+      })
+      .catch(error => {
+        throw error;
+      });
   }
 
   async updateShop(shopId: number, data: newShop): Promise<shop> {
@@ -52,15 +53,18 @@ export default class adminShopService implements adminShopServiceInterface {
       sendData.base64EncodedImage = data.base64EncodedImage;
     }
     
-    try {
-      /* 店舗情報変更処理 */
-      await this.shopRepository.update(shopId, sendData);
-      alert('店舗情報が変更されました。');
-      const res = await this.shopRepository.getById(shopId);
-      return res.shop;
-    } catch (error: any) {
-      throw error;
-    }
+    /* 店舗情報変更処理 */
+    await Promise.resolve(this.shopRepository.update(shopId, sendData))
+      .then(res => alert('店舗情報が変更されました。'))
+      .catch(error =>{
+        throw error;
+      });
+    /* 店舗情報を再取得 */
+    return await Promise.resolve(this.shopRepository.getById(shopId))
+      .then(res => res.data.data)
+      .catch(error =>{
+        throw error;
+      });
   }
 
   async registerCourse(shopId: number, data: newCourse): Promise<[course[], newCourse]> {
@@ -72,37 +76,41 @@ export default class adminShopService implements adminShopServiceInterface {
       description: data.description,
     }
 
-    try {
-      /* 登録処理 */
-      await this.courseRepository.register(sendData);
-      alert('コースが正常に登録されました。');
-      const res = await this.shopRepository.getById(shopId);
-      data.name = data.description = data.price = undefined; // newCourseのデータを初期化
-      return [res.courses, data];
-    } catch (error: any) {
-      throw error;
-    }
+    /* 登録処理 */
+    await Promise.resolve(this.courseRepository.register(sendData))
+      .then(res => alert('コースが正常に登録されました。'))
+      .catch(error => {
+        throw error;
+      });
+    
+    /* newCourseのデータを初期化 */
+    data.name = data.description = data.price = undefined;
+    
+    /* 店舗情報を再取得 */
+    return await Promise.resolve(this.shopRepository.getById(shopId))
+      .then(res => [res.data.data.courses, data] as [course[], newCourse])
+      .catch(error => {
+        throw error;
+      });
   }
 
-  async deleteCourse(shopId: number, courseId: number): Promise<course[]> {
+  async deleteCourse(shopId: number, courseId: number, courses: course[]): Promise<course[]> {
     /* 削除するか確認 */
     const ch = confirm('コースを削除しますか？');
     if (!ch) {
-      try {
-        const res = await this.shopRepository.getById(shopId);
-        return res.courses;
-      } catch (error: any) {
-        throw error;
-      }
+      return courses;  // コース一覧をそのまま返却
     }
 
-    try {
-      await this.courseRepository.delete(courseId);
-      const res = await this.shopRepository.getById(shopId);
-      return res.courses ?? [];
-    } catch (error: any) {
-      throw error;
-    }
+    /* 削除処理実行 */
+    await Promise.resolve(this.courseRepository.delete(courseId))
+      .catch(error => {
+        throw error;
+      });
+    return await Promise.resolve(this.shopRepository.getById(shopId))
+      .then(res => res.data.data.courses)
+      .catch(error => {
+        throw error;
+      });
   }
 
   async registerVisit(decodedResult: string, selectedReservation: reservation, representativeId: number): Promise<reservation[][]> {
@@ -111,29 +119,35 @@ export default class adminShopService implements adminShopServiceInterface {
     const userIdResult: number = +ids[1];
     
     /* QRコードの情報と予約情報が一致しなければアラート発出 */
-    if (reservationIdResult !== selectedReservation.id || userIdResult === selectedReservation.user.id) {
+    if (reservationIdResult !== selectedReservation.id || userIdResult !== selectedReservation.user.id) {
       alert('予約情報がQRコードと一致しません。予約内容をご確認の上再度お試しください。');
-      try {
-        return await this.getReservations(selectedReservation.shop.id, representativeId);
-      } catch (error: any) {
-        throw error;
-      }
+      return await this.getReservations(selectedReservation.shop.id, representativeId)
+        .catch(error => {
+          throw error;
+        });
     }
     
     /* 一致すれば来店処理 */
-    try {
-      await this.reservationRepository.visit(selectedReservation.id);
-      alert('来店処理が完了しました。');
-      return await this.getReservations(selectedReservation.shop.id, representativeId);
-    } catch (error: any) {
-      throw error;
-    }
+    await Promise.resolve(this.reservationRepository.visit(selectedReservation.id))
+      .then(res => alert('来店処理が完了しました。'))
+      .catch(error => {
+        throw error;
+      });
+    return await this.getReservations(selectedReservation.shop.id, representativeId)
+      .catch(error => {
+        throw error;
+      });
   }
 
   async getReservations(shopId: number, representativeId: number): Promise<reservation[][]> {
-    const res: adminShopResponse = await this.shopRepository.getByIdAsRepresentative(shopId, representativeId);
-    const reservations = res.reservations ?? [];
-    const histories = res.histories ?? [];
-    return [reservations, histories];
+    return await Promise.resolve(this.shopRepository.getByIdAsRepresentative(shopId, representativeId))
+      .then(res => {
+        const reservations = res.data.data.reservations ?? [];
+        const histories = res.data.data.histories ?? [];
+        return [reservations, histories];
+      })
+      .catch(error => {
+        throw error;
+      });
   };
 };

@@ -13,20 +13,22 @@ export default class adminIndexService implements adminIndexServiceInterface {
 
   async getData({ $accessor }: NuxtAppOptions): Promise<adminIndexInitData> {
     const representative = $accessor.user as user;
-    try {
-      const shops = await this.shopRepository.getByRepresentativeId(representative.id);
-      return {
-        shops: shops ?? [],
-        newShop: {
-          name: '',
-          description: '',
-          region_id: 0,
-          genre_id: 0, 
-        },
-      } 
-    } catch (error: any) {
-      throw error;
-    }
+    return await Promise.resolve(this.shopRepository.getByRepresentativeId(representative.id))
+      .then(res => {
+        return {
+          shops: res.data.data.shops ?? [],
+          newShop: {
+            representative_id: representative.id,
+            name: '',
+            description: '',
+            region_id: 0,
+            genre_id: 0, 
+          },
+        }
+      })
+      .catch(error => {
+        throw error;
+      });
   };
 
   async registerShop(data: newShop): Promise<shop[]> {
@@ -40,13 +42,18 @@ export default class adminIndexService implements adminIndexServiceInterface {
         base64EncodedImage: data.base64EncodedImage,
       };
       
-      try {
-        /* 新規店舗登録処理 */
-        await this.shopRepository.register(sendData);
-        alert('新規店舗が登録されました。');
-        return await this.shopRepository.getByRepresentativeId(data.representative_id as number);
-      } catch (error: any) {
-        throw error;
-      }
+      /* 新規店舗登録処理 */
+      await Promise.resolve(this.shopRepository.register(sendData))
+        .then(res => alert('新規店舗が登録されました。'))
+        .catch(error => {
+          throw error;
+        });
+
+      /* 店舗一覧を再取得 */
+      return await Promise.resolve(this.shopRepository.getByRepresentativeId(data.representative_id as number))
+        .then(res => res.data.data.shops)
+        .catch(error => {
+          throw error;
+        });
   }
 }
