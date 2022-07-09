@@ -1,5 +1,5 @@
 <template>
-  <div class="shop-card-hash-tag-unit">
+  <div class="hash-tag-unit">
     <HashTagAtom
       :tagName="regionName"
       :id="regionId"
@@ -39,7 +39,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-  .shop-card-hash-tag-unit {
+  .hash-tag-unit {
     margin-bottom: 10px;
 
     @include mq() {

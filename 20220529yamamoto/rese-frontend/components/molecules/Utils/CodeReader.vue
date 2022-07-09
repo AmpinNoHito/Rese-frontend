@@ -1,5 +1,5 @@
 <template>
-  <div class="qr-code-reader">
+  <div class="code-reader">
     <qrcode-stream v-if="startingUp" @decode="decode" @init="init"/>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-  .qr-code-reader {
+  .code-reader {
     margin: 0 auto;
     max-width: 400px;
     width: 100%;

@@ -1,6 +1,6 @@
 <template>
-  <ParagraphAtom class="nested-p" :text="parentText">
-    <SpanAtom class="nested-p__child" :text="childText"/>
+  <ParagraphAtom class="nested-text" :text="parentText">
+    <SpanAtom class="nested-text__child" :text="childText"/>
     <slot></slot>
   </ParagraphAtom>
 </template>
@@ -23,7 +23,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.nested-p {
+.nested-text {
   margin: 10px 0;
   position: relative;
 

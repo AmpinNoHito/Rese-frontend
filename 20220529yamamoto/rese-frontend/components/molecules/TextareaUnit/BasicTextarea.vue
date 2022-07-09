@@ -1,7 +1,7 @@
 <template>
-  <div class="basic-textarea-unit">
+  <div class="basic-textarea">
     <TextareaAtom
-      class="basic-textarea-unit__textarea"
+      class="basic-textarea__textarea"
       type="text"
       :textValue="textValue"
       :atInput="atInput"
@@ -29,7 +29,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.basic-textarea-unit {
+.basic-textarea {
   margin-bottom: 10px;
 
   &__textarea {

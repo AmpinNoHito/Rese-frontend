@@ -1,6 +1,5 @@
 <template>
   <option
-    class="option"
     :value="value"
     v-if="showCondition"
     :selected="selectCondition">
@@ -24,11 +23,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style lang="scss">
-.option {
-  @include mq() {
-    height: 40px;
-  }
-}
-</style>

@@ -1,11 +1,11 @@
 <template>
-  <div class="labeled-textarea-unit">
+  <div class="labeled-textarea">
     <ParagraphAtom 
-      class="labeled-textarea-unit__label"
+      class="labeled-textarea__label"
       :text="labelText"
     />
     <TextareaAtom
-      class="labeled-textarea-unit__textarea"
+      class="labeled-textarea__textarea"
       type="text"
       :textValue="textValue"
       :atInput="atInput"
@@ -36,7 +36,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.labeled-textarea-unit {
+.labeled-textarea {
   margin: 10px 0;
   flex-grow: 1;
 

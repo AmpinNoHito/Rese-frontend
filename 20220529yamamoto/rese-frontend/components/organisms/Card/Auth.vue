@@ -1,10 +1,10 @@
 <template>
-  <form class="auth-card__form">
+  <div class="auth-card">
     <ParagraphAtom
-      class="auth-card__form-title"
+      class="auth-card__title"
       :text="register ? admin ? 'Representative Registration': 'Registration': 'Login'"
     />
-    <div class="auth-card__form-inner">
+    <div class="auth-card__inner">
       <AuthInput
         v-if="register"
         :id="'name'"
@@ -36,7 +36,7 @@
         :clicked="buttonClicked"
       />
     </div>
-  </form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -75,14 +75,12 @@ export default Vue.extend({
 
 <style lang="scss">
 .auth-card {
-  &__form {
-    background-color: #fff;
-    @include flex(column);
-    border-radius: 5px;
-    @include shadow(2);
-  }
+  background-color: #fff;
+  @include flex(column);
+  border-radius: 5px;
+  @include shadow(2);
   
-  &__form-title {
+  &__title {
     width: 100%;
     color: #fff;
     background-color: $c-blue;
@@ -92,7 +90,7 @@ export default Vue.extend({
     padding: 10px 15px;
   }
 
-  &__form-inner {
+  &__inner {
     width: 100%;
     padding: 20px 5%;
     text-align: right;

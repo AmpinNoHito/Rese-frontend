@@ -48,7 +48,7 @@ import CrossAtom from '~/components/atoms/Cross.vue';
 import HeaderAtom from '~/components/atoms/Header.vue';
 import ButtonAtom from '~/components/atoms/Button.vue';
 import LabeledInput from '~/components/molecules/InputUnit/LabeledInput.vue';
-import LabeledTextarea from '~/components/molecules/TextareaUnit/LabeledTextareaUnit.vue';
+import LabeledTextarea from '~/components/molecules/TextareaUnit/LabeledTextarea.vue';
 import ImageInput from '~/components/molecules/InputUnit/ImageInput.vue';
 import SelectorGroup from '~/components/organisms/Functional/SelectorGroup.vue';
 

@@ -41,7 +41,7 @@ import CrossAtom from '~/components/atoms/Cross.vue';
 import ButtonAtom from '~/components/atoms/Button.vue';
 import RatingStars from '~/components/molecules/Utils/RatingStars.vue';
 import BasicInput from '~/components/molecules/InputUnit/BasicInput.vue';
-import BasicTextarea from '~/components/molecules/TextareaUnit/BasicTextareaUnit.vue';
+import BasicTextarea from '~/components/molecules/TextareaUnit/BasicTextarea.vue';
 
 export default Vue.extend({
   components: {
