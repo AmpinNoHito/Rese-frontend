@@ -1,152 +1,58 @@
 <template>
-  <div class="container">
-    <div class="default-layout" @click="showMenu">
-      <div class="default-layout__icon">
-        <div class="default-layout__bar default-layout__bar--top"></div>
-        <div class="default-layout__bar default-layout__bar--middle"></div>
-        <div class="default-layout__bar default-layout__bar--bottom"></div>
-      </div>
-      <span class="default-layout__logo">Rese</span>
-    </div>
+  <div class="main-menu">
+    <LogoUnit :showMenu="showMenu"/>
     <Nuxt/>
-    <div class="default-layout__menu">
-      <div class="default-layout__menu-inner">
-        <div class="default-layout__icon default-layout__icon--menu" @click="hideMenu">
-          <span class="default-layout__icon-cross">×</span>
-        </div>
-        <div class="default-layout__links" v-if="!$accessor.loggedIn">
-          <nuxt-link
-            class="default-layout__link"
-            to="/" @click.native="hideMenu">
-            Home
-          </nuxt-link>
-          <nuxt-link
-            class="default-layout__link"
-            to="/register"
-            @click.native="hideMenu">
-            Registration
-          </nuxt-link>
-          <nuxt-link
-            class="default-layout__link"
-            to="/login"
-            @click.native="hideMenu">
-            Login
-          </nuxt-link>
-        </div>
-        <div class="default-layout__links" v-if="$accessor.loggedIn">
-          <span
-            class="default-layout__link"
-            @click="$accessor.clearSearchKeys(); $router.push('/'); hideMenu();">
-            Home
-          </span>
-          <span
-            class="default-layout__link"
-            @click="logout(); hideMenu();">
-            Logout
-          </span>
-          <nuxt-link
-            class="default-layout__link"
-            to="/mypage"
-            @click.native="hideMenu">
-            Mypage
-          </nuxt-link>
-          <nuxt-link
-            v-if="$accessor.user.group === 100"
-            class="default-layout__link"
-            to="/admin/register"
-            @click.native="hideMenu">
-            Create Representatives
-          </nuxt-link>
-          <nuxt-link
-            v-if="$accessor.user.group === 10"
-            class="default-layout__link"
-            to="/admin"
-            @click.native="hideMenu">
-            Your Shops
-          </nuxt-link>
-        </div>
+    <div class="main-menu__container">
+      <div class="main-menu__inner">
+        <Cross :hideMenu="hideMenu"/>
+        <LoggedOutMenu
+          v-if="!$accessor.loggedIn"
+          :hideMenu="hideMenu"
+        />
+        <LoggedInMenu
+          v-if="$accessor.loggedIn"
+          :hideMenu="hideMenu"
+        />
       </div>
     </div>
   </div>
 </template>
 
+
 <script lang="ts">
-import Vue from 'vue';
+import Vue from 'vue'
+import Cross from '~/components/molecules/Icon/Cross.vue';
+import LogoUnit from '~/components/molecules/Icon/Logo.vue';
+import LoggedOutMenu from '~/components/organisms/Functional/LoggedOutMenu.vue';
+import LoggedInMenu from '~/components/organisms/Functional/LoggedInMenu.vue';
 
 export default Vue.extend({
+  components: {
+    Cross,
+    LogoUnit,
+    LoggedOutMenu,
+    LoggedInMenu,
+  },
   methods: {
     showMenu(): void {
-      const menu = document.querySelector('.default-layout__menu') as HTMLElement;
-      menu.classList.add('is-shown');
+      document.querySelector('.main-menu__container')?.classList.add('is-shown');
     },
     hideMenu(): void {
-      const menu = document.querySelector('.default-layout__menu') as HTMLElement;
-      menu.classList.remove('is-shown');
-    },
-    async logout(): Promise<void> {
-      try {
-        await this.$service.auth.logout();
-        this.$accessor.setUser({});
-        this.$accessor.setToken(undefined);
-        this.$router.push('/');
-      } catch (error: any) {
-        this.$alertErrorMessage(error.response);
-      }
+      document.querySelector('.main-menu__container')?.classList.remove('is-shown');
     },
   },
 });
 </script>
 
 <style lang="scss">
-.container {
+.main-menu {
   padding: 30px 30px;
   max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 20px;
   position: relative;
-}
 
-.default-layout {
-  cursor: pointer;
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  width: fit-content;
-  z-index: 10;
-  @include flex($jc: flex-start);
-
-  &__icon {
-    width: 30px;
-    height: 30px;
-    background-color: $c-blue;
-    border-radius: 5px;
-    padding: 8px;
-    margin-right: 10px;
-    @include shadow(2);
-    @include flex(column, space-between, flex-start);
-  }
-
-  &__bar {
-    height: 1px;
-    background-color: #fff;
-    &--top {
-      width: 60%;
-    }
-    &--middle {
-      width: 100%;
-    }
-    &--bottom {
-      width: 30%;
-    }
-  }
-
-  &__logo {
-    font-weight: bold;
-    font-size: $fz-large;
-    color: $c-blue;
-  }
-
-  &__menu {
+  &__container {
     transform: translateY(-100%) perspective(1000px) rotateX(100deg);
     visibility: hidden;
     opacity: 0;
@@ -158,7 +64,6 @@ export default Vue.extend({
     background-color: #fff;
     transition: $tr-04;
     z-index: 10;
-
     &.is-shown {
       transform: translateY(0) rotateX(0);
       visibility: visible;
@@ -166,73 +71,19 @@ export default Vue.extend({
     }
   }
 
-  &__menu-inner {
+  &__inner {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
   }
 
-  &__icon--menu {
-    cursor: pointer;
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    padding: 0;
-    font-size: $fz-large;
-    @include flex();
-  }
-
-  &__icon-cross {
-    color: #fff;
-    text-align: center;
-  }
-
-  &__links {
-    @include flex(column);
-    padding-top: 100px;
-  }
-
-  &__link {
-    cursor: pointer;
-    text-align: center;
-    color: $c-blue--dark;
-    font-size: $fz-mid-large;
-    margin: 10px 0;
-    padding: 0 30px;
-    @include hoverEffect();
-  }
-}
-
-/* レスポンシブ */
-@include mq() {
-  .menu {
-    &__icon {
-      width: 40px;
-      height: 40px;
-      padding: calc(8px * 4/3);
+  @include mq() {
+    &__container {
+      transform: translate(-100%, 0) perspective(0) rotateX(0);
+      &.is-shown {
+        transform: translateX(0) perspective(0) rotateX(0);
+      }
     }
-    &__logo {
-      font-size: $fz-largest;
-    }
-
-    &__links {
-      @include flex(column);
-      height: 100vh;
-      padding-top: 0;
-    }
-
-    &__link {
-      font-size: $fz-larger;
-      margin: 30px 0;
-    }
-
-    &__menu {
-    transform: translate(-100%, 0) perspective(0) rotateX(0);
-
-    &.is-shown {
-      transform: translateX(0) perspective(0) rotateX(0);
-    }
-  }
   }
 }
 </style>

@@ -1,28 +1,21 @@
 <template>
-  <div>
-    <div class="done">
-    <p class="done__message">ご予約ありがとうございます。</p>
-    <ButtonBasic
-      v-if="$route.query.rs"
-      class="done__button done__button--pay"
-      @clicked="$router.push({path: '/pay', query: {rs: $route.query.rs}})">
-      事前支払いはこちら
-    </ButtonBasic>
-    <ButtonBasic
-      class="done__button done__button--back"
-      @clicked="$router.push('/')">
-      戻る
-    </ButtonBasic>
-  </div>
-  </div>
+  <DoneCard
+    :query="$route.query.rs"
+    :toPay="() => $router.push({ path: '/pay', query: { rs: $route.query.rs } })"
+    :toHome="() => $router.push('/')"
+  />
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import auth from '~/middleware/auth';
+import DoneCard from '~/components/organisms/Card/Done.vue';
 
 export default Vue.extend({
   middleware: [auth],
+  components: {
+    DoneCard,
+  },
   mounted(): void {  // 予約完了時にいったん店舗検索条件をクリアする
     this.$accessor.clearSearchKeys();
   },
@@ -39,6 +32,10 @@ export default Vue.extend({
   @include shadow(2);
   @include flex(column);
   text-align: center;
+
+  &__message {
+    line-height: 1.2em;
+  }
 
   &__button {
     margin-top: 30px;

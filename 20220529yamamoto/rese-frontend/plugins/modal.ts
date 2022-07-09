@@ -23,14 +23,14 @@ declare module 'vuex/types/index' {
 }
 
 const modal: Plugin = (context: Context, inject: Inject) => {
-  const showModal = (modifier: string): void => {
-    const modal = document.querySelector(`.modal--${modifier}`) as HTMLElement;
+  const showModal = (modalType: string): void => {
+    const modal = document.querySelector(`.${modalType}-modal`) as HTMLElement;
     modal.classList.add('is-shown');
     context.app.$stopScroll();
   }
 
-  const hideModal = (modifier: string): void => {
-    const modal = document.querySelector(`.modal--${modifier}`) as HTMLElement;
+  const hideModal = (modalType: string): void => {
+    const modal = document.querySelector(`.${modalType}-modal`) as HTMLElement;
     modal.classList.remove('is-shown');
     context.app.$restartScroll();
   }

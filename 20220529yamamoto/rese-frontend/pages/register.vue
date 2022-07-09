@@ -1,40 +1,28 @@
 <template>
-  <div class="auth">
-    <form class="auth__form">
-      <p class="auth__form-title">Registration</p>
-      <div class="auth__form-inner">
-        <InputAuth
-          :labelImage="require('~/assets/images/icon-user.png')"
-          inputType="text"
-          inputId="name"
-          inputPlaceholder="Username"
-          v-model="form.name"
-          :errors="errors.name"/>
-        <InputAuth
-          :labelImage="require('~/assets/images/icon-email.png')"
-          inputType="email"
-          inputId="email"
-          inputPlaceholder="Email"
-          v-model="form.email"
-          :errors="errors.email"/>
-        <InputAuth
-          :label-image="require('~/assets/images/icon-password.png')"
-          inputType="password"
-          inputId="password"
-          inputPlaceholder="Password"
-          v-model="form.password"
-          :errors="errors.password"/>
-        <ButtonBasic class="auth__button" @clicked="register">登録</ButtonBasic>
-      </div>
-    </form>
-  </div>
+  <AuthTemplate>
+    <AuthCard
+      :nameErrors="errors.name"
+      :nameInput="value => this.form.name = value"
+      :emailErrors="errors.email"
+      :emailInput="value => this.form.email = value"
+      :passwordErrors="errors.password"
+      :passwordInput="value => this.form.password = value"
+      :buttonClicked="register"
+    />
+  </AuthTemplate>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { authData } from '~/types/pageData';
+import AuthCard from '~/components/organisms/Card/Auth.vue';
+import AuthTemplate from '~/layouts/templates/Auth.vue';
 
 export default Vue.extend({
+  components: {
+    AuthCard,
+    AuthTemplate,
+  },
   data() {
     return {
       form:{
@@ -51,13 +39,9 @@ export default Vue.extend({
   },
   methods:{
     async register(): Promise<void> {
-      try {
-        /* 新規登録処理 */
-        await this.$service.auth.register(this.form);
-        this.$router.push('/thanks');
-      } catch (error: any) {
-        this.errors = this.$handleError(Object.keys(this.errors), error.response);
-      }
+      await this.$service.auth.register(this.form)
+        .then(res => this.$router.push('/thanks'))
+        .catch(error => this.$handleError(this.errors, error.response));
     },
   }
 });

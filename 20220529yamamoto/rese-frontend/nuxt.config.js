@@ -39,6 +39,7 @@ export default {
     '~/plugins/vue-stripe',
     '~/repository/index',
     '~/service/index',
+    '~/plugins/consts',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

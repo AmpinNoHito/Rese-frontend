@@ -4,13 +4,11 @@ import { errors } from "./errors";
 /* data */
 export interface indexData {
   shops: shop[],
-  regions: number[],
-  genres: number[],
+  regionIds: number[],
+  genreIds: number[],
   favoriteShopIds: number[],
   searchResults: shop[],
-  regionSearchId: (number | undefined),
-  genreSearchId: (number | undefined),
-  searchWord: (string | undefined),
+  searchWord: string,
   userId: number,
 }
 
@@ -43,10 +41,9 @@ export interface adminIndexData {
 export interface adminShopData {
   representativeId: number,
   shop: shop,
-  courses: course[],
   reservations: reservation[],
   histories: reservation[],
-  codeReader: boolean,
+  codeReaderStartingUp: boolean,
   selectedReservation: reservation,
   showHistory: boolean,
   previewImage: (string | undefined),
@@ -67,16 +64,14 @@ export interface authData {
 
 export interface payData {
   reservation: reservation,
-  amount: number,
-  stripePK: string,
 }
 
 
 /* asyncData */
 export interface indexInitData {
   shops: shop[],
-  regions: number[],
-  genres: number[],
+  regionIds: number[],
+  genreIds: number[],
   favoriteShopIds: number[],
   searchResults: shop[],
   userId: number,
@@ -97,7 +92,6 @@ export interface shopInitData {
 
 export interface payInitData {
   reservation: reservation,
-  amount: number,
 }
 
 export interface adminIndexInitData {
@@ -108,7 +102,6 @@ export interface adminIndexInitData {
 export interface adminShopInitData {
   representativeId: number,
   shop: shop,
-  courses: course[],
   reservations: reservation[],
   histories: reservation[],
   newShop: newShop,

@@ -37,9 +37,9 @@ export default class adminIndexService implements adminIndexServiceInterface {
         name: data.name,
         representative_id: data.representative_id,
         description: data.description,
+        base64EncodedImage: data.base64EncodedImage,
         region_id: data.region_id,
         genre_id: data.genre_id,
-        base64EncodedImage: data.base64EncodedImage,
       };
       
       /* 新規店舗登録処理 */
@@ -51,7 +51,11 @@ export default class adminIndexService implements adminIndexServiceInterface {
 
       /* 店舗一覧を再取得 */
       return await Promise.resolve(this.shopRepository.getByRepresentativeId(data.representative_id as number))
-        .then(res => res.data.data.shops)
+        .then(res => {
+          data.name = data.description = data.base64EncodedImage = '';
+          data.region_id = data.genre_id = 0;
+          return res.data.data.shops
+        })
         .catch(error => {
           throw error;
         });

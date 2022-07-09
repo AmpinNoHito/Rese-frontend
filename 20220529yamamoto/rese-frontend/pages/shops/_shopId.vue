@@ -1,56 +1,56 @@
 <template>
-  <div class="individual-shop">
-    <div class="individual-shop__detail">
-      <div class="individual-shop__name-wrapper">
-        <span class="individual-shop__back" @click="$router.back()">&lt;</span>
-        <span class="individual-shop__name">{{shop.name}}</span>
-      </div>
-      <div class="individual-shop__img">
-        <img :src="`${$config.storageUrl}/${shop.image}`" alt="店舗画像">
-      </div>
-      <span class="individual-shop__region">#{{shop.region.name}}</span>
-      <span class="individual-shop__genre">#{{shop.genre.name}}</span>
-      <p class="individual-shop__description">{{shop.description}}</p>
-      <p class="individual-shop__course-header" v-if="newReservation.courses.length">コース一覧</p>
-      <div class="individual-shop__course" v-for="course in newReservation.courses" :key="course.id">
-        <p class="individual-shop__course-name">{{course.name}} <span class="individual-shop__course-price">¥{{course.price}}</span></p>
-        <p class="individual-shop__course-description">{{course.description}}</p>
-      </div>
-    </div>
-    <CardReservation
-      class="individual-shop__reservation"
-      :date="newReservation.date"
-      :today="$getTodaysDate()"
-      :time="newReservation.time"
-      :number="newReservation.number"
+  <ShopTemplate>
+    <ShopDetail :shop="shop"/>
+    <ReservationCard
       :shopName="shop.name"
-      :courses="newReservation.courses"
-      :selectedCourseIndex="newReservation.selectedCourseIndex"
-      :datetimeErrors="errors.datetime"
-      :numberErrors="errors.number"
-      @dateChanged="newReservation.date = $setData($event)"
-      @timeChanged="newReservation.time = $setData($event)"
-      @courseChanged="newReservation.selectedCourseIndex = $setData($event)"
-      @numberChanged="newReservation.number = $setData($event)"
-      @buttonClicked="registerReservation">
-      <template v-slot:header>予約</template>
-      <template v-slot:button>予約する</template>
-    </CardReservation>
-  </div>
+      :headerText="'予約'"
+      :buttonText="'予約する'"
+      :newReservation="newReservation"
+      :atDateInput="value => newReservation.date = value"
+      :timeChanged="value => newReservation.time = value"
+      :numberChanged="value => newReservation.number = value"
+      :courseChanged="value => newReservation.selectedCourseIndex = +value"
+      :buttonClicked="registerReservation"
+      :errors="errors"
+    />
+  </ShopTemplate>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, user } from '~/types/api';
+import ShopDetail from '~/components/organisms/Composition/ShopDetail.vue';
+import ReservationCard from '~/components/organisms/Card/Reservation.vue';
+import ShopTemplate from '~/layouts/templates/Shop.vue';
+import { user } from '~/types/api';
 import { shopData } from '~/types/pageData';
 
 export default Vue.extend({
+  components: {
+    ShopDetail,
+    ReservationCard,
+    ShopTemplate,
+  },
   async asyncData({app, params, query}) {
     return await app.$service.shop.getData(+params.shopId, app, [query.dt, query.tm, query.nm, query.sc] as string[]);
   },
   data() {
     return {
-      shop: {} as shop,
+      shop: {
+        id: 0,
+        representative_id: 0,
+        name: '',
+        region: {
+          id: 0,
+          name: '',
+        },
+        genre: {
+          id: 0,
+          name: '',
+        },
+        description: '',
+        image: '',
+        courses: [],
+      },
       newReservation: {
         courses: [],
         date: '',
@@ -67,13 +67,10 @@ export default Vue.extend({
   methods: {
     /* 予約情報を登録 */
     async registerReservation() {
-      try {
-        const user = this.$accessor.user as user;
-        const location = await this.$service.shop.registerReservation(this.newReservation, user.id, this.shop.id);
-        this.$router.push(location);
-      } catch (error: any) {
-        this.errors = this.$handleError(Object.keys(this.errors), error.response);
-      }
+      const user = this.$accessor.user as user;
+      await this.$service.shop.registerReservation(this.newReservation, user.id, this.shop.id)
+        .then(res => this.$router.push(res))
+        .catch(error => this.$handleError(this.errors, error.response));
     },
   },
 });

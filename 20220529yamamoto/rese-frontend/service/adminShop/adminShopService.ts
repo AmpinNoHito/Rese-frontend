@@ -23,7 +23,6 @@ export default class adminShopService implements adminShopServiceInterface {
         return {
           representativeId: representativeId,
           shop: shop,
-          courses: shop.courses ?? [],
           newShop : { 
             name: shop.name,
             description: shop.description,
@@ -67,7 +66,7 @@ export default class adminShopService implements adminShopServiceInterface {
       });
   }
 
-  async registerCourse(shopId: number, data: newCourse): Promise<[course[], newCourse]> {
+  async registerCourse(shopId: number, data: newCourse): Promise<course[]> {
     /* 入力値から送信用データを作成 */
     const sendData = {
       shop_id: shopId,
@@ -83,12 +82,9 @@ export default class adminShopService implements adminShopServiceInterface {
         throw error;
       });
     
-    /* newCourseのデータを初期化 */
-    data.name = data.description = data.price = undefined;
-    
     /* 店舗情報を再取得 */
     return await Promise.resolve(this.shopRepository.getById(shopId))
-      .then(res => [res.data.data.courses, data] as [course[], newCourse])
+      .then(res => res.data.data.courses)
       .catch(error => {
         throw error;
       });

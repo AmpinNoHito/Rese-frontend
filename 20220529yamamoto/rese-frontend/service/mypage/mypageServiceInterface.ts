@@ -6,7 +6,7 @@ export default interface mypageServiceInterface {
   getData(app: NuxtAppOptions): Promise<mypageInitData>;
   setNewReservationData(selectedReservation: reservation): newReservation;
   updateReservation(data: newReservation, userId: number): Promise<reservation[]>;
-  deleteReservation([index, reservationId]: number[], reservations: reservation[]): Promise<reservation[]>;
+  deleteReservation(index: number, reservationId: number, reservations: reservation[]): Promise<void>;
   setNewReviewData(selectedHistory: reservation): newReview;
   registerReview(data: newReview, userId: number): Promise<reservation[]>;
   updateReview(data: newReview, userId: number): Promise<reservation[]>;

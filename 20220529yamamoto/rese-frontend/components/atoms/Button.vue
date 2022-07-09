@@ -1,23 +1,20 @@
 <template>
-  <button class="button-basic" @click.prevent="clicked">
-    <slot></slot>
-  </button>
+  <button class="button" @click.prevent="clicked">{{text}}</button>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
 export default Vue.extend({
-  methods: {
-    clicked(): void {
-      this.$emit('clicked');
-    }
-  },
+  props: {
+    text: String,
+    clicked: Function,
+  }
 });
 </script>
 
 <style lang="scss">
-.button-basic {
+.button {
   cursor: pointer;
   color: #fff;
   background-color: $c-blue;

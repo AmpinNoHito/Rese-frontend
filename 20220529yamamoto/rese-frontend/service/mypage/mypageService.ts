@@ -49,7 +49,6 @@ export default class mypageService implements mypageServiceInterface{
     } else {  // 指定されていない場合
       selectedCourseIndex = undefined;
     }
-    
     return {
       /* 予約変更モーダル内のインプットに、選択された予約の情報を初期値として代入 */
       date: selectedReservation.date,
@@ -92,12 +91,12 @@ export default class mypageService implements mypageServiceInterface{
         });
   }
 
-  async deleteReservation([reservationIndex, reservationId]: number[], reservations: reservation[]): Promise<reservation[]> {
+  async deleteReservation(reservationIndex: number, reservationId: number, reservations: reservation[]): Promise<void> {
     const ch = confirm('予約を取り消しますか？');
-    if (!ch) return reservations;
+    if (!ch) return;
 
     /* dataの配列とDBから削除 */
-    return await Promise.resolve(this.reservationRepository.delete(reservationId))
+    await Promise.resolve(this.reservationRepository.delete(reservationId))
       .then(res => reservations.splice(reservationIndex, 1))
       .catch(error => {
         throw error;

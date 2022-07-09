@@ -1,172 +1,73 @@
 <template>
-  <div class="individual-shop">
-    <div class="individual-shop__detail">
-      <div class="individual-shop__name-wrapper">
-        <span class="individual-shop__back" @click="$router.back()">&lt;</span>
-        <span class="individual-shop__name">{{shop.name}}
-          <span class="rep__shop-edit-button" @click="$showModal('shop')">
-            店舗情報編集
-          </span>
-        </span>
-      </div>
-      <div class="individual-shop__img">
-        <img :src="`${$config.storageUrl}/${shop.image}`" alt="店舗画像">
-      </div>
-      <span class="individual-shop__region">#{{shop.region.name}}</span>
-      <span class="individual-shop__genre">#{{shop.genre.name}}</span>
-      <p class="individual-shop__description">{{shop.description}}</p>
-      <p class="individual-shop__course-header">コース一覧<span class="rep__shop-edit-button" @click="$showModal('course')">新規コース登録</span></p>
-      <p class="individual-shop__course" v-if="!courses.length">コースは登録されていません。</p>
-      <div class="individual-shop__course" v-for="course in courses" :key="course.id">
-        <p class="individual-shop__course-name">{{course.name}}
-          <span class="individual-shop__course-price">¥{{course.price}}</span>
-          <span class="rep__course-delete-button" @click="deleteCourse(course.id)">削除</span>
-        </p>
-        <p class="individual-shop__course-description">{{course.description}}</p>
-      </div>
-    </div>
-    <ReservationDetails
+  <ShopTemplate>
+    <ShopDetail :admin="true" :shop="shop" :deleteCourse="deleteCourse"/>
+    <ReservationDetail
       :reservations="reservations"
-      :reservationsNum="reservations.length"
       :histories="histories"
-      :historiesNum="histories.length"
       :showHistory="showHistory"
       :isRepresentative="true"
-      @toggleSwitchClicked="showHistory = !showHistory;"
-      @codeReaderButtonClicked="showCodeReader($event)"
-      @reviewButtonClicked="showReviewModal($event)"/>
-    <div 
-      class="modal modal--shop"
-      @click.self="$hideModal('shop'); errors = $initializeErrors(Object.keys(errors));">
-      <div class="modal__card modal__card--shop">
-        <img
-          class="modal__cross"
-          src="~/assets/images/icon-cross.png"
-          alt="×"
-          @click="$hideModal('shop'); errors = $initializeErrors(Object.keys(errors));"/>
-        <span class="modal__header">
-          店舗情報編集
-        </span>
-        <div class="modal__card-row">
-          <div class="modal__texts">
-            <div class="modal__item">
-              <p class="modal__item-label">店名</p>
-              <input class="modal__input" type="text" :value="newShop.name" @change="changeName">
-              <p class="error-message" v-if="errors.name.length">※{{errors.name[0]}}</p>
-            </div>
-            <div class="modal__item">
-              <p class="modal__item-label">店舗概要</p>
-              <textarea class="modal__textarea" cols="30" rows="10" :value="newShop.description" @change="changeDescription"></textarea>
-              <p class="error-message" v-if="errors.description.length">※{{errors.description[0]}}</p>
-            </div>
-          </div>
-          <div class="modal__others">
-            <div class="modal__item">
-              <p class="modal__item-label">地域・ジャンル</p>
-              <SelectRegion
-                class="modal__select"
-                :regions="[newShop.region_id]"
-                :admin="true"
-                @changed="changeRegionId($event)"/>
-              <SelectGenre
-                class="modal__select"
-                :genres="[newShop.genre_id]"
-                :admin="true"
-                @changed="changeGenreId($event)"/>
-            </div>
-            <div class="modal__item">
-              <p class="modal__item-label">画像変更</p>
-              <label class="modal__image-select" for="file">画像を変更する</label>
-              <input type="file" id="file" @change="setImage" hidden>
-              <div v-if="previewImage" class="modal__new-image">
-                <img :src="previewImage"/>
-              </div>
-              <p class="error-message" v-if="errors.image.length">※{{errors.base64EncodedImage[0]}}</p>
-            </div>
-          </div>
-        </div>
-        <ButtonBasic class="modal__button" @clicked="updateShop">更新</ButtonBasic>
-      </div>
-    </div>
-    <div
-      class="modal modal--course"
-      @click.self="$hideModal('course'); errors = $initializeErrors(Object.keys(errors));">
-      <div class="modal__card">
-        <img
-          class="modal__cross"
-          src="~/assets/images/icon-cross.png"
-          alt="×"
-          @click="$hideModal('course'); errors = $initializeErrors(Object.keys(errors));"/>
-        <span class="modal__header">
-          新規コース登録
-        </span>
-        <div class="modal__card-row">
-          <div class="modal__item">
-            <p class="modal__item-label">コース名</p>
-            <input class="modal__input" type="text" v-model="newCourse.name">
-            <p class="error-message" v-if="errors.name.length">※{{errors.name[0]}}</p>
-          </div>
-          <div class="modal__item">
-            <p class="modal__item-label">価格</p>
-            <input class="modal__input" type="text" v-model="newCourse.price">
-            <p class="error-message" v-if="errors.price.length">※{{errors.price[0]}}</p>
-          </div>
-        </div>
-        <div class="modal__item">
-          <p class="modal__item-label">コース概要</p>
-          <textarea class="modal__textarea" cols="30" rows="10" v-model="newCourse.description"></textarea>
-          <p class="error-message" v-if="errors.description.length">※{{errors.description[0]}}</p>
-        </div>
-        <ButtonBasic class="modal__button" @clicked="registerCourse">登録</ButtonBasic>
-      </div>
-    </div>
-    <div class="modal modal--review" @click.self="$hideModal('review')">
-      <div class="modal__card">
-        <img
-          class="modal__cross"
-          src="~/assets/images/icon-cross.png"
-          alt="×"
-          @click="$hideModal('review')">
-        <p class="modal__header">
-          レビュー
-        </p>
-        <div class="modal__stars">
-          <img
-            class="modal__star"
-            src="~/assets/images/star.svg"
-            alt="★"
-            v-for="(i, key) in selectedReview.rate"
-            :key="key"
-          ><img
-            class="modal__star"
-            src="~/assets/images/star-empty.svg"
-            alt="☆"
-            v-for="(i, key) in (5 - selectedReview.rate)"
-            :key="key + selectedReview.rate">
-        </div>
-        <p class="modal__review-title-label">タイトル</p>
-        <p class="modal__review-title">{{(selectedReview.title) ? selectedReview.title : 'タイトルなし'}}</p>
-        <p class="modal__review-content-label">コメント</p>
-        <p class="modal__review-content">{{(selectedReview.content) ? selectedReview.content : 'コメントなし'}}</p>
-      </div>
-    </div>
-    <div class="code-reader modal--code-reader" @click.self="hideCodeReader">
-      <div class="code-reader__inner">
-        <qrcode-stream v-if="codeReader" @decode="registerVisit" @init="readQRCode"/>
-      </div>
-      <ButtonBasic class="code-reader__button" @clicked="hideCodeReader">戻る</ButtonBasic>
-    </div>
-  </div>
+      :toggleSwitchClicked="() => showHistory = !showHistory"
+      :codeReaderButtonClicked="showCodeReader"
+      :reviewButtonClicked="showReviewModal"
+    />
+    <ShopEditModal
+      :header="'店舗情報編集'"
+      :newShop="newShop"
+      :errors="errors"
+      :atNameInput="(value) => newShop.name = value"
+      :atDescriptionInput="(value) => newShop.description = value"
+      :regionChanged="(value) => newShop.region_id = +value"
+      :genreChanged="(value) => newShop.genre_id = +value"
+      :previewImage="previewImage"
+      :imageChanged="async function() {newShop.base64EncodedImage = previewImage = await $processImage(e)}"
+      :buttonText="'更新'"
+      :buttonClicked="updateShop"
+    />
+    <CourseEditModal
+      :newCourse="newCourse"
+      :atNameInput="value => this.newCourse.name = value"
+      :atPriceInput="value => this.newCourse.price = value"
+      :atDescriptionInput="value => this.newCourse.description = value"
+      :buttonClicked="registerCourse"
+      :errors="errors"
+      :initializeErrors="() => $initializeErrors(errors)"
+    />
+    <ReviewModal :selectedReview="selectedReview"/>
+    <CodeReaderModal
+      :startingUp="codeReaderStartingUp"
+      :decode="registerVisit"
+      :init="readQRCode"
+      :hideCodeReader="hideCodeReader"
+    />
+  </ShopTemplate>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, reservation, review, user } from '~/types/api';
+import CrossAtom from '~/components/atoms/Cross.vue';
+import ShopDetail from '~/components/organisms/Composition/ShopDetail.vue';
+import ShopEditModal from '~/components/organisms/Modal/ShopEdit.vue';
+import ReservationDetail from '~/components/organisms/Composition/ReservationDetail.vue';
+import CourseEditModal from '~/components/organisms/Modal/CourseEdit.vue';
+import ReviewModal from '~/components/organisms/Modal/Review.vue';
+import CodeReaderModal from '~/components/organisms/Modal/CodeReader.vue';
+import ShopTemplate from '~/layouts/templates/Shop.vue';
+import { reservation, review, user } from '~/types/api';
 import representative from '~/middleware/representative';
 import { adminShopData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [representative],
+  components: {
+    CrossAtom,
+    ShopDetail,
+    ShopEditModal,
+    ReservationDetail,
+    CourseEditModal,
+    ReviewModal,
+    CodeReaderModal,
+    ShopTemplate,
+  },
   async asyncData({ params, app: { $service, $accessor } }) {
     /* 店舗データ取得 */
     const representative = $accessor.user as user;
@@ -174,12 +75,26 @@ export default Vue.extend({
   },
   data() {
     return {
+      shop: {
+        id: 0,
+        representative_id: 0,
+        name: '',
+        region: {
+          id: 0,
+          name: '',
+        },
+        genre: {
+          id: 0,
+          name: '',
+        },
+        description: '',
+        image: '',
+        courses: [],
+      },
       representativeId: 0,
-      shop: {} as shop,
-      courses: [],
       reservations: [],
       histories: [],
-      codeReader: false,
+      codeReaderStartingUp: false,
       selectedReservation: {} as reservation,
       showHistory: false,
       previewImage: undefined,
@@ -204,51 +119,36 @@ export default Vue.extend({
         name: [],
         description: [],
         image: [],
+        region_id: [],
+        genre_id: [],
         price: [],
       },
     } as adminShopData;
   },
   methods: {
-    async setImage(e: Event): Promise<void> { 
-      this.newShop.base64EncodedImage = this.previewImage = await this.$processImage(e);
-    },
-    changeName(e: Event): void {
-      const target = e.target as HTMLInputElement;
-      this.newShop.name = target.value;
-    },
-    changeDescription(e: Event): void {
-      const target = e.target as HTMLInputElement;
-      this.newShop.description = target.value;
-    },
-    changeRegionId(value: number): void {
-      this.newShop.region_id = value;
-    },
-    changeGenreId(value: number): void {
-      this.newShop.genre_id = value;
-    },
     async updateShop(): Promise<void> {
-      try {
-        this.shop = await this.$service.adminShop.updateShop(this.shop.id, this.newShop);
-        this.errors = this.$initializeErrors(Object.keys(this.errors));
-        this.$hideModal('shop');
-      } catch (error: any) {
-        this.errors = this.$handleError(Object.keys(this.errors), error.response);
-      }
+      await this.$service.adminShop.updateShop(this.shop.id, this.newShop)
+        .then(res => {
+          this.shop = res;
+          this.$initializeErrors(this.errors);
+          this.$hideModal('shop');
+        })
+        .catch(error => this.$handleError(this.errors, error.response));
     },
     async registerCourse (): Promise<void> {
-      try {
-        [this.courses, this.newCourse] = await this.$service.adminShop.registerCourse(this.shop.id, this.newCourse);
-        this.$hideModal('course');
-      } catch (error: any) {
-        this.errors = this.$handleError(Object.keys(this.errors), error.response);
-      }
+      await this.$service.adminShop.registerCourse(this.shop.id, this.newCourse)
+        .then(res => {
+          this.shop.courses = res;
+          this.newCourse.name = this.newCourse.price = this.newCourse.description = undefined;
+          this.$initializeErrors(this.errors);
+          this.$hideModal('course');
+        })
+        .catch(error => this.$handleError(this.errors, error.response));
     },
     async deleteCourse(courseId: number): Promise<void> {
-      try {
-        this.courses = await this.$service.adminShop.deleteCourse(this.shop.id, courseId, this.courses);
-      } catch (error: any) {
-        this.$alertErrorMessage(error.response);
-      }
+      await this.$service.adminShop.deleteCourse(this.shop.id, courseId, this.shop.courses)
+        .then(res => this.shop.courses = res)
+        .catch(error => this.$alertErrorMessage(error.response));
     },
     showReviewModal(review: review) {
       this.selectedReview = {
@@ -260,72 +160,29 @@ export default Vue.extend({
     },
     showCodeReader(reservation: reservation): void {
       this.selectedReservation = reservation;
-      this.codeReader = true;
+      this.codeReaderStartingUp = true;
       this.$showModal('code-reader');
       this.$stopScroll();
     },
     hideCodeReader(): void {
-      this.codeReader = false;
+      this.codeReaderStartingUp = false;
       this.$hideModal('code-reader');
       this.$restartScroll();
     },
     async readQRCode(promise: Promise<void>): Promise<void> {
-      try {
-        await promise;
-      } catch (error) {
+      await promise.catch(error => {
         alert('エラーが発生しました。デバイスのカメラ設定をご確認のうえ再度お試しください。');
         this.hideCodeReader();
-      }
+      });
     },
     async registerVisit(decodedResult: string): Promise<void> {
-      try {
-        [this.reservations, this.histories] = await this.$service.adminShop.registerVisit(decodedResult, this.selectedReservation, this.representativeId);
-      } catch (error: any) {
-        this.$alertErrorMessage(error.response);
-      }
-      this.hideCodeReader();
+      await this.$service.adminShop.registerVisit(decodedResult, this.selectedReservation, this.representativeId)
+        .then(res => {
+          [this.reservations, this.histories] = res;
+          this.hideCodeReader();
+        })
+        .catch(error => this.$alertErrorMessage(error.response));
     },
   },
 });
 </script>
-
-<style lang="scss">
-.rep {
-  &__shop-edit-button {
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    color: $c-blue;
-    font-size: $fz-smaller;
-    font-weight: normal;
-  }
-
-  &__course-delete-button {
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    color: $c-red;
-    
-    @include mq() {
-      font-size: $fz-mid-large;
-    }
-  }
-}
-
-.code-reader {
-  @include modal();
-  flex-direction: column;
-
-  &__inner {
-    margin: 0 auto;
-    max-width: 400px;
-    width: 100%;
-    height: 80vh;
-    margin-bottom: 10px;
-  }
-
-  &__button {
-    margin: 0 auto;
-  }
-}
-</style>

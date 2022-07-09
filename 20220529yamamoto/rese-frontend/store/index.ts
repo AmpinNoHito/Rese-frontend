@@ -2,9 +2,9 @@ import { getterTree, mutationTree, actionTree, getAccessorType } from 'typed-vue
 import { user } from '~/types/api';
 
 export const state = () => ({
-  regionSearchId: undefined as (number | undefined),
-  genreSearchId: undefined as (number | undefined),
-  searchWord:  undefined as (string | undefined),
+  regionSearchId: '' as string,
+  genreSearchId: '' as string,
+  searchWord:  '' as string,
   /* ログイン中のユーザー情報 */
   user: {} as (user | {}),
   token: undefined as (string | undefined),
@@ -17,13 +17,13 @@ export const getters = getterTree(state, {
 });
 
 export const mutations = mutationTree(state, {
-  setRegionSearchId(state: RootState, regionSearchId: (number | undefined)): void {
+  setRegionSearchId(state: RootState, regionSearchId: string): void {
     state.regionSearchId = regionSearchId;
   },
-  setGenreSearchId(state, genreSearchId: (number | undefined)): void {
+  setGenreSearchId(state, genreSearchId: string): void {
     state.genreSearchId = genreSearchId;
   },
-  setSearchWord(state: RootState, searchWord: (string | undefined)): void {
+  setSearchWord(state: RootState, searchWord: string): void {
     state.searchWord = searchWord;
   },
   setUser(state: RootState, user: (user | {})): void {
@@ -36,9 +36,9 @@ export const mutations = mutationTree(state, {
 
 export const actions = actionTree({state, mutations}, {
   clearSearchKeys({commit}) {
-    commit('setRegionSearchId', undefined);
-    commit('setGenreSearchId', undefined);
-    commit('setSearchWord', undefined);
+    commit('setRegionSearchId', '');
+    commit('setGenreSearchId', '');
+    commit('setSearchWord', '');
   }
 });
 

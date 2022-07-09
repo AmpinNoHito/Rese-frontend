@@ -25,8 +25,8 @@ export default class indexService implements indexServiceInterface {
           const favoriteResponse = res[1].data.data;
           return  {
             shops: shopResponse.shops,
-            regions: shopResponse.regionIds,
-            genres: shopResponse.genreIds,
+            regionIds: shopResponse.regionIds,
+            genreIds: shopResponse.genreIds,
             favoriteShopIds: favoriteResponse.shopIds,
             searchResults: shopResponse.shops,
             userId: user.id ?? 0,
@@ -41,8 +41,8 @@ export default class indexService implements indexServiceInterface {
           const shopResponse = res.data.data;
           return {
             shops: shopResponse.shops,
-            regions: shopResponse.regionIds,
-            genres: shopResponse.genreIds,
+            regionIds: shopResponse.regionIds,
+            genreIds: shopResponse.genreIds,
             favoriteShopIds: [],
             searchResults: shopResponse.shops,
             userId: user.id ?? 0,
@@ -77,7 +77,7 @@ export default class indexService implements indexServiceInterface {
 
   
 
-  searchShops(regionId: (number | undefined), genreId: (number | undefined), searchWord: (string | undefined), shopList: shop[]): shop[] {
+  searchShops(regionId: string, genreId: string, searchWord: string, shopList: shop[]): shop[] {
     /* 検索ワード等がない場合は店舗一覧を返す */
     if (!regionId && !genreId && !searchWord) {
       return shopList;
@@ -87,14 +87,14 @@ export default class indexService implements indexServiceInterface {
     
     /* 地域で絞り込み */
     if (regionId) {
-      searchResults = shopList.filter(shop => shop.region.id === regionId);
+      searchResults = shopList.filter(shop => shop.region.id === +regionId);
     }
     
     /* ジャンルで絞り込み */
     if (genreId) {
       searchResults = (searchResults.length) ? 
-      searchResults.filter(shop => shop.genre.id === genreId) : // 地域ですでに絞り込まれている場合
-      shopList.filter(shop => shop.genre.id === genreId); // まだ絞り込まれていない場合
+      searchResults.filter(shop => shop.genre.id === +genreId) : // 地域ですでに絞り込まれている場合
+      shopList.filter(shop => shop.genre.id === +genreId); // まだ絞り込まれていない場合
     }
     
     /* 検索ワードをもとに絞り込み */

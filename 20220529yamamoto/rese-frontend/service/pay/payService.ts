@@ -17,7 +17,6 @@ export default class payService implements payServiceInterface {
         const reservation = res.data.data;
         return {
           reservation: reservation,
-          amount: reservation.amount,
         }
       });
   };

@@ -1,91 +1,56 @@
 <template>
-  <div class="shop-index">
-    <p class="rep__header">
-      登録店舗一覧
-      <span class="rep__shop-register-button" @click="$showModal('shop')">
-        新規店舗登録
-      </span>
-    </p>
-    <p  v-if="!shops.length" class="shop-index__message shop-index__message--representative">店舗は登録されていません。</p>
-    <div class="shop-index__shops shop-index__shops--representative">
-      <CardShop
-        v-for="shop in shops"
-        :key="shop.id"
-        :shopImage="shop.image"
-        :shopName="shop.name"
-        :shopRegion="shop.region.name"
-        :shopGenre="shop.genre.name"
-        :shopId="shop.id"
-        :searchFunction="false"
-        :showHeart="false"
-        @linkClicked="$router.push(`/admin/shops/${shop.id}`)"/>
-    </div>
-    <div class="modal modal--shop" @click.self="$hideModal('shop')">
-      <div class="modal__card modal__card--shop">
-        <img
-          class="modal__cross"
-          src="~/assets/images/icon-cross.png"
-          alt="×"
-          @click="$hideModal('shop')"/>
-        <p class="modal__header">
-          新規店舗登録
-        </p>
-        <div class="modal__card-row">
-          <div class="modal__texts">
-            <div class="modal__item">
-              <p class="modal__item-label">店名</p>
-              <input class="modal__input" type="text" v-model="newShop.name">
-              <p class="error-message" v-if="errors.name.length">※{{errors.name[0]}}</p>
-            </div>
-            <div class="modal__item">
-              <p class="modal__item-label">店舗概要</p>
-              <textarea class="modal__textarea" cols="30" rows="10" v-model="newShop.description"></textarea>
-              <p class="error-message" v-if="errors.description.length">※{{errors.description[0]}}</p>
-            </div>
-          </div>
-          <div class="modal__others">
-            <div class="modal__item">
-              <p class="modal__item-label">地域・ジャンル</p>
-              <SelectRegion
-                class="modal__select"
-                :regions="[]"
-                :admin="true"
-                @changed="newShop.region_id = $event;"/>
-              <SelectGenre
-                class="modal__select"
-                :genres="[]"
-                :admin="true"
-                @changed="newShop.genre_id = $event"/>
-              <p class="error-message" v-if="errors.region_id.length">※{{errors.region_id[0]}}</p>
-              <p class="error-message" v-if="errors.genre_id.length">※{{errors.genre_id[0]}}</p>
-            </div>
-            <div class="modal__item">
-              <p class="modal__item-label">画像選択</p>
-              <label class="modal__image-select" for="file">画像を選択する</label>
-              <input type="file" id="file" @change="setImage" hidden>
-              <div v-if="previewImage" class="modal__new-image">
-                <img :src="previewImage"/>
-              </div>
-              <p class="error-message" v-if="errors.image.length">※{{errors.image[0]}}</p>
-            </div>
-          </div>
-        </div>
-        <ButtonBasic class="modal__button" @clicked="registerShop">新規登録</ButtonBasic>
-      </div>
-    </div>
-  </div>
+  <IndexTemplate>
+    <HeaderUnit
+      :headerText="'登録店舗一覧'"
+      :spanText="'新規店舗登録'"
+      :spanClicked="() => $showModal('shop')"
+    />
+    <ParagraphAtom 
+      v-if="!shops.length"
+      class="index-template__message index-template__message--representative"
+      :text="'店舗は登録されていません。'"
+    />
+    <ShopList
+      :shops="shops"
+      :isRepresentative="true"
+      :linkClicked="(shopId) => $router.push(`/admin/shops/${shopId}`)"
+    />
+    <ShopEditModal
+      :header="'新規店舗登録'"
+      :newShop="newShop"
+      :errors="errors"
+      :atNameInput="(value) => newShop.name = value"
+      :atDescriptionInput="(value) => newShop.description = value"
+      :regionChanged="(value) => newShop.region_id = +value"
+      :genreChanged="(value) => newShop.genre_id = +value"
+      :previewImage="previewImage"
+      :imageChanged="async function(e) {newShop.base64EncodedImage = previewImage = await $processImage(e)}"
+      :buttonText="'新規登録'"
+      :buttonClicked="registerShop"
+    />
+  </IndexTemplate>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { shop, newShop } from '~/types/api';
-import representative from "~/middleware/representative";
-import { errors } from '~/types/errors';
+import representative from '~/middleware/representative';
+import ParagraphAtom from '~/components/atoms/Paragraph.vue';
+import HeaderUnit from '~/components/molecules/TextUnit/HeaderUnit.vue';
+import ShopList from '~/components/organisms/List/Shops.vue';
+import ShopEditModal from '~/components/organisms/Modal/ShopEdit.vue';
+import IndexTemplate from '~/layouts/templates/Index.vue';
 import { Context } from '@nuxt/types';
 import { adminIndexData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [representative],
+  components: {
+    ParagraphAtom,
+    HeaderUnit,
+    ShopList,
+    ShopEditModal,
+    IndexTemplate,
+  },
   async asyncData({ app }: Context) {
     return await app.$service.adminIndex.getData(app);
   },
@@ -98,7 +63,7 @@ export default Vue.extend({
         name: '',
         representative_id: 0,
         description: '',
-        base64EncodedImage: undefined,
+        base64EncodedImage: '',
         region_id: 0,
         genre_id: 0,
       },
@@ -112,38 +77,16 @@ export default Vue.extend({
     } as adminIndexData;
   },
   methods: {
-    async setImage(e: Event): Promise<void> {
-      this.newShop.base64EncodedImage = this.previewImage = await this.$processImage(e);
-    },
     async registerShop(): Promise<void> {      
-      try {
-        this.shops = await this.$service.adminIndex.registerShop(this.newShop);
-        this.$hideModal('shop');
-      } catch (error: any) {
-        this.errors = this.$handleError(Object.keys(this.errors), error.response);
-      }
+      await this.$service.adminIndex.registerShop(this.newShop)
+        .then(res => {
+          this.shops = res;
+          this.previewImage = undefined;
+          this.$initializeErrors(this.errors);
+          this.$hideModal('shop');
+        })
+        .catch(error => this.$handleError(this.errors, error.response));
     },
   },
 });
 </script>
-
-<style lang="scss">
-.rep {
-  &__header {
-    font-size: $fz-mid-large;
-    position: relative;
-    padding: 20px 0;
-  }
-
-  &__shop-register-button {
-    cursor: pointer;
-    color: $c-blue;
-    font-size: $fz-smaller;
-    position: absolute;
-    right: 0;
-    @include mq() {
-      font-size: $fz-normal;
-    }
-  }
-}
-</style>
