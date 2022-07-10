@@ -15,8 +15,7 @@
       :testMode="true"
       @token="atStripeTokenSet"
     />
-    <ButtonAtom
-      class="pay-card__button"
+    <EdgeButtonAtom
       :clicked="submit"
       :text="'支払う'"
     />
@@ -27,13 +26,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
-import ButtonAtom from '~/components/atoms/Button/Button.vue';
+import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
 import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
 
 export default Vue.extend({
   components: {
     ParagraphAtom,
-    ButtonAtom,
+    EdgeButtonAtom,
     NestedText,
   },
   props: {
@@ -57,7 +56,7 @@ export default Vue.extend({
   width: 50%;
   min-height: 350px;
   height: fit-content;
-  padding: 20px 20px 50px;
+  padding: 20px 20px 60px;
   margin: 0 auto;
   border-radius: 5px;
   @include shadow(2);
@@ -81,28 +80,18 @@ export default Vue.extend({
     font-size: $fz-mid-large;
     text-align: right;
 
-    & > .nested-p__child {
+    & > .nested-text__child {
       position: relative;
       left: 0;
       margin-left: 20px;
     }
   }
 
-  &__button {
-      background-color: $c-blue--dark !important;
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      display: inline-block;
-      padding-top: 10px;
-      padding-bottom: 10px;
-  }
-
   @include mq() {
     margin-top: 100px;
     width: 100%;
     max-width: 500px;
+    padding-bottom: 70px;
   }
 }
 </style>

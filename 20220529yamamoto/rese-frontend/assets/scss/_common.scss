@@ -57,7 +57,6 @@ textarea {
   color: #fff;
   background-color: $c-blue;
   width: 50%;
-  max-height: 90vh;
   padding: 20px;
   border-radius: 5px;
   @include shadow(2);
@@ -82,8 +81,6 @@ textarea {
   }
 
   &__button {
-    background-color: $c-blue--dark !important;
-    color: #fff !important;
     margin: 0px auto;
   }
 

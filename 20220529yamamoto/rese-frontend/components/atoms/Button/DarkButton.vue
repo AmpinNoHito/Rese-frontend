@@ -1,5 +1,5 @@
 <template>
-  <button class="button" @click.prevent="clicked">{{text}}</button>
+  <button class="dark-button" @click.prevent="clicked">{{text}}</button>
 </template>
 
 <script lang="ts">
@@ -14,10 +14,10 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-.button {
+.dark-button {
   cursor: pointer;
   color: #fff;
-  background-color: $c-blue;
+  background-color: $c-blue--dark;
   border: none;
   border-radius: 3px;
   padding: 5px 15px;

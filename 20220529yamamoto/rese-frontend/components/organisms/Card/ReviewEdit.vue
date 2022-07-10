@@ -20,12 +20,12 @@
       :atInput="contentChanged"
       :errors="errors.content"
     />
-    <ButtonAtom
+    <DarkButtonAtom
       class="review-edit-card__button"
       :text="'送信'"
       :clicked="newReview.isNew ? registerReview : updateReview"
     />
-    <ButtonAtom
+    <DarkButtonAtom
       v-if="!newReview.isNew"
       class="review-edit-card__button review-edit-card__button--delete"
       :text="'レビュー削除'"
@@ -38,7 +38,7 @@
 import Vue from "vue";
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
-import ButtonAtom from '~/components/atoms/Button/Button.vue';
+import DarkButtonAtom from '~/components/atoms/Button/DarkButton.vue';
 import RatingStars from '~/components/molecules/Utils/RatingStars.vue';
 import BasicInput from '~/components/molecules/InputUnit/BasicInput.vue';
 import BasicTextarea from '~/components/molecules/TextareaUnit/BasicTextarea.vue';
@@ -47,7 +47,7 @@ export default Vue.extend({
   components: {
     HeaderAtom,
     CrossAtom,
-    ButtonAtom,
+    DarkButtonAtom,
     RatingStars,
     BasicInput,
     BasicTextarea,
@@ -74,7 +74,7 @@ export default Vue.extend({
   width: 50%;
   min-height: 350px;
   height: fit-content;
-  padding: 20px 20px 50px;
+  padding: 20px;
   border-radius: 5px;
   @include shadow(2);
   position: relative;
@@ -101,8 +101,6 @@ export default Vue.extend({
   }
 
   &__button {
-    background-color: $c-blue--dark !important;
-    color: #fff;
     &--delete {
       margin-top: 10px;
       color: #EF454A;

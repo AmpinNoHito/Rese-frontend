@@ -34,7 +34,7 @@
         />
       </div>
     </div>
-    <ButtonAtom
+    <EdgeButtonAtom
       class="card-common-style__button"
       :text="buttonText"
       :clicked="buttonClicked"
@@ -46,7 +46,7 @@
 import Vue from 'vue'
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
-import ButtonAtom from '~/components/atoms/Button/Button.vue';
+import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
 import LabeledInput from '~/components/molecules/InputUnit/LabeledInput.vue';
 import LabeledTextarea from '~/components/molecules/TextareaUnit/LabeledTextarea.vue';
 import ImageInput from '~/components/molecules/InputUnit/ImageInput.vue';
@@ -56,7 +56,7 @@ export default Vue.extend({
   components: {
     CrossAtom,
     HeaderAtom,
-    ButtonAtom,
+    EdgeButtonAtom,
     LabeledInput,
     LabeledTextarea,
     ImageInput,
@@ -79,32 +79,33 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-  .shop-edit-card {
-    width: 70%;
+.shop-edit-card {
+  width: 70%;
+  padding-bottom: 40px;
 
+  &__row {
+    width: 100%;
+    @include flex($jc: flex-start, $ai: flex-start);
+    padding: 10px 0;
+  }
+
+  &__row-child {
+    width: 50%;
+
+    &:first-child {
+      margin-right: 20px;
+    }
+  }
+
+  @include mq() {
     &__row {
       width: 100%;
-      @include flex($jc: flex-start, $ai: flex-start);
-      padding: 10px 0;
+      @include flex(column, $ai: flex-start);
     }
 
     &__row-child {
-      width: 50%;
-
-      &:first-child {
-        margin-right: 20px;
-      }
-    }
-
-    @include mq() {
-      &__row {
-        width: 100%;
-        @include flex(column, $ai: flex-start);
-      }
-
-      &__row-child {
-        width: 100%;
-      }
+      width: 100%;
     }
   }
+}
 </style>

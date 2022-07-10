@@ -21,25 +21,25 @@
       <NestedText v-if="reservation.course" class="reservation-list__item-detail" :parentText="'Total'" :childText="`¥${reservation.amount}`">
         <SpanAtom v-if="reservation.advance_payment" class="reservation-list__paid" :text="'(支払済み)'"/>
       </NestedText>  
-      <ButtonAtom
+      <DarkButtonAtom
         v-if="!isRepresentative && reservation.course && !reservation.advance_payment"
         class="reservation-list__button reservation-list__button--pay"
         :text="'事前支払い'"
         :clicked="() => payButtonClicked(reservation.id)"
       />
-      <ButtonAtom
+      <DarkButtonAtom
         v-if="!isRepresentative"
         class="reservation-list__button reservation-list__button--change"
         :text="'予約内容変更'"
         :clicked="() => reservationButtonClicked(reservation)"
       />
-      <ButtonAtom
+      <DarkButtonAtom
         v-if="!isRepresentative"
         class="reservation-list__button reservation-list__button--qr"
         :text="'QRコード表示'"
         :clicked="() => qrButtonClicked(reservation)"
       />
-      <ButtonAtom
+      <DarkButtonAtom
         v-if="isRepresentative"
         class="reservation-list__button reservation-list__button--code-reader"
         :text="'コードリーダー起動'"
@@ -56,7 +56,7 @@ import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import SpanAtom from '~/components/atoms/Text/Span.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import ImageAtom from '~/components/atoms/Image/Image.vue';
-import ButtonAtom from '~/components/atoms/Button/Button.vue';
+import DarkButtonAtom from '~/components/atoms/Button/DarkButton.vue';
 import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
 import HeaderUnit from '~/components/molecules/TextUnit/HeaderUnit.vue';
 
@@ -66,7 +66,7 @@ export default Vue.extend({
     SpanAtom,
     CrossAtom,
     ImageAtom,
-    ButtonAtom,
+    DarkButtonAtom,
     NestedText,
     HeaderUnit,
   },
@@ -132,8 +132,6 @@ export default Vue.extend({
   }
 
   &__button {
-    background-color: $c-blue--dark !important;
-    color: #fff;
     font-size: $fz-smaller;
     font-weight: bold;
     position: absolute;

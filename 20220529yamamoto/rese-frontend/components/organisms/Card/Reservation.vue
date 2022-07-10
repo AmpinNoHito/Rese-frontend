@@ -47,8 +47,7 @@
         :childText="`¥${newReservation.courses[newReservation.selectedCourseIndex].price * +newReservation.number.slice(0, -1)}`"
       />
     </div>
-    <ButtonAtom
-      class="reservation-card__button"
+    <EdgeButtonAtom
       :text="buttonText"
       :clicked="buttonClicked"
     />
@@ -59,7 +58,7 @@
 import Vue from "vue";
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
-import ButtonAtom from '~/components/atoms/Button/Button.vue';
+import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
 import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
 import ReservationForm from '~/components/organisms/Functional/ReservationForm.vue';
 
@@ -67,7 +66,7 @@ export default Vue.extend({
   components: {
     HeaderAtom,
     CrossAtom,
-    ButtonAtom,
+    EdgeButtonAtom,
     NestedText,
     ReservationForm,
   },
@@ -94,7 +93,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .reservation-card {
-  min-height: 350px;
+  max-height: none;
   height: fit-content;
   padding: 20px 20px 50px;
 
@@ -107,22 +106,6 @@ export default Vue.extend({
 
   &__confirmation-item {
     font-size: $fz-smaller;
-  }
-
-  &__button {
-    cursor: pointer;
-    height: 3em;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: none;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background-color: $c-blue--dark !important;
-    color: #fff;
-    font-size: $fz-smaller;
-    @include hoverEffect();
   }
 
   &__cross {
@@ -139,10 +122,7 @@ export default Vue.extend({
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
-
-    &__confirmation {
-      margin-bottom: 40px;
-    }
+    padding-bottom: 60px;
 
     &__confirmation-item {
       font-size: $fz-normal;

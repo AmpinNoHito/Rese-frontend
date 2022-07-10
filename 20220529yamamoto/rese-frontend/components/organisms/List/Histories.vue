@@ -13,19 +13,19 @@
       <NestedText class="reservation-list__item-detail" :parentText="'Date'" :childText="history.date"/>
       <NestedText class="reservation-list__item-detail" :parentText="'Time'" :childText="history.time"/>
       <NestedText class="reservation-list__item-detail" :parentText="'Number'" :childText="history.number"/>
-      <ButtonAtom
+      <DarkButtonAtom
         v-if="!history.review && !isRepresentative"
         class="reservation-list__button reservation-list__button--review"
         :text="'レビュー新規投稿'"
         :clicked="() => reviewButtonClicked(history)"
       />
-      <ButtonAtom
+      <DarkButtonAtom
         v-if="history.review && !isRepresentative"
         class="reservation-list__button reservation-list__button--review"
         :text="'レビュー編集'"
         :clicked="() => reviewButtonClicked(history)"
       />
-      <ButtonAtom
+      <DarkButtonAtom
         v-if="history.review && isRepresentative"
         class="reservation-list__button reservation-list__button--review"
         :text="'レビュー表示'"
@@ -42,7 +42,7 @@ import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import SpanAtom from '~/components/atoms/Text/Span.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import ImageAtom from '~/components/atoms/Image/Image.vue';
-import ButtonAtom from '~/components/atoms/Button/Button.vue';
+import DarkButtonAtom from '~/components/atoms/Button/DarkButton.vue';
 import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
 import HeaderUnit from '~/components/molecules/TextUnit/HeaderUnit.vue';
 
@@ -52,7 +52,7 @@ export default Vue.extend({
     SpanAtom,
     CrossAtom,
     ImageAtom,
-    ButtonAtom,
+    DarkButtonAtom,
     NestedText,
     HeaderUnit,
   },
