@@ -11,7 +11,7 @@ export default class reservationRepository implements reservationRepositoryInter
   }
 
   async register(sendData: sendData): Promise<newReservationResponse> {
-      return this.axios.post('/api/reservations', sendData);
+    return this.axios.post('/api/reservations', sendData);
   }
 
   async getById(id: number): Promise<reservationResponse> {
