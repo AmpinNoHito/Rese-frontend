@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ButtonAtom from '~/components/atoms/Button.vue';
+import ButtonAtom from '~/components/atoms/Button/Button.vue';
 import CodeReader from '~/components/molecules/Utils/CodeReader.vue';
 
 export default Vue.extend({

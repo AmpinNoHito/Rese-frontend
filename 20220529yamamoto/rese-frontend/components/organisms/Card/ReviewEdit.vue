@@ -36,9 +36,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import HeaderAtom from '~/components/atoms/Header.vue';
-import CrossAtom from '~/components/atoms/Cross.vue';
-import ButtonAtom from '~/components/atoms/Button.vue';
+import HeaderAtom from '~/components/atoms/Text/Header.vue';
+import CrossAtom from '~/components/atoms/Icon/Cross.vue';
+import ButtonAtom from '~/components/atoms/Button/Button.vue';
 import RatingStars from '~/components/molecules/Utils/RatingStars.vue';
 import BasicInput from '~/components/molecules/InputUnit/BasicInput.vue';
 import BasicTextarea from '~/components/molecules/TextareaUnit/BasicTextarea.vue';

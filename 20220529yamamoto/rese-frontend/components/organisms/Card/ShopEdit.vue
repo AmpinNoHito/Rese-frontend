@@ -44,9 +44,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import CrossAtom from '~/components/atoms/Cross.vue';
-import HeaderAtom from '~/components/atoms/Header.vue';
-import ButtonAtom from '~/components/atoms/Button.vue';
+import CrossAtom from '~/components/atoms/Icon/Cross.vue';
+import HeaderAtom from '~/components/atoms/Text/Header.vue';
+import ButtonAtom from '~/components/atoms/Button/Button.vue';
 import LabeledInput from '~/components/molecules/InputUnit/LabeledInput.vue';
 import LabeledTextarea from '~/components/molecules/TextareaUnit/LabeledTextarea.vue';
 import ImageInput from '~/components/molecules/InputUnit/ImageInput.vue';

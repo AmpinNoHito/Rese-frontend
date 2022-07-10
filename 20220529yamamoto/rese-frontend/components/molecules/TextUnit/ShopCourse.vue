@@ -15,9 +15,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ParagraphAtom from '~/components/atoms/Paragraph.vue';
-import SpanAtom from '~/components/atoms/Span.vue';
-import ClickableSpan from '~/components/atoms/ClickableSpan.vue';
+import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
+import SpanAtom from '~/components/atoms/Text/Span.vue';
+import ClickableSpan from '~/components/atoms/Text/ClickableSpan.vue';
 
 export default Vue.extend({
   components: {

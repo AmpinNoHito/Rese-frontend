@@ -1,6 +1,6 @@
 <template>
   <SelectorAtom class="basic-selector" :changed="changed">
-      <OptionLabelAtom
+      <FirstOptionAtom
         :selectCondition="!selectedId"
         :label="label"
         :hidden="true"
@@ -17,14 +17,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import SelectorAtom from '~/components/atoms/Selector.vue';
-import OptionLabelAtom from '~/components/atoms/OptionLabel.vue';
-import OptionAtom  from '~/components/atoms/Option.vue';
+import SelectorAtom from '~/components/atoms/Functional/Selector.vue';
+import FirstOptionAtom from '~/components/atoms/Functional/FirstOption.vue';
+import OptionAtom  from '~/components/atoms/Functional/Option.vue';
 
 export default Vue.extend({
   components: {
     SelectorAtom,
-    OptionLabelAtom,
+    FirstOptionAtom,
     OptionAtom,
   },
   props: {

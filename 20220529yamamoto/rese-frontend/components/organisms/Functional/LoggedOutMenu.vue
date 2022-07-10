@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import LinkAtom from '~/components/atoms/Link.vue';
+import LinkAtom from '~/components/atoms/Text/Link.vue';
 
 export default Vue.extend({
   components: {

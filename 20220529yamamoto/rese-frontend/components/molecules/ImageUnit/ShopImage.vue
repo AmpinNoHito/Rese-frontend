@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ImageAtom from '~/components/atoms/Image.vue';
+import ImageAtom from '~/components/atoms/Image/Image.vue';
 
 export default Vue.extend({
   components: {

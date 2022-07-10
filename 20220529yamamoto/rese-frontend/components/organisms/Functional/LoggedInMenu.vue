@@ -36,8 +36,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import LinkAtom from '~/components/atoms/Link.vue';
-import ClickableSpan from '~/components/atoms/ClickableSpan.vue';
+import LinkAtom from '~/components/atoms/Text/Link.vue';
+import ClickableSpan from '~/components/atoms/Text/ClickableSpan.vue';
 
 export default Vue.extend({
   components: {

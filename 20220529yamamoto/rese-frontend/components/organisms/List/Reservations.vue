@@ -52,11 +52,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import ParagraphAtom from '~/components/atoms/Paragraph.vue';
-import SpanAtom from '~/components/atoms/Span.vue';
-import CrossAtom from '~/components/atoms/Cross.vue';
-import ImageAtom from '~/components/atoms/Image.vue';
-import ButtonAtom from '~/components/atoms/Button.vue';
+import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
+import SpanAtom from '~/components/atoms/Text/Span.vue';
+import CrossAtom from '~/components/atoms/Icon/Cross.vue';
+import ImageAtom from '~/components/atoms/Image/Image.vue';
+import ButtonAtom from '~/components/atoms/Button/Button.vue';
 import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
 import HeaderUnit from '~/components/molecules/TextUnit/HeaderUnit.vue';
 

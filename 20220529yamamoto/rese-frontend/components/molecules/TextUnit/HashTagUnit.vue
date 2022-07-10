@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import HashTagAtom from '~/components/atoms/HashTag.vue';
+import HashTagAtom from '~/components/atoms/Text/HashTag.vue';
 
 export default Vue.extend({
   components: {HashTagAtom},

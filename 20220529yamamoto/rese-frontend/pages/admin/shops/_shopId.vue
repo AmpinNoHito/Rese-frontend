@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import CrossAtom from '~/components/atoms/Cross.vue';
+import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import ShopDetail from '~/components/organisms/Composition/ShopDetail.vue';
 import ShopEditModal from '~/components/organisms/Modal/ShopEdit.vue';
 import ReservationDetail from '~/components/organisms/Composition/ReservationDetail.vue';

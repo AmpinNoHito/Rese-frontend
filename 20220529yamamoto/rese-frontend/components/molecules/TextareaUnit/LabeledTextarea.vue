@@ -16,9 +16,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ParagraphAtom  from '~/components/atoms/Paragraph.vue';
-import TextareaAtom from '~/components/atoms/Textarea.vue';
-import ErrorAtom from '~/components/atoms/Error.vue';
+import ParagraphAtom  from '~/components/atoms/Text/Paragraph.vue';
+import TextareaAtom from '~/components/atoms/Functional/Textarea.vue';
+import ErrorAtom from '~/components/atoms/Text/Error.vue';
 
 export default Vue.extend({
   components: {

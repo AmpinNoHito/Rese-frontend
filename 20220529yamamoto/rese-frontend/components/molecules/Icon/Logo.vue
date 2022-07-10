@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import SpanAtom from '~/components/atoms/Span.vue';
+import SpanAtom from '~/components/atoms/Text/Span.vue';
 
 export default Vue.extend({
   components: {

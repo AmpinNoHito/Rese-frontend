@@ -38,8 +38,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import LinkAtom from '~/components/atoms/Link.vue';
-import ButtonAtom from '~/components/atoms/Button.vue';
+import LinkAtom from '~/components/atoms/Text/Link.vue';
+import ButtonAtom from '~/components/atoms/Button/Button.vue';
 import ShopCardImage from '~/components/molecules/ImageUnit/ShopCardImage.vue';
 import HashTag from '~/components/molecules/TextUnit/HashTagUnit.vue';
 import FavoriteButton from '~/components/molecules/Utils/FavoriteButton.vue';

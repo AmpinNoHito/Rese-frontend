@@ -12,8 +12,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ImageAtom from '~/components/atoms/Image.vue';
-import InputAtom from '~/components/atoms/Input.vue';
+import ImageAtom from '~/components/atoms/Image/Image.vue';
+import InputAtom from '~/components/atoms/Functional/Input.vue';
 
 export default Vue.extend({
   components: {

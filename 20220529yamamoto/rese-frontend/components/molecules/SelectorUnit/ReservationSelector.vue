@@ -1,7 +1,7 @@
 <template>
   <div class="reservation-selector">
     <SelectorAtom class="reservation-selector__selector" :changed="changed">
-      <OptionLabelAtom
+      <FirstOptionAtom
         :selectCondition="!selectedOption"
         :label="label"
         :hidden="true"
@@ -20,16 +20,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import SelectorAtom from '~/components/atoms/Selector.vue';
-import OptionAtom from '~/components/atoms/Option.vue';
-import OptionLabelAtom from '~/components/atoms/OptionLabel.vue';
-import ErrorAtom from '~/components/atoms/Error.vue';
+import SelectorAtom from '~/components/atoms/Functional/Selector.vue';
+import OptionAtom from '~/components/atoms/Functional/Option.vue';
+import FirstOptionAtom from '~/components/atoms/Functional/FirstOption.vue';
+import ErrorAtom from '~/components/atoms/Text/Error.vue';
 
 export default Vue.extend({
   components: {
     SelectorAtom,
     OptionAtom,
-    OptionLabelAtom,
+    FirstOptionAtom,
     ErrorAtom,
   },
   props: {

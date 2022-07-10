@@ -11,9 +11,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import CrossAtom from '~/components/atoms/Cross.vue';
-import ParagraphAtom from '~/components/atoms/Paragraph.vue';
-import ImageAtom from '~/components/atoms/Image.vue';
+import CrossAtom from '~/components/atoms/Icon/Cross.vue';
+import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
+import ImageAtom from '~/components/atoms/Image/Image.vue';
 
 export default Vue.extend({
   components: {

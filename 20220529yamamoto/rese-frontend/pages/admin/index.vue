@@ -34,7 +34,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import representative from '~/middleware/representative';
-import ParagraphAtom from '~/components/atoms/Paragraph.vue';
+import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import HeaderUnit from '~/components/molecules/TextUnit/HeaderUnit.vue';
 import ShopList from '~/components/organisms/List/Shops.vue';
 import ShopEditModal from '~/components/organisms/Modal/ShopEdit.vue';

@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import InputAtom from '~/components/atoms/Input.vue';
+import InputAtom from '~/components/atoms/Functional/Input.vue';
 
 export default Vue.extend({
   components: {

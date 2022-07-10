@@ -1,6 +1,6 @@
 <template>
   <div class="auth-input">
-    <ImageLabelAtom
+    <ImageLabel
       :targetId="id"
       :image="image"
     />
@@ -17,13 +17,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ImageLabelAtom from '~/components/atoms/ImageLabel.vue';
-import InputAtom from '~/components/atoms/Input.vue';
-import ErrorAtom from '~/components/atoms/Error.vue';
+import ImageLabel from '~/components/molecules/ImageUnit/ImageLabel.vue';
+import InputAtom from '~/components/atoms/Functional/Input.vue';
+import ErrorAtom from '~/components/atoms/Text/Error.vue';
 
 export default Vue.extend({
   components: {
-    ImageLabelAtom,
+    ImageLabel,
     InputAtom,
     ErrorAtom,
   },

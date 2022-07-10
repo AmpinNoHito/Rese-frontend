@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import HeaderAtom from '~/components/atoms/Header.vue';
-import ParagraphAtom from '~/components/atoms/Paragraph.vue';
+import HeaderAtom from '~/components/atoms/Text/Header.vue';
+import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import HeaderUnit from '~/components/molecules/TextUnit/HeaderUnit.vue';
 import ShopCourse from '~/components/molecules/TextUnit/ShopCourse.vue';
 

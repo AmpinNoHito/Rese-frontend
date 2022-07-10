@@ -11,8 +11,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import HeaderAtom from '~/components/atoms/Header.vue';
-import ClickableSpan from '~/components/atoms/ClickableSpan.vue';
+import HeaderAtom from '~/components/atoms/Text/Header.vue';
+import ClickableSpan from '~/components/atoms/Text/ClickableSpan.vue';
 
 export default Vue.extend({
   components: {

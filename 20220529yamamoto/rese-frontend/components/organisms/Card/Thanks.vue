@@ -18,8 +18,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import ParagraphAtom from '~/components/atoms/Paragraph.vue';
-import ButtonAtom from '~/components/atoms/Button.vue';
+import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
+import ButtonAtom from '~/components/atoms/Button/Button.vue';
 
 export default Vue.extend({
   components: {
