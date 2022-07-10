@@ -24,8 +24,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import SearchBarSelector from '~/components/molecules/SelectorUnit/SearchBarSelectorUnit.vue';
-import SearchInput from '~/components/molecules/InputUnit/SearchInput.vue';
+import SearchBarSelector from '~/components/molecules/Selector/SearchBarSelector.vue';
+import SearchInput from '~/components/molecules/Input/SearchInput.vue';
 
 export default Vue.extend({
   components: {

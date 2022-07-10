@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import InputAtom from '~/components/atoms/Functional/Input.vue';
+import InputAtom from '~/components/atoms/Form/Input.vue';
 import ErrorAtom from '~/components/atoms/Text/Error.vue';
 
 export default Vue.extend({

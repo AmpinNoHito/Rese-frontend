@@ -17,9 +17,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import SelectorAtom from '~/components/atoms/Functional/Selector.vue';
-import FirstOptionAtom from '~/components/atoms/Functional/FirstOption.vue';
-import OptionAtom  from '~/components/atoms/Functional/Option.vue';
+import SelectorAtom from '~/components/atoms/Form/Selector.vue';
+import FirstOptionAtom from '~/components/atoms/Form/FirstOption.vue';
+import OptionAtom  from '~/components/atoms/Form/Option.vue';
 
 export default Vue.extend({
   components: {

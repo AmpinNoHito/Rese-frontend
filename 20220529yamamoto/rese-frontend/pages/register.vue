@@ -1,13 +1,12 @@
 <template>
   <AuthTemplate>
     <AuthCard
-      :nameErrors="errors.name"
+      :form="form"
       :nameInput="value => this.form.name = value"
-      :emailErrors="errors.email"
       :emailInput="value => this.form.email = value"
-      :passwordErrors="errors.password"
       :passwordInput="value => this.form.password = value"
       :buttonClicked="register"
+      :errors="errors"
     />
   </AuthTemplate>
 </template>
@@ -25,7 +24,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      form:{
+      form: {
         name: '',
         email: '',
         password: '',

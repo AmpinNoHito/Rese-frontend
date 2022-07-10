@@ -25,7 +25,7 @@
 import Vue from 'vue';
 import ParagraphAtom  from '~/components/atoms/Text/Paragraph.vue';
 import ErrorAtom from '~/components/atoms/Text/Error.vue';
-import BasicSelector from '~/components/molecules/SelectorUnit/BasicSelector.vue';
+import BasicSelector from '~/components/molecules/Selector/BasicSelector.vue';
 
 export default Vue.extend({
   components: {

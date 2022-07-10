@@ -19,38 +19,38 @@ export default class indexService implements indexServiceInterface {
     const shopPromise = this.shopRepository.index();
     if ($accessor.loggedIn) {  // ログインしている場合はお気に入りのデータも取得
       const favoritePromise = this.shopRepository.getFavoriteShops(user.id);
-      return await Promise.all([shopPromise, favoritePromise])
-        .then(res => {
-          const shopResponse = res[0].data.data;
-          const favoriteResponse = res[1].data.data;
-          return  {
-            shops: shopResponse.shops,
-            regionIds: shopResponse.regionIds,
-            genreIds: shopResponse.genreIds,
-            favoriteShopIds: favoriteResponse.shopIds,
-            searchResults: shopResponse.shops,
-            userId: user.id ?? 0,
-          }
-        })
+      const res = await Promise.all([shopPromise, favoritePromise])
         .catch(error => {
           throw error;
         });
-    } else {
-      return await Promise.resolve(shopPromise)
-        .then(res => {
-          const shopResponse = res.data.data;
-          return {
-            shops: shopResponse.shops,
-            regionIds: shopResponse.regionIds,
-            genreIds: shopResponse.genreIds,
-            favoriteShopIds: [],
-            searchResults: shopResponse.shops,
-            userId: user.id ?? 0,
-          }
-        })
+      
+      const shopResponse = res[0].data.data;
+      const favoriteResponse = res[1].data.data;
+
+      return  {
+        shops: shopResponse.shops,
+        regionIds: shopResponse.regionIds,
+        genreIds: shopResponse.genreIds,
+        favoriteShopIds: favoriteResponse.shopIds,
+        searchResults: shopResponse.shops,
+        userId: user.id ?? 0,
+      }
+    } else {  // ログインしていない場合は店舗データのみ取得
+      const res = await shopPromise
         .catch(error => {
           throw error;
         });
+
+      const shopResponse = res.data.data;
+
+      return {
+        shops: shopResponse.shops,
+        regionIds: shopResponse.regionIds,
+        genreIds: shopResponse.genreIds,
+        favoriteShopIds: [],
+        searchResults: shopResponse.shops,
+        userId: user.id ?? 0,
+      }
     }
   }
   
@@ -58,7 +58,7 @@ export default class indexService implements indexServiceInterface {
     const ch = favoriteShopIds.includes(selectedShopId);
     if (ch) { //店舗が既にお気に入りに追加されている場合は削除
       favoriteShopIds = favoriteShopIds.filter(favoriteShopId => favoriteShopId !== selectedShopId);
-      await Promise.resolve(this.favoriteRepository.delete(userId, selectedShopId))
+      await this.favoriteRepository.delete(userId, selectedShopId)
         .catch(error => {
           favoriteShopIds.push(selectedShopId);
           throw error;
@@ -66,10 +66,10 @@ export default class indexService implements indexServiceInterface {
     } else {  //店舗がまだお気に入りに追加されていない場合は追加
       const sendData = {user_id: userId, shop_id: selectedShopId};
       favoriteShopIds.push(selectedShopId);
-      await Promise.resolve(this.favoriteRepository.register(sendData))
+      await this.favoriteRepository.register(sendData)
       .catch(error => {
         favoriteShopIds = favoriteShopIds.filter(favoriteShopId => favoriteShopId !== selectedShopId);
-        throw error;
+          throw error;
         });
     }
     return favoriteShopIds;

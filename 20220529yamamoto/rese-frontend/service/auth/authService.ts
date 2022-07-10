@@ -12,17 +12,18 @@ export default class authService implements authServiceInterface {
   }
   
   async register(form: sendData): Promise<void> {
-    await Promise.resolve(this.userRepository.register(form))
+    await this.userRepository.register(form)
       .catch(error => {
         throw error;
       });
   }
 
   async registerRepresentative(form: sendData): Promise<sendData> {
-    await Promise.resolve(this.userRepository.registerRepresentative(form))
+    await this.userRepository.registerRepresentative(form)
       .catch(error => {
         throw error;
       });
+
     alert('新規店舗代表者が登録されました。\nアドレス検証用のメールをご確認いただくよう、代表者にお伝えください。');
     Object.keys(form).forEach(key => form[key] = '');  // フォームを初期化
     return form;
@@ -30,35 +31,35 @@ export default class authService implements authServiceInterface {
 
   async login(form: sendData, query: Dictionary<string | (string | null)[]>): Promise<[string, user, RawLocation]> {
     /* ログイン、トークン取得 */
-    const token = await Promise.resolve(this.userRepository.login(form))
-      .then(res => res.data.token)
+    const tokenRes = await this.userRepository.login(form)
       .catch(error => {
         throw error;
       });
+    const token = tokenRes.data.token;
+    
     /* ユーザー情報を取得し、画面遷移 */
-    return await Promise.resolve(this.userRepository.getUser(token))
-      .then(res => {
-        const user = res.data.user;
-        let path: RawLocation;
-        if (Object.keys(query).length) {  // 予約画面から遷移してきた場合 
-          path = {
-            path: `/shops/${query.sh}`,
-            query: {  //  入力情報を復元できるようにクエリパラメータを渡す
-              dt: query.dt, // 日付(date)
-              tm: query.tm, // 時間(time)
-              nm: query.nm, // 人数(number)
-              sc: query.sc, // コース(selected course)
-            }
-          };
-        } else {
-          path = '/';
+    const userRes = await this.userRepository.getUser(token);
+    const user = userRes.data.user;
+
+    if (Object.keys(query).length) {  // 予約画面から遷移してきた場合 
+      const path = {
+        path: `/shops/${query.sh}`,
+        query: {  //  入力情報を復元できるようにクエリパラメータを渡す
+          dt: query.dt, // 日付(date)
+          tm: query.tm, // 時間(time)
+          nm: query.nm, // 人数(number)
+          sc: query.sc, // コース(selected course)
         }
-        return [token, user, path];
-    })
+      };
+      return [token, user, path];
+    } else {
+      const path = '/';
+      return [token, user, path];
+    }
   }
 
   async logout(): Promise<void> {
-    await Promise.resolve(this.userRepository.logout())
+    await this.userRepository.logout()
       .catch(error => {
         throw error;
       });

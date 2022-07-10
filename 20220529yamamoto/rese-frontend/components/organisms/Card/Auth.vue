@@ -8,26 +8,29 @@
       <AuthInput
         v-if="register"
         :id="'name'"
+        :inputValue="form.name"
         :image="require('~/assets/images/icon-user.png')"
         :type="'text'"
         :placeholder="admin ? 'representative\'s name': 'Username'"
-        :errors="nameErrors"
+        :errors="errors.name"
         :atInput="nameInput"
       />
       <AuthInput
         :id="'email'"
+        :inputValue="form.email"
         :image="require('~/assets/images/icon-email.png')"
         :type="'email'"
         :placeholder="admin ? 'Representative\'s email' : 'Email'"
-        :errors="emailErrors"
+        :errors="errors.email"
         :atInput="emailInput"
       />
       <AuthInput
         :id="'password'"
+        :inputValue="form.password"
         :image="require('~/assets/images/icon-password.png')"
         :type="'password'"
         :placeholder="'Password'"
-        :errors="passwordErrors"
+        :errors="errors.password"
         :atInput="passwordInput"
       />
       <ButtonAtom
@@ -43,7 +46,7 @@
 import Vue from 'vue';
 import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import ButtonAtom from '~/components/atoms/Button/Button.vue';
-import AuthInput from '~/components/molecules/InputUnit/AuthInput.vue';
+import AuthInput from '~/components/molecules/Input/AuthInput.vue';
 
 export default Vue.extend({
   components: {
@@ -52,6 +55,7 @@ export default Vue.extend({
     AuthInput,
   },
   props: {
+    form: Object,
     admin: {
       type: Boolean,
       required: false,
@@ -62,13 +66,11 @@ export default Vue.extend({
       required: false,
       default: true,
     },
-    nameErrors: Array,
     nameInput: Function,
-    emailErrors: Array,
     emailInput: Function,
-    passwordErrors: Array,
     passwordInput: Function,
     buttonClicked: Function,
+    errors: Object,
   }
 });
 </script>

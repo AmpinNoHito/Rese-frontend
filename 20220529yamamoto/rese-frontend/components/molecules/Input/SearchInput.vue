@@ -13,7 +13,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import ImageAtom from '~/components/atoms/Image/Image.vue';
-import InputAtom from '~/components/atoms/Functional/Input.vue';
+import InputAtom from '~/components/atoms/Form/Input.vue';
 
 export default Vue.extend({
   components: {

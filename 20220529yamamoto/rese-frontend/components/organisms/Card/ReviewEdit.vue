@@ -40,8 +40,8 @@ import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import DarkButtonAtom from '~/components/atoms/Button/DarkButton.vue';
 import RatingStars from '~/components/molecules/Utils/RatingStars.vue';
-import BasicInput from '~/components/molecules/InputUnit/BasicInput.vue';
-import BasicTextarea from '~/components/molecules/TextareaUnit/BasicTextarea.vue';
+import BasicInput from '~/components/molecules/Input/BasicInput.vue';
+import BasicTextarea from '~/components/molecules/Textarea/BasicTextarea.vue';
 
 export default Vue.extend({
   components: {

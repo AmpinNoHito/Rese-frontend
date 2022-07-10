@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
-import SearchBar from '~/components/organisms/Functional/SearchBar.vue';
+import SearchBar from '~/components/organisms/Form/SearchBar.vue';
 import ShopList from '~/components/organisms/List/Shops.vue';
 import IndexTemplate from '~/layouts/templates/Index.vue';
 import { Context } from '@nuxt/types';

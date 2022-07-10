@@ -2,13 +2,12 @@
   <AuthTemplate>
     <AuthCard
       :admin="true"
-      :nameErrors="errors.name"
+      :form="form"
       :nameInput="value => this.form.name = value"
-      :emailErrors="errors.email"
       :emailInput="value => this.form.email = value"
-      :passwordErrors="errors.password"
       :passwordInput="value => this.form.password = value"
       :buttonClicked="register"
+      :errors="errors"
     />
   </AuthTemplate>
 </template>
@@ -29,7 +28,7 @@ export default Vue.extend({
   },
   data(){
     return {
-      form:{
+      form: {
         name: '',
         email: '',
         password: '',
@@ -45,7 +44,7 @@ export default Vue.extend({
     async register(): Promise<void> {
       await this.$service.auth.registerRepresentative(this.form)
         .then(res => this.form = res)
-        .then(error => this.$handleError(this.errors, error.response));
+        .catch(error => this.$handleError(this.errors, error.response));
     },
   }
 });

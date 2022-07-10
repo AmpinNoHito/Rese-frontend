@@ -24,21 +24,21 @@ export default class mypageService implements mypageServiceInterface{
     const user = $accessor.user as user;
     const reservationPromise = this.reservationRepository.getByUserId(user.id);
     const shopPromise = this.shopRepository.getFavoriteShops(user.id);
-    return await Promise.all([reservationPromise, shopPromise])
-      .then(res => {
-        const reservationResponse = res[0].data.data;
-        const favoriteResponse = res[1].data.data;
-        return {
-          userId: user.id,
-          today: $getTodaysDate(),
-          reservations: reservationResponse.reservations,
-          histories: reservationResponse.histories,
-          favoriteShops: favoriteResponse.shops,
-        };
-      })
+    const res = await Promise.all([reservationPromise, shopPromise])
       .catch(error => {
         throw error;
       });
+
+    const reservationResponse = res[0].data.data;
+    const favoriteResponse = res[1].data.data;
+
+    return {
+      userId: user.id,
+      today: $getTodaysDate(),
+      reservations: reservationResponse.reservations,
+      histories: reservationResponse.histories,
+      favoriteShops: favoriteResponse.shops,
+    };
   }
 
   setNewReservationData(selectedReservation: reservation): newReservation {
@@ -78,17 +78,18 @@ export default class mypageService implements mypageServiceInterface{
     }
 
       /* 予約内容変更処理 */
-      await Promise.resolve(this.reservationRepository.update(data.selectedReservationId as number, sendData))
+      await this.reservationRepository.update(data.selectedReservationId as number, sendData)
         .catch(error => {
           throw error;
         });
       alert('予約内容を変更しました。');
+
       /* 変更後の予約データを取得 */
-      return await Promise.resolve(this.reservationRepository.getByUserId(userId))
-        .then(res => res.data.data.reservations)
+      const res = await this.reservationRepository.getByUserId(userId)
         .catch(error => {
           throw error;
         });
+      return res.data.data.reservations;
   }
 
   async deleteReservation(reservationIndex: number, reservationId: number, reservations: reservation[]): Promise<void> {
@@ -96,11 +97,11 @@ export default class mypageService implements mypageServiceInterface{
     if (!ch) return;
 
     /* dataの配列とDBから削除 */
-    await Promise.resolve(this.reservationRepository.delete(reservationId))
-      .then(res => reservations.splice(reservationIndex, 1))
+    await this.reservationRepository.delete(reservationId)
       .catch(error => {
         throw error;
       });
+    reservations.splice(reservationIndex, 1);
   }
 
   setNewReviewData(selectedHistory: reservation): newReview {
@@ -132,17 +133,17 @@ export default class mypageService implements mypageServiceInterface{
     }
 
     /* 新規作成実行 */
-    await Promise.resolve(this.reviewRepository.register(sendData))
+    await this.reviewRepository.register(sendData)
       .catch(error => {
         throw error;
       });
     alert('新規レビューを投稿しました。');
     /* 予約履歴データを取得 */
-    return await Promise.resolve(this.reservationRepository.getByUserId(userId))
-      .then(res => res.data.data.histories)
+    const res = await this.reservationRepository.getByUserId(userId)
       .catch(error => {
         throw error;
       });
+    return res.data.data.histories;
   }
 
   async updateReview(data: newReview, userId: number): Promise<reservation[]> {
@@ -161,17 +162,18 @@ export default class mypageService implements mypageServiceInterface{
 
     
     /* レビュー内容変更処理 */
-    await Promise.resolve(this.reviewRepository.update(data.selectedReviewId as number, sendData))
+    await this.reviewRepository.update(data.selectedReviewId as number, sendData)
       .catch(error => {
         throw error;
       });
     alert('レビュー内容を変更しました。');
+
     /* 予約履歴データを取得 */
-    return await Promise.resolve(this.reservationRepository.getByUserId(userId))
-      .then(res => res.data.data.histories)
+    const res = await this.reservationRepository.getByUserId(userId)
       .catch(error => {
         throw error;
       });
+    return res.data.data.histories;
   }
 
   async deleteReview(id: number, histories: reservation[], userId: number): Promise<reservation[]> {
@@ -180,28 +182,29 @@ export default class mypageService implements mypageServiceInterface{
     if (!ch) return histories;
 
     /* DBから削除 */
-    await Promise.resolve(this.reviewRepository.delete(id))
+    await this.reviewRepository.delete(id)
       .catch(error => {
         throw error;
       });
     alert('レビューを削除しました。');
+
     /* 予約履歴データを取得 */
-    return await Promise.resolve(this.reservationRepository.getByUserId(userId))
-      .then(res => res.data.data.histories)
+    const res = await this.reservationRepository.getByUserId(userId)
       .catch(error => {
         throw error;
       });
+    return res.data.data.histories;
   }
 
-  async deleteFavorite(reservationIndex: number, userId: number, shopId: number, favoriteShops: shop[]): Promise<shop[]> {
+  async deleteFavorite(reservationIndex: number, userId: number, shopId: number, favoriteShops: shop[]): Promise<void> {
     const ch = confirm('お気に入り店舗から削除しますか？');
-    if (!ch) return favoriteShops;  // キャンセルされた場合はお気に入り店舗をそのまま返す
+    if (!ch) return;
     
     /* dataの配列とDBから削除 */
-    return await Promise.resolve(this.favoriteRepository.delete(userId, shopId))
-      .then(res => favoriteShops.splice(reservationIndex, 1))
+    await this.favoriteRepository.delete(userId, shopId)
       .catch(error => {
         throw error;
       });
+    favoriteShops.splice(reservationIndex, 1)
   }
 }

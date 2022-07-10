@@ -12,13 +12,14 @@ export default class payService implements payServiceInterface {
   }
 
   async getData(reservationId: number): Promise<payInitData> {
-    return await Promise.resolve(this.reservationRepository.getById(reservationId))
-      .then(res => {
-        const reservation = res.data.data;
-        return {
-          reservation: reservation,
-        }
-      });
+    const res = await this.reservationRepository.getById(reservationId)
+      .catch(error => {
+        throw error;
+      })
+
+    return {
+      reservation: res.data.data,
+    };
   };
 
   async pay(reservationId: number, token: Stripe.Token, amount: number): Promise<void> {
@@ -27,10 +28,10 @@ export default class payService implements payServiceInterface {
       source: token.id,
     }
 
-    await Promise.resolve(this.reservationRepository.pay(reservationId, sendData))
-      .then(res => alert(`支払い処理が正常に完了しました。\n\nマイページに遷移します。`))
+    await this.reservationRepository.pay(reservationId, sendData)
       .catch(error => {
         throw error;
       })
+    alert(`支払い処理が正常に完了しました。\n\nマイページに遷移します。`);
   };
 }

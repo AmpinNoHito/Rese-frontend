@@ -9,6 +9,7 @@
       :id="id"
       :type="type"
       :placeholder="placeholder"
+      :inputValue="inputValue"
       :atInput="atInput"
     />
     <ErrorAtom :errors="errors"/>
@@ -17,8 +18,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ImageLabel from '~/components/molecules/ImageUnit/ImageLabel.vue';
-import InputAtom from '~/components/atoms/Functional/Input.vue';
+import ImageLabel from '~/components/molecules/Image/ImageLabel.vue';
+import InputAtom from '~/components/atoms/Form/Input.vue';
 import ErrorAtom from '~/components/atoms/Text/Error.vue';
 
 export default Vue.extend({
@@ -29,6 +30,7 @@ export default Vue.extend({
   },
   props: {
     id: String,
+    inputValue: String,
     image: String,
     type: String,
     placeholder: String,

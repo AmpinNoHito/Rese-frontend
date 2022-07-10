@@ -1,12 +1,12 @@
 <template>
   <AuthTemplate>
     <AuthCard
+      :form="form"
       :register="false"
-      :emailErrors="errors.email"
       :emailInput="value => this.form.email = value"
-      :passwordErrors="errors.password"
       :passwordInput="value => this.form.password = value"
       :buttonClicked="login"
+      :errors="errors"
     />
   </AuthTemplate>
 </template>

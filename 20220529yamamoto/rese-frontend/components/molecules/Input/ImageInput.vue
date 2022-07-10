@@ -29,7 +29,7 @@
 import Vue from 'vue';
 import ParagraphAtom  from '~/components/atoms/Text/Paragraph.vue';
 import LabelAtom from '~/components/atoms/Text/Label.vue';
-import InputAtom from '~/components/atoms/Functional/Input.vue';
+import InputAtom from '~/components/atoms/Form/Input.vue';
 import ImageAtom from '~/components/atoms/Image/Image.vue';
 import ErrorAtom from '~/components/atoms/Text/Error.vue';
 

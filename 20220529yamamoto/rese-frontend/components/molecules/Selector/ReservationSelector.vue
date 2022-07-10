@@ -20,9 +20,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import SelectorAtom from '~/components/atoms/Functional/Selector.vue';
-import OptionAtom from '~/components/atoms/Functional/Option.vue';
-import FirstOptionAtom from '~/components/atoms/Functional/FirstOption.vue';
+import SelectorAtom from '~/components/atoms/Form/Selector.vue';
+import OptionAtom from '~/components/atoms/Form/Option.vue';
+import FirstOptionAtom from '~/components/atoms/Form/FirstOption.vue';
 import ErrorAtom from '~/components/atoms/Text/Error.vue';
 
 export default Vue.extend({

@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import TextareaAtom from '~/components/atoms/Functional/Textarea.vue';
+import TextareaAtom from '~/components/atoms/Form/Textarea.vue';
 import ErrorAtom from '~/components/atoms/Text/Error.vue';
 
 export default Vue.extend({

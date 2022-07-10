@@ -10,21 +10,21 @@
         :dateValue="newReservation.date"
         :atInput="atDateInput"
       />
-      <ReservationSelectorUnit
+      <ReservationSelector
         :label="'時間を選択してください'"
         :options="$TIMES"
         :selectedOption="newReservation.time"
         :changed="timeChanged"
         :errors="errors.datetime"
       />
-      <ReservationSelectorUnit
+      <ReservationSelector
         :label="'人数を選択してください'"
         :options="$NUMBERS"
         :selectedOption="newReservation.number"
         :changed="numberChanged"
         :errors="errors.number"
       />
-      <ReservationSelectorUnit
+      <ReservationSelector
         v-if="newReservation.courses.length"
         :selectCourse="true"
         :label="'コースを選択してください (任意)'"
@@ -79,9 +79,9 @@ import Vue from "vue";
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
-import DateInput from '~/components/molecules/InputUnit/DateInput.vue';
-import ReservationSelectorUnit from '~/components/molecules/SelectorUnit/ReservationSelector.vue';
-import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
+import DateInput from '~/components/molecules/Input/DateInput.vue';
+import ReservationSelector from '~/components/molecules/Selector/ReservationSelector.vue';
+import NestedText from '~/components/molecules/Text/NestedText.vue';
 
 export default Vue.extend({
   components: {
@@ -89,7 +89,7 @@ export default Vue.extend({
     CrossAtom,
     EdgeButtonAtom,
     DateInput,
-    ReservationSelectorUnit,
+    ReservationSelector,
     NestedText,
   },
   props: {

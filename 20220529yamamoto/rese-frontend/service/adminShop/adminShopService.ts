@@ -17,25 +17,25 @@ export default class adminShopService implements adminShopServiceInterface {
   }
 
   async getData(representativeId: number, shopId: number): Promise<adminShopInitData> {
-    return await Promise.resolve(this.shopRepository.getByIdAsRepresentative(shopId, representativeId))
-      .then(res => {
-        const shop = res.data.data;
-        return {
-          representativeId: representativeId,
-          shop: shop,
-          newShop : { 
-            name: shop.name,
-            description: shop.description,
-            genre_id: shop.genre.id,
-            region_id: shop.region.id,
-          },
-          reservations: shop.reservations ?? [],
-          histories: shop.histories ?? [],
-        };
-      })
+    const res = await this.shopRepository.getByIdAsRepresentative(shopId, representativeId)
       .catch(error => {
         throw error;
       });
+
+    const shop = res.data.data;
+
+    return {
+      representativeId: representativeId,
+      shop: shop,
+      newShop : { 
+        name: shop.name,
+        description: shop.description,
+        genre_id: shop.genre.id,
+        region_id: shop.region.id,
+      },
+      reservations: shop.reservations ?? [],
+      histories: shop.histories ?? [],
+    };
   }
 
   async updateShop(shopId: number, data: newShop): Promise<shop> {
@@ -53,17 +53,18 @@ export default class adminShopService implements adminShopServiceInterface {
     }
     
     /* 店舗情報変更処理 */
-    await Promise.resolve(this.shopRepository.update(shopId, sendData))
-      .then(res => alert('店舗情報が変更されました。'))
+    await this.shopRepository.update(shopId, sendData)
       .catch(error =>{
         throw error;
       });
+    alert('店舗情報が変更されました。');
+
     /* 店舗情報を再取得 */
-    return await Promise.resolve(this.shopRepository.getById(shopId))
-      .then(res => res.data.data)
+    const res = await this.shopRepository.getById(shopId)
       .catch(error =>{
         throw error;
       });
+    return res.data.data;
   }
 
   async registerCourse(shopId: number, data: newCourse): Promise<course[]> {
@@ -76,18 +77,18 @@ export default class adminShopService implements adminShopServiceInterface {
     }
 
     /* 登録処理 */
-    await Promise.resolve(this.courseRepository.register(sendData))
-      .then(res => alert('コースが正常に登録されました。'))
+    await this.courseRepository.register(sendData)
       .catch(error => {
         throw error;
       });
+    alert('コースが正常に登録されました。');
     
     /* 店舗情報を再取得 */
-    return await Promise.resolve(this.shopRepository.getById(shopId))
-      .then(res => res.data.data.courses)
+    const res = await this.shopRepository.getById(shopId)
       .catch(error => {
         throw error;
       });
+    return res.data.data.courses;
   }
 
   async deleteCourse(shopId: number, courseId: number, courses: course[]): Promise<course[]> {
@@ -98,15 +99,15 @@ export default class adminShopService implements adminShopServiceInterface {
     }
 
     /* 削除処理実行 */
-    await Promise.resolve(this.courseRepository.delete(courseId))
+    await this.courseRepository.delete(courseId)
       .catch(error => {
         throw error;
       });
-    return await Promise.resolve(this.shopRepository.getById(shopId))
-      .then(res => res.data.data.courses)
+    const res = await this.shopRepository.getById(shopId)
       .catch(error => {
         throw error;
       });
+    return res.data.data.courses;
   }
 
   async registerVisit(decodedResult: string, selectedReservation: reservation, representativeId: number): Promise<reservation[][]> {
@@ -124,11 +125,12 @@ export default class adminShopService implements adminShopServiceInterface {
     }
     
     /* 一致すれば来店処理 */
-    await Promise.resolve(this.reservationRepository.visit(selectedReservation.id))
-      .then(res => alert('来店処理が完了しました。'))
+    await this.reservationRepository.visit(selectedReservation.id)
       .catch(error => {
         throw error;
       });
+      alert('来店処理が完了しました。');
+
     return await this.getReservations(selectedReservation.shop.id, representativeId)
       .catch(error => {
         throw error;
@@ -136,7 +138,7 @@ export default class adminShopService implements adminShopServiceInterface {
   }
 
   async getReservations(shopId: number, representativeId: number): Promise<reservation[][]> {
-    return await Promise.resolve(this.shopRepository.getByIdAsRepresentative(shopId, representativeId))
+    return await this.shopRepository.getByIdAsRepresentative(shopId, representativeId)
       .then(res => {
         const reservations = res.data.data.reservations ?? [];
         const histories = res.data.data.histories ?? [];

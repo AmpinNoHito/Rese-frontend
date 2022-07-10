@@ -27,7 +27,7 @@
 import Vue from 'vue'
 import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
-import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
+import NestedText from '~/components/molecules/Text/NestedText.vue';
 
 export default Vue.extend({
   components: {

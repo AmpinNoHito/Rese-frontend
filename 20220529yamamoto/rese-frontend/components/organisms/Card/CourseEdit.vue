@@ -35,8 +35,8 @@ import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
 import RatingStars from '~/components/molecules/Utils/RatingStars.vue';
-import LabeledInput from '~/components/molecules/InputUnit/LabeledInput.vue';
-import LabeledTextarea from '~/components/molecules/TextareaUnit/LabeledTextarea.vue';
+import LabeledInput from '~/components/molecules/Input/LabeledInput.vue';
+import LabeledTextarea from '~/components/molecules/Textarea/LabeledTextarea.vue';
 
 export default Vue.extend({
   components: {

@@ -47,10 +47,10 @@ import Vue from 'vue'
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
-import LabeledInput from '~/components/molecules/InputUnit/LabeledInput.vue';
-import LabeledTextarea from '~/components/molecules/TextareaUnit/LabeledTextarea.vue';
-import ImageInput from '~/components/molecules/InputUnit/ImageInput.vue';
-import SelectorGroup from '~/components/organisms/Functional/SelectorGroup.vue';
+import LabeledInput from '~/components/molecules/Input/LabeledInput.vue';
+import LabeledTextarea from '~/components/molecules/Textarea/LabeledTextarea.vue';
+import ImageInput from '~/components/molecules/Input/ImageInput.vue';
+import SelectorGroup from '~/components/organisms/Form/SelectorGroup.vue';
 
 export default Vue.extend({
   components: {
