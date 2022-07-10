@@ -10,7 +10,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Logo from '~/components/molecules/Icon/Logo.vue';
-import MainMenu from '~/components/organisms/Composition/MainMenu.vue';
+import MainMenu from '~/components/organisms/Menu/MainMenu.vue';
 
 export default Vue.extend({
   components: {

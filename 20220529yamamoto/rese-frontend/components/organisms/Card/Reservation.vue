@@ -5,14 +5,34 @@
         v-if="showCross"
         :clicked="() => {$hideModal('reservation'); initializeErrors()}"/>
     <HeaderAtom class="card-common-style__header" :text="headerText"/>
-    <ReservationForm
-      :newReservation="newReservation"
-      :atDateInput="atDateInput"
-      :timeChanged="timeChanged"
-      :numberChanged="numberChanged"
-      :courseChanged="courseChanged"
-      :errors="errors"
-    />
+    <form class="reservation-card__form">
+      <DateInput
+        :dateValue="newReservation.date"
+        :atInput="atDateInput"
+      />
+      <ReservationSelectorUnit
+        :label="'時間を選択してください'"
+        :options="$TIMES"
+        :selectedOption="newReservation.time"
+        :changed="timeChanged"
+        :errors="errors.datetime"
+      />
+      <ReservationSelectorUnit
+        :label="'人数を選択してください'"
+        :options="$NUMBERS"
+        :selectedOption="newReservation.number"
+        :changed="numberChanged"
+        :errors="errors.number"
+      />
+      <ReservationSelectorUnit
+        v-if="newReservation.courses.length"
+        :selectCourse="true"
+        :label="'コースを選択してください (任意)'"
+        :options="newReservation.courses"
+        :selectedOption="`${newReservation.selectedCourseIndex}`"
+        :changed="courseChanged"
+      />
+    </form>
     <div class="reservation-card__confirmation">
       <NestedText
         class="reservation-card__confirmation-item"
@@ -59,16 +79,18 @@ import Vue from "vue";
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import EdgeButtonAtom from '~/components/atoms/Button/EdgeButton.vue';
+import DateInput from '~/components/molecules/InputUnit/DateInput.vue';
+import ReservationSelectorUnit from '~/components/molecules/SelectorUnit/ReservationSelector.vue';
 import NestedText from '~/components/molecules/TextUnit/NestedText.vue';
-import ReservationForm from '~/components/organisms/Functional/ReservationForm.vue';
 
 export default Vue.extend({
   components: {
     HeaderAtom,
     CrossAtom,
     EdgeButtonAtom,
+    DateInput,
+    ReservationSelectorUnit,
     NestedText,
-    ReservationForm,
   },
   props: {
     shopName: String,
@@ -96,6 +118,12 @@ export default Vue.extend({
   max-height: none;
   height: fit-content;
   padding: 20px 20px 50px;
+
+  &__form {
+    width: 100%;
+    @include flex(column, flex-start, stretch);
+    margin-bottom: 10px;
+  }
 
   &__confirmation {
     background-color: $c-blue--light;

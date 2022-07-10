@@ -17,8 +17,8 @@
 <script lang="ts">
 import Vue from "vue";
 import CrossIcon from '~/components/molecules/Icon/Cross.vue';
-import LoggedOutMenu from '~/components/organisms/Functional/LoggedOutMenu.vue';
-import LoggedInMenu from '~/components/organisms/Functional/LoggedInMenu.vue';
+import LoggedOutMenu from '~/components/organisms/Menu/LoggedOutMenu.vue';
+import LoggedInMenu from '~/components/organisms/Menu/LoggedInMenu.vue';
 
 export default Vue.extend({
   components: {
