@@ -1,5 +1,5 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
-import { shop, sendData } from "~/types/api";
+import { sendData } from "~/types/api";
 import { shopCollectionResponse, shopResponse } from "~/types/axiosResponse";
 import shopRepositoryInterface from "./shopRepositoryInterface";
 

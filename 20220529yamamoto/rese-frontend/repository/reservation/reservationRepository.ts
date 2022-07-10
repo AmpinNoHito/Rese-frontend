@@ -1,5 +1,5 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
-import { reservation, sendData } from "~/types/api";
+import { sendData } from "~/types/api";
 import { newReservationResponse, reservationCollectionResponse, reservationResponse } from "~/types/axiosResponse";
 import reservationRepositoryInterface from "./reservationRepositoryInterface";
 
