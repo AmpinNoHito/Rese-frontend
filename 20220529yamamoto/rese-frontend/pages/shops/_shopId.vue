@@ -31,7 +31,8 @@ export default Vue.extend({
     ShopTemplate,
   },
   async asyncData({app, params, query}) {
-    return await app.$service.shop.getData(+params.shopId, app, [query.dt, query.tm, query.nm, query.sc] as string[]);
+
+    return await app.$service.shop.getData(+params.shopId, app, query);
   },
   data() {
     return {

@@ -2,7 +2,7 @@ import userRepositoryInterface from "~/repository/user/userRepositoryInterface";
 import { sendData, user } from "~/types/api";
 import authServiceInterface from "./authServiceInterface";
 import { RawLocation } from 'vue-router';
-import { Dictionary } from 'vue-router/types/router'; 
+import { Dictionary } from 'vue-router/types/router';
 
 export default class authService implements authServiceInterface {
   readonly userRepository: userRepositoryInterface;

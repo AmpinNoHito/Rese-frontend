@@ -2,12 +2,13 @@ import { getterTree, mutationTree, actionTree, getAccessorType } from 'typed-vue
 import { user } from '~/types/api';
 
 export const state = () => ({
-  regionSearchId: '' as string,
-  genreSearchId: '' as string,
-  searchWord:  '' as string,
+  /* 店舗検索情報 */
+  regionSearchId: '',
+  genreSearchId: '',
+  searchWord:  '',
   /* ログイン中のユーザー情報 */
   user: {} as (user | {}),
-  token: undefined as (string | undefined),
+  token: '',
 });
 
 export type RootState = ReturnType<typeof state>
@@ -29,7 +30,7 @@ export const mutations = mutationTree(state, {
   setUser(state: RootState, user: (user | {})): void {
     state.user = user;
   },
-  setToken(state: RootState, token: (string | undefined)): void {
+  setToken(state: RootState, token: string): void {
     state.token = token;
   }
 });
@@ -39,7 +40,7 @@ export const actions = actionTree({state, mutations}, {
     commit('setRegionSearchId', '');
     commit('setGenreSearchId', '');
     commit('setSearchWord', '');
-  }
+  },
 });
 
 export const accessorType = getAccessorType({

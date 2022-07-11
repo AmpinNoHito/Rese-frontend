@@ -5,6 +5,7 @@ import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import { RawLocation } from "vue-router";
 import { shopInitData } from "~/types/pageData";
 import { NuxtAppOptions } from "@nuxt/types/app";
+import { Dictionary } from 'vue-router/types/router';
 
 
 export default class shopService implements shopServiceInterface {
@@ -16,34 +17,40 @@ export default class shopService implements shopServiceInterface {
     this.reservationRepository = reservationRepository;
   }
 
-  async getData(shopId: number, app: NuxtAppOptions, [date, time, number, selectedCourseIndex]: string[]): Promise<shopInitData> {
+  async getData(shopId: number, app: NuxtAppOptions, query: Dictionary<string | (string | null)[]>): Promise<shopInitData> {
     const res = await this.shopRepository.getById(shopId)
       .catch(error => {
         throw error;
       });
     
     const shop = res.data.data;
+    
+    /* クエリパラメータをstring型に変換 */
+    const date = app.$queryToString(query.dt);
+    const time = app.$queryToString(query.tm);
+    const number = app.$queryToString(query.nm);
+    const selectedCourseIndex = app.$queryToString(query.sc);
 
     return {
       shop: shop,
       newReservation: {
         date: date ?? app.$getTodaysDate(),
-        time: (time && time !== 'unselected') ? time : '',
-        number: (number && number !== 'unselected') ? number : '',
-        selectedCourseIndex: (selectedCourseIndex && selectedCourseIndex !== 'unselected') ? +selectedCourseIndex : undefined,
+        time: time ?? '',
+        number: number ?? '',
+        selectedCourseIndex: (selectedCourseIndex) ? +selectedCourseIndex : undefined,
         courses: shop.courses,
       },
     }
   };
 
   async registerReservation(data: newReservation, userId: number, shopId: number): Promise<RawLocation> {
-    if (!userId) {    //  ログインしていない場合
-      let query = {   //  ログインして戻ってきたあとに入力値を復元できるよう、クエリパラメータを活用
+    if (!userId) {  //  ログインしていない場合
+      let query = {  //  ログインして戻ってきたあとに入力値を復元できるよう、クエリパラメータを活用
         sh: shopId.toString(),
         dt: data.date,
-        tm: data.time ?? 'unselected',
-        nm: data.number ?? 'unselected',
-        sc: data.selectedCourseIndex?.toString() ?? 'unselected',
+        tm: data.time,
+        nm: data.number,
+        sc: data.selectedCourseIndex?.toString(),
       }
 
       return {path: '/login', query: query};

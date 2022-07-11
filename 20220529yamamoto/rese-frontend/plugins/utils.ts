@@ -8,6 +8,7 @@ declare module 'vue/types/vue' {
     $stopScroll(): void
     $restartScroll(): void
     $processImage(e: Event): Promise<(string | undefined)>,
+    $queryToString(value: string | (string | null)[] | undefined): string | undefined
   }
 }
 
@@ -18,6 +19,7 @@ declare module '@nuxt/types' {
     $stopScroll(): void
     $restartScroll(): void
     $processImage(e: Event): Promise<(string | undefined)>,
+    $queryToString(value: string | (string | null)[] | undefined): string | undefined
   }
 }
 
@@ -28,6 +30,7 @@ declare module 'vuex/types/index' {
     $stopScroll(): void
     $restartScroll(): void
     $processImage(e: Event): Promise<(string | undefined)>,
+    $queryToString(value: string | (string | null)[] | undefined): string | undefined
   }
 }
 
@@ -76,11 +79,16 @@ const utils: Plugin = (context: Context, inject: Inject) => {
     return resultImage;
   };
 
+  const queryToString = (value: string | (string | null)[] | undefined): string | undefined => {
+    return Array.isArray(value) ? value[0] || undefined : value;
+  }
+
   inject('processImage', processImage);
   inject('setData', setData);
   inject('getTodaysDate', getTodaysDate);
   inject('stopScroll', stopScroll);
   inject('restartScroll', restartScroll);
+  inject('queryToString', queryToString);
 }
 
 export default utils;

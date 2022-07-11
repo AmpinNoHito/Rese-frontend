@@ -52,7 +52,7 @@ export default Vue.extend({
       try {
         await this.$service.auth.logout();
         this.$accessor.setUser({});
-        this.$accessor.setToken(undefined);
+        this.$accessor.setToken('');
         this.$router.push('/');
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
