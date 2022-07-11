@@ -12,7 +12,7 @@ export default class adminIndexService implements adminIndexServiceInterface {
   }
 
   async getData({ $accessor }: NuxtAppOptions): Promise<adminIndexInitData> {
-    const representative = $accessor.user as user;
+    const representative = $accessor.user;
     const res = await this.shopRepository.getByRepresentativeId(representative.id)
       .catch(error => {
         throw error;

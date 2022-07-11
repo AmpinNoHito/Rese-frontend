@@ -70,7 +70,7 @@ export default Vue.extend({
   },
   async asyncData({ params, app: { $service, $accessor } }) {
     /* 店舗データ取得 */
-    const representative = $accessor.user as user;
+    const representative = $accessor.user;
     return await $service.adminShop.getData(representative.id, +params.shopId);
   },
   data() {

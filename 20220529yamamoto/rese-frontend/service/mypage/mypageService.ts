@@ -21,7 +21,7 @@ export default class mypageService implements mypageServiceInterface{
   }
 
   async getData({ $accessor, $getTodaysDate }: NuxtAppOptions): Promise<mypageInitData> {
-    const user = $accessor.user as user;
+    const user = $accessor.user;
     const reservationPromise = this.reservationRepository.getByUserId(user.id);
     const shopPromise = this.shopRepository.getFavoriteShops(user.id);
     const res = await Promise.all([reservationPromise, shopPromise])

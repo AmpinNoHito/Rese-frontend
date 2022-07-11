@@ -7,14 +7,19 @@ export const state = () => ({
   genreSearchId: '',
   searchWord:  '',
   /* ログイン中のユーザー情報 */
-  user: {} as (user | {}),
+  user: {
+    id: 0,
+    group: 0,
+    name: '',
+    email: '',
+  } as user,
   token: '',
 });
 
 export type RootState = ReturnType<typeof state>
 
 export const getters = getterTree(state, {
-  loggedIn: (state: RootState): number => Object.keys(state.user).length,
+  loggedIn: (state: RootState): boolean => state.user.id ? true : false,
 });
 
 export const mutations = mutationTree(state, {
@@ -27,12 +32,23 @@ export const mutations = mutationTree(state, {
   setSearchWord(state: RootState, searchWord: string): void {
     state.searchWord = searchWord;
   },
-  setUser(state: RootState, user: (user | {})): void {
+  setUser(state: RootState, user: user): void {
     state.user = user;
+  },
+  clearUser(state: RootState): void {
+    state.user = {
+      id: 0,
+      group: 0,
+      name: '',
+      email: '',
+    };
   },
   setToken(state: RootState, token: string): void {
     state.token = token;
-  }
+  },
+  clearToken(state: RootState): void {
+    state.token = '';
+  },
 });
 
 export const actions = actionTree({state, mutations}, {

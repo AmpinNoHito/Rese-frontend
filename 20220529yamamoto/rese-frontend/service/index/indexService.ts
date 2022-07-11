@@ -15,10 +15,9 @@ export default class indexService implements indexServiceInterface {
   }
 
   async getData({ $accessor }: NuxtAppOptions): Promise<indexInitData> {
-    const user = $accessor.user as user;
     const shopPromise = this.shopRepository.index();
     if ($accessor.loggedIn) {  // ログインしている場合はお気に入りのデータも取得
-      const favoritePromise = this.shopRepository.getFavoriteShops(user.id);
+      const favoritePromise = this.shopRepository.getFavoriteShops($accessor.user.id);
       const res = await Promise.all([shopPromise, favoritePromise])
         .catch(error => {
           throw error;
@@ -33,7 +32,7 @@ export default class indexService implements indexServiceInterface {
         genreIds: shopResponse.genreIds,
         favoriteShopIds: favoriteResponse.shopIds,
         searchResults: shopResponse.shops,
-        userId: user.id ?? 0,
+        userId: $accessor.user.id,
       }
     } else {  // ログインしていない場合は店舗データのみ取得
       const res = await shopPromise
@@ -49,7 +48,7 @@ export default class indexService implements indexServiceInterface {
         genreIds: shopResponse.genreIds,
         favoriteShopIds: [],
         searchResults: shopResponse.shops,
-        userId: user.id ?? 0,
+        userId: $accessor.user.id,
       }
     }
   }

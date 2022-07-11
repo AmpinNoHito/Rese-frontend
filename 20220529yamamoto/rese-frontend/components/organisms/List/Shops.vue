@@ -27,7 +27,7 @@ export default Vue.extend({
     shops: Array,
     linkClicked: Function,
     searchByTag: Boolean,
-    showHeart: Number,
+    showHeart: Boolean,
     isFavorited: {
       type: Function,
       required: false,

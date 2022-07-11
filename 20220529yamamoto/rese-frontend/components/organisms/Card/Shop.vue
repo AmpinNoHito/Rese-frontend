@@ -65,7 +65,7 @@ export default Vue.extend({
       default: true,
     },
     showHeart: {
-      type: Number,
+      type: Boolean,
       required: false,
       default: 0,
     },

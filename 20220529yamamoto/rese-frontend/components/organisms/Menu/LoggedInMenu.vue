@@ -51,8 +51,8 @@ export default Vue.extend({
     async logout(): Promise<void> {
       try {
         await this.$service.auth.logout();
-        this.$accessor.setUser({});
-        this.$accessor.setToken('');
+        this.$accessor.clearUser();
+        this.$accessor.clearToken();
         this.$router.push('/');
       } catch (error: any) {
         this.$alertErrorMessage(error.response);
