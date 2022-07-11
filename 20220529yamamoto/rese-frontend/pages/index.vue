@@ -57,9 +57,12 @@ export default Vue.extend({
   },
   methods: {
     async toggleFavorite(shopId: number): Promise<void> {
-      await this.$service.index.toggleFavorite(this.favoriteShopIds, shopId, this.userId)
-        .then(res => this.favoriteShopIds = res)
-        .catch(error => this.$alertErrorMessage(error.response));
+      const res = await this.$service.index.toggleFavorite(this.favoriteShopIds, shopId, this.userId)
+        .catch(error => {
+          throw this.$alertErrorMessage(error.response);
+        });
+      
+      this.favoriteShopIds = res;
     },
     searchShops(): void {
       this.searchResults = this.$service.index.searchShops(this.$accessor.regionSearchId, this.$accessor.genreSearchId, this.searchWord, this.shops);

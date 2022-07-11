@@ -68,9 +68,12 @@ export default Vue.extend({
     /* 予約情報を登録 */
     async registerReservation() {
       const user = this.$accessor.user as user;
-      await this.$service.shop.registerReservation(this.newReservation, user.id, this.shop.id)
-        .then(res => this.$router.push(res))
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.shop.registerReservation(this.newReservation, user.id, this.shop.id)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.$router.push(res);
     },
   },
 });

@@ -39,8 +39,11 @@ export default Vue.extend({
   methods:{
     async register(): Promise<void> {
       await this.$service.auth.register(this.form)
-        .then(res => this.$router.push('/thanks'))
-        .catch(error => this.$handleError(this.errors, error.response));
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.$router.push('/thanks');
     },
   }
 });

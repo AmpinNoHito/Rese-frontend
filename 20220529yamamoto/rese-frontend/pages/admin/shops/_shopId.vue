@@ -127,28 +127,33 @@ export default Vue.extend({
   },
   methods: {
     async updateShop(): Promise<void> {
-      await this.$service.adminShop.updateShop(this.shop.id, this.newShop)
-        .then(res => {
-          this.shop = res;
-          this.$initializeErrors(this.errors);
-          this.$hideModal('shop');
-        })
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.adminShop.updateShop(this.shop.id, this.newShop)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.shop = res;
+      this.$initializeErrors(this.errors);
+      this.$hideModal('shop');
     },
     async registerCourse (): Promise<void> {
-      await this.$service.adminShop.registerCourse(this.shop.id, this.newCourse)
-        .then(res => {
-          this.shop.courses = res;
-          this.newCourse.name = this.newCourse.price = this.newCourse.description = undefined;
-          this.$initializeErrors(this.errors);
-          this.$hideModal('course');
-        })
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.adminShop.registerCourse(this.shop.id, this.newCourse)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.shop.courses = res;
+      this.newCourse.name = this.newCourse.price = this.newCourse.description = undefined;
+      this.$initializeErrors(this.errors);
+      this.$hideModal('course');
     },
     async deleteCourse(courseId: number): Promise<void> {
-      await this.$service.adminShop.deleteCourse(this.shop.id, courseId, this.shop.courses)
-        .then(res => this.shop.courses = res)
-        .catch(error => this.$alertErrorMessage(error.response));
+      const res = await this.$service.adminShop.deleteCourse(this.shop.id, courseId, this.shop.courses)
+        .catch(error => {
+          throw this.$alertErrorMessage(error.response);
+        });
+
+      this.shop.courses = res;
     },
     showReviewModal(review: review) {
       this.selectedReview = {
@@ -176,12 +181,13 @@ export default Vue.extend({
       });
     },
     async registerVisit(decodedResult: string): Promise<void> {
-      await this.$service.adminShop.registerVisit(decodedResult, this.selectedReservation, this.representativeId)
-        .then(res => {
-          [this.reservations, this.histories] = res;
-          this.hideCodeReader();
-        })
-        .catch(error => this.$alertErrorMessage(error.response));
+      const res = await this.$service.adminShop.registerVisit(decodedResult, this.selectedReservation, this.representativeId)
+        .catch(error => {
+          throw this.$alertErrorMessage(error.response);
+        });
+      
+      [this.reservations, this.histories] = res;
+      this.hideCodeReader();
     },
   },
 });

@@ -78,14 +78,15 @@ export default Vue.extend({
   },
   methods: {
     async registerShop(): Promise<void> {      
-      await this.$service.adminIndex.registerShop(this.newShop)
-        .then(res => {
-          this.shops = res;
-          this.previewImage = undefined;
-          this.$initializeErrors(this.errors);
-          this.$hideModal('shop');
-        })
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.adminIndex.registerShop(this.newShop)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.shops = res;
+      this.previewImage = undefined;
+      this.$initializeErrors(this.errors);
+      this.$hideModal('shop');
     },
   },
 });

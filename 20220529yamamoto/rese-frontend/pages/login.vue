@@ -36,13 +36,14 @@ export default Vue.extend({
   },
   methods: {
     async login(): Promise<void> {
-      await this.$service.auth.login(this.form, this.$route.query)
-        .then(res => {
-          this.$accessor.setToken(`Bearer ${res[0]}`);
-          this.$accessor.setUser(res[1]);
-          this.$router.push(res[2]);
-        })
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.auth.login(this.form, this.$route.query)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.$accessor.setToken(`Bearer ${res[0]}`);
+      this.$accessor.setUser(res[1]);
+      this.$router.push(res[2]);
     },
   },
 });

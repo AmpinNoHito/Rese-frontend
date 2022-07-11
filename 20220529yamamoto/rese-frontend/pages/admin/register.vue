@@ -42,9 +42,12 @@ export default Vue.extend({
   },
   methods:{
     async register(): Promise<void> {
-      await this.$service.auth.registerRepresentative(this.form)
-        .then(res => this.form = res)
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.auth.registerRepresentative(this.form)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+
+      this.form = res;
     },
   }
 });

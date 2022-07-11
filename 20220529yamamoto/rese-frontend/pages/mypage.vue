@@ -119,60 +119,69 @@ export default Vue.extend({
       this.$showModal('reservation');
     },
     async updateReservation(): Promise<void> {
-      await this.$service.mypage.updateReservation(this.newReservation, this.userId)
-      .then(res => {
-        this.reservations = res;
-        this.$initializeErrors(this.errors);
-        this.$hideModal('reservation');
-      })
-      .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.mypage.updateReservation(this.newReservation, this.userId)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.reservations = res;
+      this.$initializeErrors(this.errors);
+      this.$hideModal('reservation');
     },
     async deleteReservation(reservationIndex: number, reservationId: number): Promise<void> {
       await this.$service.mypage.deleteReservation(reservationIndex, reservationId, this.reservations)
-        .catch(error => this.$alertErrorMessage(error.response));
+        .catch(error => {
+          throw this.$alertErrorMessage(error.response);
+        });
     },
     showReviewModal(selectedHistory: reservation): void {
       this.newReview = this.$service.mypage.setNewReviewData(selectedHistory);
       this.$showModal('review');
     },
     async registerReview(): Promise<void> {
-      await this.$service.mypage.registerReview(this.newReview, this.userId)
-        .then(res => {
-          this.histories = res;
-          this.$initializeErrors(this.errors);
-          this.$hideModal('review');
-        })
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.mypage.registerReview(this.newReview, this.userId)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.histories = res;
+      this.$initializeErrors(this.errors);
+      this.$hideModal('review');
     },
     async updateReview(): Promise<void> {
-      await this.$service.mypage.updateReview(this.newReview, this.userId)
-        .then(res => {
-          this.histories = res;
-          this.$initializeErrors(this.errors);
-          this.$hideModal('review');
-        })
-        .catch(error => this.$handleError(this.errors, error.response));
+      const res = await this.$service.mypage.updateReview(this.newReview, this.userId)
+        .catch(error => {
+          throw this.$handleError(this.errors, error.response);
+        });
+      
+      this.histories = res;
+      this.$initializeErrors(this.errors);
+      this.$hideModal('review');
     },
     async deleteReview(): Promise<void> {
-      await this.$service.mypage.deleteReview(this.newReview.selectedReviewId as number, this.histories, this.userId)
-        .then(res => {
-          this.histories = res;
-          this.$initializeErrors(this.errors);
-          this.$hideModal('review');
-        })
-        .catch(error => this.$alertErrorMessage(error.response));
+      const res = await this.$service.mypage.deleteReview(this.newReview.selectedReviewId as number, this.histories, this.userId)
+        .catch(error => {
+          throw this.$alertErrorMessage(error.response);
+        });
+      
+      this.histories = res;
+      this.$initializeErrors(this.errors);
+      this.$hideModal('review');
     },
     async showQRCode(selectedReservation: reservation): Promise<void> {
-      await QRCode.toDataURL(`${selectedReservation.id},${selectedReservation.user.id}`)
-        .then(res => {
-          this.qrcode = res;
-          this.$showModal('qr');
-        })
-        .catch(error => alert('エラーが発生しました。時間をおいてから再度お試しください。'));
+      const res = await QRCode.toDataURL(`${selectedReservation.id},${selectedReservation.user.id}`)
+        .catch(error => {
+          throw alert('エラーが発生しました。時間をおいてから再度お試しください。');
+        });
+      
+      this.qrcode = res;
+      this.$showModal('qr');
     },
     async deleteFavorite(index: number, shopId: number): Promise<void> {
       await this.$service.mypage.deleteFavorite(index, this.userId, shopId, this.favoriteShops)
-        .catch(error => this.$alertErrorMessage(error.response));
+        .catch(error => {
+          throw this.$alertErrorMessage(error.response);
+        });
     },
   },
 });
