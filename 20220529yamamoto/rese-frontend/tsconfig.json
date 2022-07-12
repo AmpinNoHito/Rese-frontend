@@ -26,6 +26,7 @@
     "types": [
       "@types/node",
       "@types/qrcode",
+      "@types/jest",
       "@nuxt/types",
       "@nuxtjs/auth-next",
     ]
