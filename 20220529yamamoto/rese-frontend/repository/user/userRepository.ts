@@ -1,5 +1,5 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
-import { sendData } from "~/types/api";
+import { authRequest } from "~/types/axiosRequest";
 import { tokenResponse, userResponse } from "~/types/axiosResponse";
 import userRepositoryInterface from "./userRepositoryInterface";
 
@@ -10,15 +10,15 @@ export default class userRepository implements userRepositoryInterface {
     this.axios = axios;
   }
 
-  async register(sendData: sendData): Promise<void> {
+  async register(sendData: authRequest): Promise<void> {
     return this.axios.post('/api/auth/register', sendData);
   }
 
-  async registerRepresentative(sendData: sendData): Promise<void> {
+  async registerRepresentative(sendData: authRequest): Promise<void> {
     return this.axios.post('/api/admin/representatives', sendData);
   }
 
-  async login(sendData: sendData): Promise<tokenResponse> {
+  async login(sendData: authRequest): Promise<tokenResponse> {
     return this.axios.post('/api/auth/login', sendData);
   }
 

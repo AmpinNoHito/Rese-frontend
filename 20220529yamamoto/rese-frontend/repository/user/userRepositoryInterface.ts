@@ -1,10 +1,10 @@
-import { sendData } from "~/types/api";
+import { authRequest } from "~/types/axiosRequest";
 import { tokenResponse, userResponse } from "~/types/axiosResponse";
 
 export default interface userRepositoryInterface {
-  register(sendData: sendData): Promise<void>;
-  registerRepresentative(sendData: sendData): Promise<void>;
-  login(sendData: sendData): Promise<tokenResponse>;
+  register(sendData: authRequest): Promise<void>;
+  registerRepresentative(sendData: authRequest): Promise<void>;
+  login(sendData: authRequest): Promise<tokenResponse>;
   logout(): Promise<void>;
   getUser(token?: string): Promise<userResponse>;
 }

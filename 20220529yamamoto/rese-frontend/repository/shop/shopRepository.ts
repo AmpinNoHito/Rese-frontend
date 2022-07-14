@@ -1,5 +1,5 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
-import { sendData } from "~/types/api";
+import { shopRequest } from "~/types/axiosRequest";
 import { shopCollectionResponse, shopResponse } from "~/types/axiosResponse";
 import shopRepositoryInterface from "./shopRepositoryInterface";
 
@@ -10,7 +10,7 @@ export default class shopRepository implements shopRepositoryInterface {
     this.axios = axios;
   }
 
-  async register(sendData: sendData): Promise<void> {
+  async register(sendData: shopRequest): Promise<void> {
     return this.axios.post('api/admin/shops', sendData);
   }
 
@@ -34,7 +34,7 @@ export default class shopRepository implements shopRepositoryInterface {
     return this.axios.get(`/api/shops/favorites/${userId}`);
   }
 
-  async update(shopId: number, sendData: sendData): Promise<void> {
+  async update(shopId: number, sendData: shopRequest): Promise<void> {
     return this.axios.put(`/api/admin/shops/${shopId}`, sendData);
   }
 }

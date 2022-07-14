@@ -1,9 +1,10 @@
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
-import { course, newCourse, newShop, reservation, sendData, shop } from "~/types/api";
+import { course, newCourse, newShop, reservation, shop } from "~/types/api";
 import { adminShopInitData } from "~/types/pageData";
 import adminShopServiceInterface from "./adminShopServiceInterface";
 import courseRepositoryInterface from "~/repository/course/courseRepositoryInterface";
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
+import { courseRequest, shopRequest } from "~/types/axiosRequest";
 
 export default class adminShopService implements adminShopServiceInterface {
   readonly shopRepository: shopRepositoryInterface;
@@ -40,11 +41,11 @@ export default class adminShopService implements adminShopServiceInterface {
 
   async updateShop(shopId: number, data: newShop): Promise<shop> {
     /* 入力値から送信用データを作成 */
-    const sendData: sendData = {
+    const sendData: shopRequest = {
       name: data.name,
-      description: data.description,
       region_id: data.region_id,
       genre_id: data.genre_id,
+      description: data.description,
     };
 
     /* 新規画像はある場合のみ送信 */
@@ -69,11 +70,11 @@ export default class adminShopService implements adminShopServiceInterface {
 
   async registerCourse(shopId: number, data: newCourse): Promise<course[]> {
     /* 入力値から送信用データを作成 */
-    const sendData = {
+    const sendData: courseRequest = {
       shop_id: shopId,
-      name: data.name,
-      price: data.price,
-      description: data.description,
+      name: data.name ?? '',
+      price: data.price ?? -1,
+      description: data.description ?? '',
     }
 
     /* 登録処理 */

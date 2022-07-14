@@ -9,7 +9,7 @@
         v-for="(shop, index) in favoriteShops"
         :key="shop.id"
         :shop="shop"
-        :showHeart="1"
+        :showHeart="true"
         :heartClicked="() => heartClicked(index, shop.id)"
         :linkClicked="() => linkClicked(shop.id)"
       />

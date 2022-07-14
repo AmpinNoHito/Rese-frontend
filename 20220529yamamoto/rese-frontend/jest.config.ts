@@ -12,6 +12,7 @@ const config: Config.InitialOptions = {
     '^.+\\.js$': 'babel-jest',
     '.*\\.(vue)$': 'vue-jest',
   },
+  testEnvironment: "jsdom",
 }
 
 export default config;

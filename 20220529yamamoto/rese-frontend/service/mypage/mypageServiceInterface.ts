@@ -11,5 +11,5 @@ export default interface mypageServiceInterface {
   registerReview(data: newReview, userId: number): Promise<reservation[]>;
   updateReview(data: newReview, userId: number): Promise<reservation[]>;
   deleteReview(id: number, histories: reservation[], userId: number): Promise<reservation[]>;
-  deleteFavorite(index: number, userId: number, shopId: number, favoriteShops: shop[]): Promise<void>;
+  deleteFavorite(shopIndex: number, userId: number, shopId: number, favoriteShops: shop[]): Promise<void>;
 }

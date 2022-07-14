@@ -1,5 +1,6 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
-import { sendData } from "~/types/api";
+import { favoriteRequest } from "~/types/axiosRequest";
+
 import favoriteRepositoryInterface from "./favoriteRepositoryInterface";
 
 export default class favoriteRepository implements favoriteRepositoryInterface {
@@ -9,7 +10,7 @@ export default class favoriteRepository implements favoriteRepositoryInterface {
     this.axios = axios;
   }
 
-  async register(sendData: sendData): Promise<void> {
+  async register(sendData: favoriteRequest): Promise<void> {
     return this.axios.post('/api/favorites', sendData);
   }
 

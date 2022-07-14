@@ -1,11 +1,12 @@
-import { course, newReservation, sendData } from "~/types/api";
+import { course, newReservation } from "~/types/api";
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
 import shopServiceInterface from "./shopServiceInterface";
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
-import { RawLocation } from "vue-router";
+import { Location } from "vue-router";
 import { shopInitData } from "~/types/pageData";
 import { NuxtAppOptions } from "@nuxt/types/app";
 import { Dictionary } from 'vue-router/types/router';
+import { reservationRequest } from "~/types/axiosRequest";
 
 
 export default class shopService implements shopServiceInterface {
@@ -38,12 +39,13 @@ export default class shopService implements shopServiceInterface {
         time: time ?? '',
         number: number ?? '',
         selectedCourseIndex: (selectedCourseIndex) ? +selectedCourseIndex : undefined,
+        selectedReservationId: 0,
         courses: shop.courses,
       },
     }
   };
 
-  async registerReservation(data: newReservation, userId: number, shopId: number): Promise<RawLocation> {
+  async registerReservation(data: newReservation, userId: number, shopId: number): Promise<Location> {
     if (!userId) {  //  ログインしていない場合
       let query = {  //  ログインして戻ってきたあとに入力値を復元できるよう、クエリパラメータを活用
         sh: shopId.toString(),
@@ -57,11 +59,11 @@ export default class shopService implements shopServiceInterface {
     }
 
     /* 入力値から送信用データを作成 */
-    const sendData: sendData = {
+    const sendData: reservationRequest = {
       user_id: userId,
       shop_id: shopId,
       datetime: (data.date && data.time) ? `${data.date} ${data.time}` : '',
-      number: data.number?.slice(0, -1),
+      number: +data.number?.slice(0, -1),
     }
 
     /* コースが選択されている場合はコースのIdも追加 */

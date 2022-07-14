@@ -2,45 +2,21 @@ import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import axios from 'axios';
 import shopRepositoryInterface from '~/repository/shop/shopRepositoryInterface';
 import shopRepository from "~/repository/shop/shopRepository";
-import { shop } from "~/types/api";
+import { SHOP } from '../consts';
+import { shopCollectionResponse, shopResponse } from '~/types/axiosResponse';
 
 /* モック化されたaxiosの戻り値の型 */
-interface mockedAxiosResponse {
-  data: shop | shop[],
-}
+type mockAxiosResponse = shopResponse | shopCollectionResponse;
 
 /* axiosをモック化 */
-let mockedAxiosResponse: mockedAxiosResponse;
+let mockAxiosResponse: mockAxiosResponse;
 jest.mock('axios', () => ({
-  get: jest.fn(() => Promise.resolve(mockedAxiosResponse)),
+  get: jest.fn(() => Promise.resolve(mockAxiosResponse)),
   post: jest.fn(() => Promise.resolve()),
   put: jest.fn(() => Promise.resolve()),
 }));
 
 const testingShopRepository: shopRepositoryInterface = new shopRepository(axios as NuxtAxiosInstance);
-
-/* 店舗データのモックを定義 */
-const shopMock: shop = {
-  id: 100,
-  representative_id: 100,
-  name: 'test',
-  region: {
-    id: 100,
-    name: 'test',
-  },
-  genre: {
-    id: 100,
-    name: 'test',
-  },
-  description: 'test',
-  image: 'test',
-  courses: [{
-    id: 100,
-    name: 'test',
-    price: 10000,
-    description: 'test',
-  }],
-};
 
 test('test register', async () => {
   const returnedPromise = testingShopRepository.register({
@@ -59,58 +35,93 @@ test('test register', async () => {
 });
 
 test('test index', async () => {
-  mockedAxiosResponse = {data: [shopMock]};
+  mockAxiosResponse = {
+    data: {
+      data: {
+        shops: [SHOP],
+        shopIds: [SHOP.id],
+        regionIds: [SHOP.region.id],
+        genreIds: [SHOP.genre.id],
+      }
+    }
+  };
 
   const returnedPromise = testingShopRepository.index();
 
-  expect(returnedPromise).toEqual(Promise.resolve(mockedAxiosResponse));
+  expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
   await returnedPromise
-    .then(res => expect(res).toEqual(mockedAxiosResponse));
+    .then(res => expect(res.data.data.shops[0]).toEqual(SHOP));
 });
 
 test('test getById', async () => {
-  mockedAxiosResponse = {data: shopMock};
+  mockAxiosResponse = {
+    data: {
+      data: SHOP,
+    }
+  };
 
   const returnedPromise = testingShopRepository.getById(100);
 
-  expect(returnedPromise).toEqual(Promise.resolve(mockedAxiosResponse));
+  expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
   await returnedPromise
-    .then(res => expect(res).toEqual(mockedAxiosResponse));
+    .then(res => expect(res.data.data).toEqual(SHOP));
 });
 
 test('test getByRepresentativeId', async () => {
-  mockedAxiosResponse = {data: [shopMock]};
+  mockAxiosResponse = {
+    data: {
+      data: {
+        shops: [SHOP],
+        shopIds: [SHOP.id],
+        regionIds: [SHOP.region.id],
+        genreIds: [SHOP.genre.id],
+      }
+    }
+  };
 
   const returnedPromise = testingShopRepository.getByRepresentativeId(100);
 
-  expect(returnedPromise).toEqual(Promise.resolve(mockedAxiosResponse));
+  expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
   await returnedPromise
-    .then(res => expect(res).toEqual(mockedAxiosResponse));
+    .then(res => expect(res.data.data.shops[0]).toEqual(SHOP));
 });
 
 test('test getByIdAsRepresentative', async () => {
-  mockedAxiosResponse = {data: shopMock};
+  mockAxiosResponse = {
+    data: {
+      data: SHOP,
+    }
+  };
 
   const returnedPromise = testingShopRepository.getByIdAsRepresentative(100, 100);
 
-  expect(returnedPromise).toEqual(Promise.resolve(mockedAxiosResponse));
+  expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
   await returnedPromise
-    .then(res => expect(res).toEqual(mockedAxiosResponse));
+    .then(res => expect(res.data.data).toEqual(SHOP));
 });
 
 test('test getFavoriteShops', async () => {
-  mockedAxiosResponse = {data: [shopMock]};
+  mockAxiosResponse = {
+    data: {
+      data: {
+        shops: [SHOP],
+        shopIds: [SHOP.id],
+        regionIds: [SHOP.region.id],
+        genreIds: [SHOP.genre.id],
+      }
+    }
+  };
 
   const returnedPromise = testingShopRepository.getFavoriteShops(100);
 
-  expect(returnedPromise).toEqual(Promise.resolve(mockedAxiosResponse));
+  expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
   await returnedPromise
-    .then(res => expect(res).toEqual(mockedAxiosResponse));
+    .then(res => expect(res.data.data.shops[0]).toEqual(SHOP));
 });
 
 test('test update', async () => {

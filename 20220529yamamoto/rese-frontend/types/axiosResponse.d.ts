@@ -1,4 +1,4 @@
-import { course, reservation, shop, user } from "./api";
+import { reservation, shop, user } from "./api";
 
 export interface userResponse {
   data: {

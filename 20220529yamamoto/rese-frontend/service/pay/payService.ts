@@ -1,8 +1,8 @@
-import { sendData } from "~/types/api";
 import { Stripe } from 'stripe';
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
 import payServiceInterface from "./payServiceInterface";
 import { payInitData } from "~/types/pageData";
+import { payRequest } from "~/types/axiosRequest";
 
 export default class payService implements payServiceInterface {
   readonly reservationRepository: reservationRepositoryInterface;
@@ -22,16 +22,16 @@ export default class payService implements payServiceInterface {
     };
   };
 
-  async pay(reservationId: number, token: Stripe.Token, amount: number): Promise<void> {
-    const sendData: sendData = {
+  async pay(reservationId: number, tokenId: string, amount: number): Promise<void> {
+    const sendData: payRequest = {
       amount: amount,
-      source: token.id,
-    }
+      source: tokenId,
+    };
 
     await this.reservationRepository.pay(reservationId, sendData)
       .catch(error => {
         throw error;
-      })
-    alert(`支払い処理が正常に完了しました。\n\nマイページに遷移します。`);
+      });
+    alert('支払い処理が正常に完了しました。\n\nマイページに遷移します。');
   };
 }

@@ -62,10 +62,10 @@ export default Vue.extend({
       newShop: {
         name: '',
         representative_id: 0,
-        description: '',
-        base64EncodedImage: '',
         region_id: 0,
         genre_id: 0,
+        description: '',
+        base64EncodedImage: '',
       },
       errors: {
         name: [],

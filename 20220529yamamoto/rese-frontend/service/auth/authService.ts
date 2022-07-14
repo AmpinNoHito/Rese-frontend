@@ -1,8 +1,9 @@
 import userRepositoryInterface from "~/repository/user/userRepositoryInterface";
-import { sendData, user } from "~/types/api";
+import { user } from "~/types/api";
 import authServiceInterface from "./authServiceInterface";
-import { RawLocation } from 'vue-router';
+import { Location } from 'vue-router';
 import { Dictionary } from 'vue-router/types/router';
+import { authRequest } from "~/types/axiosRequest";
 
 export default class authService implements authServiceInterface {
   readonly userRepository: userRepositoryInterface;
@@ -11,25 +12,25 @@ export default class authService implements authServiceInterface {
     this.userRepository = userRepository;
   }
   
-  async register(form: sendData): Promise<void> {
+  async register(form: authRequest): Promise<void> {
     await this.userRepository.register(form)
       .catch(error => {
         throw error;
       });
   }
 
-  async registerRepresentative(form: sendData): Promise<sendData> {
+  async registerRepresentative(form: authRequest): Promise<authRequest> {
     await this.userRepository.registerRepresentative(form)
       .catch(error => {
         throw error;
       });
 
     alert('新規店舗代表者が登録されました。\nアドレス検証用のメールをご確認いただくよう、代表者にお伝えください。');
-    Object.keys(form).forEach(key => form[key] = '');  // フォームを初期化
+    form.name = form.email = form.password = '';  // フォームを初期化
     return form;
   }
 
-  async login(form: sendData, query: Dictionary<string | (string | null)[]>): Promise<[string, user, RawLocation]> {
+  async login(form: authRequest, query: Dictionary<string | (string | null)[]>): Promise<[string, user, Location]> {
     /* ログイン、トークン取得 */
     const tokenRes = await this.userRepository.login(form)
       .catch(error => {
@@ -53,7 +54,7 @@ export default class authService implements authServiceInterface {
       };
       return [token, user, path];
     } else {
-      const path = '/';
+      const path = {path: '/'};
       return [token, user, path];
     }
   }

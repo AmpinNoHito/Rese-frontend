@@ -1,7 +1,7 @@
-import { sendData } from "~/types/api";
+import { reviewRequest } from "~/types/axiosRequest";
 
 export default interface reviewRepositoryInterface {
-  register(sendData: sendData): Promise<void>;
-  update(id: number, sendData: sendData): Promise<void>;
+  register(sendData: reviewRequest): Promise<void>;
+  update(id: number, sendData: reviewRequest): Promise<void>;
   delete(id: number): Promise<void>;
 }

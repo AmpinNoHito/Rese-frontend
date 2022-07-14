@@ -21,7 +21,7 @@ import Vue from 'vue';
 import ShopDetail from '~/components/organisms/Composition/ShopDetail.vue';
 import ReservationCard from '~/components/organisms/Card/Reservation.vue';
 import ShopTemplate from '~/layouts/templates/Shop.vue';
-import { user } from '~/types/api';
+import { course } from '~/types/api';
 import { shopData } from '~/types/pageData';
 
 export default Vue.extend({
@@ -35,6 +35,7 @@ export default Vue.extend({
     return await app.$service.shop.getData(+params.shopId, app, query);
   },
   data() {
+    const courses: course[] = [];
     return {
       shop: {
         id: 0,
@@ -50,13 +51,14 @@ export default Vue.extend({
         },
         description: '',
         image: '',
-        courses: [],
+        courses: courses,
       },
       newReservation: {
         courses: [],
         date: '',
         time: '',
         number: '',
+        selectedReservationId: 0,
         selectedCourseIndex: 0,
       },
       errors: {

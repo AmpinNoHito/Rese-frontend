@@ -1,5 +1,5 @@
 import { getterTree, mutationTree, actionTree, getAccessorType } from 'typed-vuex';
-import { user } from '~/types/api';
+import { User } from '~/types/api';
 
 export const state = () => ({
   /* 店舗検索情報 */
@@ -12,7 +12,7 @@ export const state = () => ({
     group: 0,
     name: '',
     email: '',
-  } as user,
+  } as User,
   token: '',
 });
 

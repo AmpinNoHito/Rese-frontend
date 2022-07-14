@@ -1,6 +1,7 @@
-import { sendData } from "~/types/api";
+import { courseRequest } from "~/types/axiosRequest";
+
 
 export default interface courseRepositoryInterface {
-  register(sendData: sendData): Promise<void>;
+  register(sendData: courseRequest): Promise<void>;
   delete(id: number): Promise<void>;
 }

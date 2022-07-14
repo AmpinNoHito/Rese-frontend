@@ -1,5 +1,5 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
-import { sendData } from "~/types/api";
+import { payRequest, reservationRequest } from "~/types/axiosRequest";
 import { newReservationResponse, reservationCollectionResponse, reservationResponse } from "~/types/axiosResponse";
 import reservationRepositoryInterface from "./reservationRepositoryInterface";
 
@@ -10,7 +10,7 @@ export default class reservationRepository implements reservationRepositoryInter
     this.axios = axios;
   }
 
-  async register(sendData: sendData): Promise<newReservationResponse> {
+  async register(sendData: reservationRequest): Promise<newReservationResponse> {
     return this.axios.post('/api/reservations', sendData);
   }
 
@@ -22,7 +22,7 @@ export default class reservationRepository implements reservationRepositoryInter
     return this.axios.get(`/api/reservations/user/${userId}`);
   }
 
-  async update(id: number, sendData: sendData): Promise<void> {
+  async update(id: number, sendData: reservationRequest): Promise<void> {
     return this.axios.put(`/api/reservations/${id}`, sendData);
   }
 
@@ -30,7 +30,7 @@ export default class reservationRepository implements reservationRepositoryInter
     return this.axios.delete(`/api/reservations/${id}`);
   }
 
-  async pay(id: number, sendData: sendData): Promise<void> {
+  async pay(id: number, sendData: payRequest): Promise<void> {
     return this.axios.post(`/api/reservations/pay/${id}`, sendData);
   }
 

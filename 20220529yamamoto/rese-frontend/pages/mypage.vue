@@ -92,7 +92,7 @@ export default Vue.extend({
         number: '',
         courses: [],
         selectedCourseIndex: undefined,
-        selectedReservationId: 1,
+        selectedReservationId: 0,
       },
       /* レビュー作成、編集用データ */
       newReview: {

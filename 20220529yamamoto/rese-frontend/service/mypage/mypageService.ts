@@ -3,7 +3,8 @@ import favoriteRepositoryInterface from "~/repository/favorite/favoriteRepositor
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
 import reviewRepositoryInterface from "~/repository/review/reviewRepositoryInterface";
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
-import { course, newReservation, newReview, reservation, sendData, shop, user } from "~/types/api";
+import { course, newReservation, newReview, reservation, shop } from "~/types/api";
+import { reservationRequest, reviewRequest } from "~/types/axiosRequest";
 import { mypageInitData } from "~/types/pageData";
 import mypageServiceInterface from "./mypageServiceInterface";
 
@@ -51,10 +52,10 @@ export default class mypageService implements mypageServiceInterface{
     }
     return {
       /* 予約変更モーダル内のインプットに、選択された予約の情報を初期値として代入 */
+      name: selectedReservation.shop.name,
       date: selectedReservation.date,
       time: selectedReservation.time,
       number: selectedReservation.number,
-      name: selectedReservation.shop.name,
       courses: selectedReservation.shop.courses,
       /* 変更する予約のidを記録 */
       selectedReservationId: selectedReservation.id,
@@ -64,10 +65,10 @@ export default class mypageService implements mypageServiceInterface{
 
   async updateReservation(data: newReservation, userId: number): Promise<reservation[]> {
     /* 入力値から送信用データを作成 */
-    const sendData: sendData = {
+    const sendData: reservationRequest = {
       datetime: (data.date && data.time) ? `${data.date} ${data.time}` : '',
       number: +data.number.slice(0, -1),
-      course_id: null,
+      course_id: undefined,
     }
 
     /* コースが選択されていれば送信データに追加 */
@@ -78,7 +79,7 @@ export default class mypageService implements mypageServiceInterface{
     }
 
       /* 予約内容変更処理 */
-      await this.reservationRepository.update(data.selectedReservationId as number, sendData)
+      await this.reservationRepository.update(data.selectedReservationId, sendData)
         .catch(error => {
           throw error;
         });
@@ -119,7 +120,7 @@ export default class mypageService implements mypageServiceInterface{
 
   async registerReview(data: newReview, userId: number): Promise<reservation[]> {
     /* 入力値から送信用データを作成 */
-    const sendData: sendData = {
+    const sendData: reviewRequest = {
       reservation_id: data.selectedHistoryId,
       rate: data.rate,
     }
@@ -148,7 +149,7 @@ export default class mypageService implements mypageServiceInterface{
 
   async updateReview(data: newReview, userId: number): Promise<reservation[]> {
     /* 入力値から送信用データを作成 */
-    const sendData: sendData = {
+    const sendData: reviewRequest = {
       rate: data.rate,
     }
 
@@ -196,7 +197,7 @@ export default class mypageService implements mypageServiceInterface{
     return res.data.data.histories;
   }
 
-  async deleteFavorite(reservationIndex: number, userId: number, shopId: number, favoriteShops: shop[]): Promise<void> {
+  async deleteFavorite(shopIndex: number, userId: number, shopId: number, favoriteShops: shop[]): Promise<void> {
     const ch = confirm('お気に入り店舗から削除しますか？');
     if (!ch) return;
     
@@ -205,6 +206,6 @@ export default class mypageService implements mypageServiceInterface{
       .catch(error => {
         throw error;
       });
-    favoriteShops.splice(reservationIndex, 1)
+    favoriteShops.splice(shopIndex, 1)
   }
 }

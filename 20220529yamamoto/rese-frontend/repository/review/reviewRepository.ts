@@ -1,5 +1,5 @@
 import { NuxtAxiosInstance } from "@nuxtjs/axios";
-import { sendData } from "~/types/api";
+import { reviewRequest } from "~/types/axiosRequest";
 import reviewRepositoryInterface from "./reviewRepositoryInterface";
 
 export default class reviewRepository implements reviewRepositoryInterface {
@@ -9,11 +9,11 @@ export default class reviewRepository implements reviewRepositoryInterface {
     this.axios = axios;
   }
 
-  async register(sendData: sendData): Promise<void> {
+  async register(sendData: reviewRequest): Promise<void> {
     return this.axios.post('/api/reviews', sendData);
   }
 
-  async update(id: number, sendData: sendData): Promise<void> {
+  async update(id: number, sendData: reviewRequest): Promise<void> {
     return this.axios.put(`/api/reviews/${id}`, sendData);
   }
 

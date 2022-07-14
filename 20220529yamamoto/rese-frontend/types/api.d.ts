@@ -1,6 +1,6 @@
 export interface user {
   id: number,
-  group: number
+  group: number,
   name: string,
   email: string,
 }
@@ -60,17 +60,13 @@ export interface reservation {
   advance_payment: number,
 }
 
-export interface sendData {
-  [key: string]: (string | number | undefined | null),
-}
-
 export interface newShop {
   name: string,
   representative_id?: number,
-  description: string,
-  base64EncodedImage?: (string | undefined),
   region_id: number,
   genre_id: number,
+  description: string,
+  base64EncodedImage?: (string | undefined),
 }
 
 export interface newCourse {
@@ -86,7 +82,7 @@ export interface newReservation {
   number: string,
   courses?: (course[] | undefined),
   selectedCourseIndex?: number,
-  selectedReservationId?: number,
+  selectedReservationId: number,
 }
 
 export interface newReview {

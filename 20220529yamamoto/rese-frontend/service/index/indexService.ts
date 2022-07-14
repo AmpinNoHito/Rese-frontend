@@ -1,9 +1,10 @@
 import indexServiceInterface from "./indexServiceInterface";
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import favoriteRepositoryInterface from "~/repository/favorite/favoriteRepositoryInterface";
-import { shop, user } from "~/types/api";
+import { shop } from "~/types/api";
 import { NuxtAppOptions } from "@nuxt/types";
 import { indexInitData } from "~/types/pageData";
+import { favoriteRequest } from "~/types/axiosRequest";
 
 export default class indexService implements indexServiceInterface {
   readonly shopRepository: shopRepositoryInterface;
@@ -63,7 +64,7 @@ export default class indexService implements indexServiceInterface {
           throw error;
         });
     } else {  //店舗がまだお気に入りに追加されていない場合は追加
-      const sendData = {user_id: userId, shop_id: selectedShopId};
+      const sendData: favoriteRequest = {user_id: userId, shop_id: selectedShopId};
       favoriteShopIds.push(selectedShopId);
       await this.favoriteRepository.register(sendData)
       .catch(error => {

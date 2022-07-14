@@ -1,6 +1,6 @@
-import { sendData } from "~/types/api";
+import { favoriteRequest } from "~/types/axiosRequest";
 
 export default interface favoriteRepositoryInterface {
-  register(sendData: sendData): Promise<void>;
+  register(sendData: favoriteRequest): Promise<void>;
   delete(userId: number, shopId: number): Promise<void>;
 };
