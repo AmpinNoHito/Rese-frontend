@@ -18,7 +18,9 @@ export default Vue.extend({
     PayCard,
   },
   async asyncData ({ app, query }) {
-    return await app.$service.pay.getData(+query.rs);
+    if (query.rs) {
+      return await app.$service.pay.getData(+query.rs);
+    }
   },
   data() {
     return {

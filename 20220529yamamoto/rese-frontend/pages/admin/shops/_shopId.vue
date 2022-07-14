@@ -19,7 +19,7 @@
       :regionChanged="(value) => newShop.region_id = +value"
       :genreChanged="(value) => newShop.genre_id = +value"
       :previewImage="previewImage"
-      :imageChanged="async function() {newShop.base64EncodedImage = previewImage = await $processImage(e)}"
+      :imageChanged="async function(e) {newShop.base64EncodedImage = previewImage = await $processImage(e)}"
       :buttonText="'更新'"
       :buttonClicked="updateShop"
     />
@@ -71,7 +71,7 @@ export default Vue.extend({
   async asyncData({ params, app: { $service, $accessor } }) {
     /* 店舗データ取得 */
     const representative = $accessor.user;
-    return await $service.adminShop.getData(representative.id, +params.shopId);
+    return await $service.adminShop.getData(+params.shopId, representative.id);
   },
   data() {
     return {

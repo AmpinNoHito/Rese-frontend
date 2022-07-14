@@ -75,7 +75,7 @@ export default class ShopService implements ShopServiceInterface {
     return {
       path: '/done', 
       query: {  // コースが指定されている場合は予約Idをクエリパラメータで渡す
-        rs: (sendData.course_id !== undefined) ? newReservation.id.toString() : '',
+        rs: (sendData.course_id !== undefined) ? newReservation.id.toString() : undefined,
       }
     };
   }

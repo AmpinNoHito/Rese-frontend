@@ -26,8 +26,8 @@ export default class ShopRepository implements ShopRepositoryInterface {
     return this.axios.get(`api/admin/shops/${representativeId}`);
   }
 
-  async getByIdAsRepresentative(id: number, representativeId: number): Promise<ShopResponse> {
-    return this.axios.get(`api/admin/shops/${id}/${representativeId}`);
+  async getByIdAsRepresentative(shopId: number, representativeId: number): Promise<ShopResponse> {
+    return this.axios.get(`api/admin/shops/${shopId}/${representativeId}`);
   }
 
   async getFavoriteShops(userId: number): Promise<ShopCollectionResponse> {

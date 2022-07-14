@@ -6,7 +6,7 @@ export default interface ShopRepositoryInterface {
   index(): Promise<ShopCollectionResponse>;
   getById(id: number): Promise<ShopResponse>;
   getByRepresentativeId(representativeId: number): Promise<ShopCollectionResponse>;
-  getByIdAsRepresentative(id: number, representativeId: number): Promise<ShopResponse>;
+  getByIdAsRepresentative(shopId: number, representativeId: number): Promise<ShopResponse>;
   getFavoriteShops(userId: number): Promise<ShopCollectionResponse>;
   update(shopId: number, sendData: ShopRequest): Promise<void>;
 }
