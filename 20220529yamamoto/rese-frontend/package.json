@@ -36,6 +36,7 @@
     "babel-core": "^6.26.3",
     "babel-jest": "^28.1.2",
     "babel-preset-env": "^1.7.0",
+    "husky": "^8.0.1",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^28.1.2",
     "sass": "^1.52.1",
@@ -43,5 +44,10 @@
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2",
     "vue-jest": "^3.0.7"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn test"
+    }
   }
 }
