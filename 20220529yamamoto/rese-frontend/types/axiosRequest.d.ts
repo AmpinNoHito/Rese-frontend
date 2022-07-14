@@ -1,5 +1,5 @@
 /* 予約 */
-export interface reservationRequest {
+export interface ReservationRequest {
   user_id?: number,
   shop_id?: number,
   course_id? : number
@@ -8,13 +8,13 @@ export interface reservationRequest {
 }
 
 /* 支払 */
-export interface payRequest {
+export interface PayRequest {
   amount: number,
   source: string,
 }
 
 /* レビュー */
-export interface reviewRequest {
+export interface ReviewRequest {
   reservation_id?: number,
   rate: number,
   title?: string,
@@ -22,7 +22,7 @@ export interface reviewRequest {
 }
 
 /* コース */
-export interface courseRequest {
+export interface CourseRequest {
   shop_id: number,
   name: string,
   price: number,
@@ -30,14 +30,14 @@ export interface courseRequest {
 }
 
 /* 認証関係 */
-export interface authRequest {
+export interface AuthRequest {
   name?: string,
   email: string,
   password: string,
 }
 
 /* 店舗 */
-export interface shopRequest {
+export interface ShopRequest {
   representative_id?: number,
   name: string,
   description: string,
@@ -47,8 +47,7 @@ export interface shopRequest {
 }
 
 /* お気に入り */
-export interface favoriteRequest {
+export interface FavoriteRequest {
   user_id: number,
   shop_id: number,
 }
-

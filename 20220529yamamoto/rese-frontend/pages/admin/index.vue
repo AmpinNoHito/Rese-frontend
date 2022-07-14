@@ -40,7 +40,7 @@ import ShopList from '~/components/organisms/List/Shops.vue';
 import ShopEditModal from '~/components/organisms/Modal/ShopEdit.vue';
 import IndexTemplate from '~/layouts/templates/Index.vue';
 import { Context } from '@nuxt/types';
-import { adminIndexData } from '~/types/pageData';
+import { AdminIndexData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [representative],
@@ -75,7 +75,7 @@ export default Vue.extend({
         region_id: [],
         genre_id: [],
       },
-    } as adminIndexData;
+    } as AdminIndexData;
   },
   methods: {
     async registerShop(): Promise<void> {      

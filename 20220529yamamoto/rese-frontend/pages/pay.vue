@@ -10,7 +10,7 @@ import Vue from 'vue';
 import auth from '~/middleware/auth';
 import PayCard from '~/components/organisms/Card/Pay.vue';
 import { Stripe } from 'stripe';
-import { payData } from '~/types/pageData';
+import { PayData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [auth],
@@ -23,7 +23,7 @@ export default Vue.extend({
   data() {
     return {
       reservation: {},
-    } as payData;
+    } as PayData;
   },
   methods: {
     async pay (token: Stripe.Token): Promise<void> {

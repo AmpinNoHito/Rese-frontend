@@ -1,51 +1,51 @@
-import { newCourse, newReservation, newReview, newShop, reservation, shop } from "./api"
-import { authRequest } from "./axiosRequest";
-import { errors } from "./errors";
+import { NewCourse, NewReservation, NewReview, NewShop, Reservation, Shop } from "./api"
+import { AuthRequest } from "./axiosRequest";
+import { Errors } from "./errors";
 
 /* data用 */
-export interface indexData {
-  shops: shop[],
+export interface IndexData {
+  shops: Shop[],
   regionIds: number[],
   genreIds: number[],
   favoriteShopIds: number[],
-  searchResults: shop[],
+  searchResults: Shop[],
   searchWord: string,
   userId: number,
 }
 
-export interface mypageData {
+export interface MypageData {
   userId: number,
-  reservations: reservation[],
-  histories: reservation[],
-  favoriteShops: shop[],
+  reservations: Reservation[],
+  histories: Reservation[],
+  favoriteShops: Shop[],
   today: string,
   qrcode: string,
   showHistory: false,
-  newReservation: newReservation,
-  newReview: newReview,
-  errors: errors,
+  newReservation: NewReservation,
+  newReview: NewReview,
+  errors: Errors,
 }
 
-export interface shopData {
-  shop: shop,
-  newReservation: newReservation,
-  errors: errors,
+export interface ShopData {
+  shop: Shop,
+  newReservation: NewReservation,
+  errors: Errors,
 }
 
-export interface adminIndexData {
-  shops: shop[],
+export interface AdminIndexData {
+  shops: Shop[],
   previewImage: (string | undefined),
-  newShop: newShop,
-  errors: errors,
+  newShop: NewShop,
+  errors: Errors,
 }
 
-export interface adminShopData {
+export interface AdminShopData {
   representativeId: number,
-  shop: shop,
-  reservations: reservation[],
-  histories: reservation[],
+  shop: Shop,
+  reservations: Reservation[],
+  histories: Reservation[],
   codeReaderStartingUp: boolean,
-  selectedReservation: reservation,
+  selectedReservation: Reservation,
   showHistory: boolean,
   previewImage: (string | undefined),
   selectedReview: {
@@ -53,64 +53,64 @@ export interface adminShopData {
     title: string,
     content: string,
   },
-  newShop: newShop,
-  newCourse: newCourse,
-  errors: errors,
+  newShop: NewShop,
+  newCourse: NewCourse,
+  errors: Errors,
 }
 
-export interface authData {
-  form: authRequest,
-  errors: errors,
+export interface AuthData {
+  form: AuthRequest,
+  errors: Errors,
 }
 
-export interface payData {
-  reservation: reservation,
+export interface PayData {
+  reservation: Reservation,
 }
 
 /* asyncData用 */
-export interface indexInitData {
-  shops: shop[],
+export interface IndexInitData {
+  shops: Shop[],
   regionIds: number[],
   genreIds: number[],
   favoriteShopIds: number[],
-  searchResults: shop[],
+  searchResults: Shop[],
   userId: number,
 }
 
-export interface mypageInitData {
+export interface MypageInitData {
   userId: number,
-  reservations: reservation[],
-  histories: reservation[],
-  favoriteShops: shop[],
+  reservations: Reservation[],
+  histories: Reservation[],
+  favoriteShops: Shop[],
   today: string,
 }
 
-export interface shopInitData {
-  shop: shop,
-  newReservation: newReservation,
+export interface ShopInitData {
+  shop: Shop,
+  newReservation: NewReservation,
 }
 
 /* shopページのクエリパラメータを文字列化したもの */
-export interface shopQuery {
+export interface ShopQuery {
   dt?: string,
   tm?: string,
   nm?: string,
   sc?: string,
 }
 
-export interface payInitData {
-  reservation: reservation,
+export interface PayInitData {
+  reservation: Reservation,
 }
 
-export interface adminIndexInitData {
-  shops: shop[],
-  newShop: newShop,
+export interface AdminIndexInitData {
+  shops: Shop[],
+  newShop: NewShop,
 }
 
-export interface adminShopInitData {
+export interface AdminShopInitData {
   representativeId: number,
-  shop: shop,
-  reservations: reservation[],
-  histories: reservation[],
-  newShop: newShop,
+  shop: Shop,
+  reservations: Reservation[],
+  histories: Reservation[],
+  newShop: NewShop,
 }

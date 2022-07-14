@@ -52,9 +52,9 @@ import CourseEditModal from '~/components/organisms/Modal/CourseEdit.vue';
 import ReviewModal from '~/components/organisms/Modal/Review.vue';
 import CodeReaderModal from '~/components/organisms/Modal/CodeReader.vue';
 import ShopTemplate from '~/layouts/templates/Shop.vue';
-import { reservation, review, user } from '~/types/api';
+import { Reservation, Review } from '~/types/api';
 import representative from '~/middleware/representative';
-import { adminShopData } from '~/types/pageData';
+import { AdminShopData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [representative],
@@ -95,7 +95,7 @@ export default Vue.extend({
       reservations: [],
       histories: [],
       codeReaderStartingUp: false,
-      selectedReservation: {} as reservation,
+      selectedReservation: {} as Reservation,
       showHistory: false,
       previewImage: undefined,
       selectedReview: {
@@ -123,7 +123,7 @@ export default Vue.extend({
         genre_id: [],
         price: [],
       },
-    } as adminShopData;
+    } as AdminShopData;
   },
   methods: {
     async updateShop(): Promise<void> {
@@ -155,7 +155,7 @@ export default Vue.extend({
 
       this.shop.courses = res;
     },
-    showReviewModal(review: review) {
+    showReviewModal(review: Review) {
       this.selectedReview = {
         rate: review.rate,
         title: review.title,
@@ -163,7 +163,7 @@ export default Vue.extend({
       }
       this.$showModal('review');
     },
-    showCodeReader(reservation: reservation): void {
+    showCodeReader(reservation: Reservation): void {
       this.selectedReservation = reservation;
       this.codeReaderStartingUp = true;
       this.$showModal('code-reader');

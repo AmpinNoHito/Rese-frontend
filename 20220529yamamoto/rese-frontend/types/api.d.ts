@@ -1,57 +1,57 @@
-export interface user {
+export interface User {
   id: number,
   group: number,
   name: string,
   email: string,
 }
 
-export interface region {
+export interface Region {
   id: number,
   name: string,
 }
 
-export interface genre {
+export interface Genre {
   id: number,
   name: string,
 }
 
-export interface course {
+export interface Course {
   id: number,
   name: string,
   price: number,
   description: string,
 }
 
-export interface shop {
+export interface Shop {
   id: number,
   representative_id: number,
   name: string,
-  region: region,
-  genre: genre,
+  region: Region,
+  genre: Genre,
   description: string,
   image: string,
-  courses: course[],
-  reservations?: reservation[],
-  histories?: reservation[],
-  reviews?: review[],
+  courses: Course[],
+  reservations?: Reservation[],
+  histories?: Reservation[],
+  reviews?: Review[],
 }
 
-export interface review {
+export interface Review {
   id: number,
   rate: number,
   title: string,
   content: string,
 }
 
-export interface reservation {
+export interface Reservation {
   id: number,
   user: {
     id: number,
     name: string,
   }
-  shop: shop,
-  course?: course,
-  review?: review,
+  shop: Shop,
+  course?: Course,
+  review?: Review,
   date: string,
   time: string,
   number: string,
@@ -60,32 +60,33 @@ export interface reservation {
   advance_payment: number,
 }
 
-export interface newShop {
+/* 新規作成用 */
+export interface NewShop {
   name: string,
   representative_id?: number,
   region_id: number,
   genre_id: number,
   description: string,
-  base64EncodedImage?: (string | undefined),
+  base64EncodedImage?: string,
 }
 
-export interface newCourse {
-  name: (string | undefined),
-  price: (number | undefined),
-  description: (string | undefined),
+export interface NewCourse {
+  name?: string,
+  price?: number,
+  description?: string,
 }
 
-export interface newReservation {
+export interface NewReservation {
   name?: string,
   date: string,
   time: string,
   number: string,
-  courses?: (course[] | undefined),
+  courses?: Course[],
   selectedCourseIndex?: number,
   selectedReservationId: number,
 }
 
-export interface newReview {
+export interface NewReview {
   rate: number,
   title: string,
   content: string,

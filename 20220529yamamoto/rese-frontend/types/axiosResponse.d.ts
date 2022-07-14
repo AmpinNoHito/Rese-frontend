@@ -1,8 +1,8 @@
-import { reservation, shop, user } from "./api";
+import { Reservation, Shop, User } from "./api";
 
-export interface userResponse {
+export interface UserResponse {
   data: {
-    user: user,
+    user: User,
   }
 }
 
@@ -12,10 +12,10 @@ export interface tokenResponse {
   }
 }
 
-export interface shopCollectionResponse {
+export interface ShopCollectionResponse {
   data: {
     data: {
-      shops: shop[],
+      shops: Shop[],
       shopIds: number[],
       regionIds: number[],
       genreIds: number[],
@@ -23,29 +23,29 @@ export interface shopCollectionResponse {
   }
 }
 
-export interface shopResponse {
+export interface ShopResponse {
   data: {
-    data: shop, 
+    data: Shop, 
   }
 }
 
-export interface reservationCollectionResponse {
+export interface ReservationCollectionResponse {
   data: {
     data: {
-      reservations: reservation[],
-      histories: reservation[],
+      reservations: Reservation[],
+      histories: Reservation[],
     }
   }
 }
 
-export interface reservationResponse {
+export interface ReservationResponse {
   data: {
-    data: reservation,
+    data: Reservation,
   }
 }
 
-export interface newReservationResponse {
+export interface NewReservationResponse {
   data: {
-    newData: reservation,
+    newData: Reservation,
   }
 }

@@ -15,7 +15,7 @@
 import Vue from 'vue';
 import AuthCard from '~/components/organisms/Card/Auth.vue';
 import AuthTemplate from '~/layouts/templates/Auth.vue';
-import { authData } from '~/types/pageData';
+import { AuthData } from '~/types/pageData';
 
 export default Vue.extend({
   components: {
@@ -32,7 +32,7 @@ export default Vue.extend({
         email: [],
         password: [],
       },
-    } as authData;
+    } as AuthData;
   },
   methods: {
     async login(): Promise<void> {

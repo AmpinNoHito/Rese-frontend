@@ -32,7 +32,7 @@ import SearchBar from '~/components/organisms/Form/SearchBar.vue';
 import ShopList from '~/components/organisms/List/Shops.vue';
 import IndexTemplate from '~/layouts/templates/Index.vue';
 import { Context } from '@nuxt/types';
-import { indexData } from '~/types/pageData';
+import { IndexData } from '~/types/pageData';
 
 export default Vue.extend({
   components: {
@@ -54,7 +54,7 @@ export default Vue.extend({
       searchResults: [],
       searchWord: '',
       userId: 0,
-    } as indexData;
+    } as IndexData;
   },
   methods: {
     async toggleFavorite(shopId: number): Promise<void> {

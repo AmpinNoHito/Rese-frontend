@@ -21,8 +21,8 @@ import Vue from 'vue';
 import ShopDetail from '~/components/organisms/Composition/ShopDetail.vue';
 import ReservationCard from '~/components/organisms/Card/Reservation.vue';
 import ShopTemplate from '~/layouts/templates/Shop.vue';
-import { course } from '~/types/api';
-import { shopData, shopQuery } from '~/types/pageData';
+import { Course } from '~/types/api';
+import { ShopData, ShopQuery } from '~/types/pageData';
 
 export default Vue.extend({
   components: {
@@ -31,7 +31,7 @@ export default Vue.extend({
     ShopTemplate,
   },
   async asyncData({app, params, query}) {
-    const stringifiedQuery: shopQuery = {
+    const stringifiedQuery: ShopQuery = {
       dt: app.$queryToString(query.dt),
       tm: app.$queryToString(query.tm),
       nm: app.$queryToString(query.nm),
@@ -41,7 +41,7 @@ export default Vue.extend({
     return await app.$service.shop.getData(+params.shopId, today, stringifiedQuery);
   },
   data() {
-    const courses: course[] = [];
+    const courses: Course[] = [];
     return {
       shop: {
         id: 0,
@@ -71,7 +71,7 @@ export default Vue.extend({
         datetime: [],
         number: [],
       },
-    } as shopData;
+    } as ShopData;
   },
   methods: {
     /* 予約情報を登録 */

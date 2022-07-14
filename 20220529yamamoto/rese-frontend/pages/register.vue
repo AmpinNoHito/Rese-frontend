@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { authData } from '~/types/pageData';
+import { AuthData } from '~/types/pageData';
 import AuthCard from '~/components/organisms/Card/Auth.vue';
 import AuthTemplate from '~/layouts/templates/Auth.vue';
 
@@ -34,7 +34,7 @@ export default Vue.extend({
         email: [],
         password: [],
       },
-    } as authData;
+    } as AuthData;
   },
   methods:{
     async register(): Promise<void> {

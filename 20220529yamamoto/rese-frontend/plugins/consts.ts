@@ -1,6 +1,6 @@
 import { Plugin } from '@nuxt/types';
 import { Context, Inject } from '@nuxt/types/app';
-import { region, genre } from '~/types/api';
+import { Region, Genre } from '~/types/api';
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -98,7 +98,7 @@ const globalConsts: Plugin = async(context: Context, inject: Inject) => {
     '沖縄県',
   ];
 
-  const REGIONS: region[] = [];
+  const REGIONS: Region[] = [];
 
   regionNames.forEach((name, index) => {
     REGIONS.push({
@@ -117,7 +117,7 @@ const globalConsts: Plugin = async(context: Context, inject: Inject) => {
     'ラーメン',
   ];
 
-  const GENRES: genre[] = [];
+  const GENRES: Genre[] = [];
 
   genreNames.forEach((name, index) => {
     GENRES.push({

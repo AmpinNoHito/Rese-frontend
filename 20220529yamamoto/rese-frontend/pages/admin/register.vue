@@ -18,7 +18,7 @@ import Vue from 'vue';
 import administrator from '~/middleware/administrator';
 import AuthCard from '~/components/organisms/Card/Auth.vue';
 import AuthTemplate from '~/layouts/templates/Auth.vue';
-import { authData } from '~/types/pageData';
+import { AuthData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [administrator],
@@ -38,7 +38,7 @@ export default Vue.extend({
         email: [],
         password: [],
       },
-    } as authData;
+    } as AuthData;
   },
   methods:{
     async register(): Promise<void> {

@@ -56,9 +56,9 @@ import ReviewEditModal from '~/components/organisms/Modal/ReviewEdit.vue';
 import QRCodeModal from '~/components/organisms/Modal/QRCode.vue';
 import MypageTemplate from '~/layouts/templates/Mypage.vue';
 import QRCode from 'qrcode';
-import { reservation } from '~/types/api';
+import { Reservation } from '~/types/api';
 import { Context } from '@nuxt/types';
-import { mypageData } from '~/types/pageData';
+import { MypageData } from '~/types/pageData';
 
 export default Vue.extend({
   middleware: [auth],
@@ -113,10 +113,10 @@ export default Vue.extend({
         title: [],
         content: [],
       },
-    } as mypageData;
+    } as MypageData;
   },
   methods: {
-    showReservationModal(selectedReservation: reservation): void {
+    showReservationModal(selectedReservation: Reservation): void {
       this.newReservation = this.$service.mypage.setNewReservationData(selectedReservation);
       this.$showModal('reservation');
     },
@@ -136,7 +136,7 @@ export default Vue.extend({
           throw this.$alertErrorMessage(error.response);
         });
     },
-    showReviewModal(selectedHistory: reservation): void {
+    showReviewModal(selectedHistory: Reservation): void {
       this.newReview = this.$service.mypage.setNewReviewData(selectedHistory);
       this.$showModal('review');
     },
@@ -170,7 +170,7 @@ export default Vue.extend({
       this.$initializeErrors(this.errors);
       this.$hideModal('review');
     },
-    async showQRCode(selectedReservation: reservation): Promise<void> {
+    async showQRCode(selectedReservation: Reservation): Promise<void> {
       const res = await QRCode.toDataURL(`${selectedReservation.id},${selectedReservation.user.id}`)
         .catch(error => {
           throw alert('エラーが発生しました。時間をおいてから再度お試しください。');

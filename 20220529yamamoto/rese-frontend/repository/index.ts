@@ -1,26 +1,26 @@
 import { Context, Plugin } from '@nuxt/types';
 import { Inject } from '@nuxt/types/app';
-import shopRepository from "~/repository/shop/shopRepository";
-import favoriteRepository from '~/repository/favorite/favoriteRepository';
-import reservationRepository from '~/repository/reservation/reservationRepository';
-import reviewRepository from '~/repository/review/reviewRepository';
-import userRepository from '~/repository/user/userRepository';
-import courseRepository from './course/courseRepository';
-import favoriteRepositoryInterface from './favorite/favoriteRepositoryInterface';
-import shopRepositoryInterface from './shop/shopRepositoryInterface';
-import reservationRepositoryInterface from './reservation/reservationRepositoryInterface';
-import reviewRepositoryInterface from './review/reviewRepositoryInterface';
-import userRepositoryInterface from './user/userRepositoryInterface';
-import courseRepositoryInterface from './course/courseRepositoryInterface';
+import ShopRepository from "~/repository/shop/ShopRepository";
+import FavoriteRepository from '~/repository/favorite/FavoriteRepository';
+import ReservationRepository from '~/repository/reservation/ReservationRepository';
+import ReviewRepository from '~/repository/review/ReviewRepository';
+import UserRepository from '~/repository/user/UserRepository';
+import CourseRepository from './course/CourseRepository';
+import FavoriteRepositoryInterface from './favorite/FavoriteRepositoryInterface';
+import ShopRepositoryInterface from './shop/ShopRepositoryInterface';
+import ReservationRepositoryInterface from './reservation/ReservationRepositoryInterface';
+import ReviewRepositoryInterface from './review/ReviewRepositoryInterface';
+import UserRepositoryInterface from './user/UserRepositoryInterface';
+import CourseRepositoryInterface from './course/CourseRepositoryInterface';
 import { NuxtAxiosInstance } from '@nuxtjs/axios';
 
 export interface Repository {
-  shop: shopRepositoryInterface,
-  favorite: favoriteRepositoryInterface,
-  reservation: reservationRepositoryInterface,
-  review: reviewRepositoryInterface,
-  user: userRepositoryInterface,
-  course: courseRepositoryInterface,
+  shop: ShopRepositoryInterface,
+  favorite: FavoriteRepositoryInterface,
+  reservation: ReservationRepositoryInterface,
+  review: ReviewRepositoryInterface,
+  user: UserRepositoryInterface,
+  course: CourseRepositoryInterface,
 }
 
 declare module 'vue/types/vue' {
@@ -56,26 +56,26 @@ const repository: Plugin = ({ $axios }: Context, inject: Inject) => {
 
 export default repository;
 
-function getShopRepository(axios: NuxtAxiosInstance): shopRepositoryInterface {
-  return new shopRepository(axios);
+function getShopRepository(axios: NuxtAxiosInstance): ShopRepositoryInterface {
+  return new ShopRepository(axios);
 }
 
-function getFavoriteRepository(axios: NuxtAxiosInstance): favoriteRepositoryInterface {
-  return new favoriteRepository(axios);
+function getFavoriteRepository(axios: NuxtAxiosInstance): FavoriteRepositoryInterface {
+  return new FavoriteRepository(axios);
 }
 
-function getReservationRepository(axios: NuxtAxiosInstance): reservationRepositoryInterface {
-  return new reservationRepository(axios);
+function getReservationRepository(axios: NuxtAxiosInstance): ReservationRepositoryInterface {
+  return new ReservationRepository(axios);
 }
 
-function getReviewRepository(axios: NuxtAxiosInstance): reviewRepositoryInterface {
-  return new reviewRepository(axios);
+function getReviewRepository(axios: NuxtAxiosInstance): ReviewRepositoryInterface {
+  return new ReviewRepository(axios);
 }
 
-function getUserRepository(axios: NuxtAxiosInstance): userRepositoryInterface {
-  return new userRepository(axios);
+function getUserRepository(axios: NuxtAxiosInstance): UserRepositoryInterface {
+  return new UserRepository(axios);
 }
 
-function getCourseRepository(axios: NuxtAxiosInstance): courseRepositoryInterface {
-  return new courseRepository(axios);
+function getCourseRepository(axios: NuxtAxiosInstance): CourseRepositoryInterface {
+  return new CourseRepository(axios);
 }
