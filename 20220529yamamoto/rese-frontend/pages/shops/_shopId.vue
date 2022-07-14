@@ -38,7 +38,8 @@ export default Vue.extend({
       sc: app.$queryToString(query.sc),
     }
     const today = app.$getTodaysDate();
-    return await app.$service.shop.getData(+params.shopId, today, stringifiedQuery);
+    return await app.$service.shop.getData(+params.shopId, today, stringifiedQuery)
+      .catch(error => app.$alertErrorMessage(error.response));
   },
   data() {
     const courses: Course[] = [];

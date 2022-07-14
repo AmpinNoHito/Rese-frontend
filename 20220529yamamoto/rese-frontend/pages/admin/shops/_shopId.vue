@@ -68,10 +68,11 @@ export default Vue.extend({
     CodeReaderModal,
     ShopTemplate,
   },
-  async asyncData({ params, app: { $service, $accessor } }) {
+  async asyncData({ params, app }) {
     /* 店舗データ取得 */
-    const representative = $accessor.user;
-    return await $service.adminShop.getData(+params.shopId, representative.id);
+    const representative = app.$accessor.user;
+    return await app.$service.adminShop.getData(+params.shopId, representative.id)
+      .catch(error => app.$alertErrorMessage(error.response));
   },
   data() {
     return {

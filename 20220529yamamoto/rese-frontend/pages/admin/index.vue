@@ -39,7 +39,6 @@ import HeaderUnit from '~/components/molecules/Text/Header.vue';
 import ShopList from '~/components/organisms/List/Shops.vue';
 import ShopEditModal from '~/components/organisms/Modal/ShopEdit.vue';
 import IndexTemplate from '~/layouts/templates/Index.vue';
-import { Context } from '@nuxt/types';
 import { AdminIndexData } from '~/types/pageData';
 
 export default Vue.extend({
@@ -51,9 +50,10 @@ export default Vue.extend({
     ShopEditModal,
     IndexTemplate,
   },
-  async asyncData({ app }: Context) {
+  async asyncData({ app }) {
     const representativeId = app.$accessor.user.id;
-    return await app.$service.adminIndex.getData(representativeId);
+    return await app.$service.adminIndex.getData(representativeId)
+      .catch(error => app.$alertErrorMessage(error.response));
   },
   data() {
     return {

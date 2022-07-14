@@ -31,7 +31,6 @@ import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import SearchBar from '~/components/organisms/Form/SearchBar.vue';
 import ShopList from '~/components/organisms/List/Shops.vue';
 import IndexTemplate from '~/layouts/templates/Index.vue';
-import { Context } from '@nuxt/types';
 import { IndexData } from '~/types/pageData';
 
 export default Vue.extend({
@@ -41,9 +40,10 @@ export default Vue.extend({
     ShopList,
     IndexTemplate,
   },
-  async asyncData({ app }: Context) {
+  async asyncData({ app }) {
     const userId = app.$accessor.user.id;
-    return await app.$service.index.getData(userId);
+    return await app.$service.index.getData(userId)
+      .catch(error => app.$alertErrorMessage(error.response));
   },
   data() {
     return {

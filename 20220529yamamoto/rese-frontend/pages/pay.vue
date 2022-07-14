@@ -19,7 +19,8 @@ export default Vue.extend({
   },
   async asyncData ({ app, query }) {
     if (query.rs) {
-      return await app.$service.pay.getData(+query.rs);
+      return await app.$service.pay.getData(+query.rs)
+        .catch(error => app.$alertErrorMessage(error.response));
     }
   },
   data() {

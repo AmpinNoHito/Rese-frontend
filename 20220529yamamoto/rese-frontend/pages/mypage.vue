@@ -57,7 +57,6 @@ import QRCodeModal from '~/components/organisms/Modal/QRCode.vue';
 import MypageTemplate from '~/layouts/templates/Mypage.vue';
 import QRCode from 'qrcode';
 import { Reservation } from '~/types/api';
-import { Context } from '@nuxt/types';
 import { MypageData } from '~/types/pageData';
 
 export default Vue.extend({
@@ -70,10 +69,11 @@ export default Vue.extend({
     QRCodeModal,
     MypageTemplate,
   },
-  async asyncData({ app }: Context) {
+  async asyncData({ app }) {
     const userId = app.$accessor.user.id;
     const today = app.$getTodaysDate();
-    return await app.$service.mypage.getData(userId, today);
+    return await app.$service.mypage.getData(userId, today)
+      .catch(error => app.$alertErrorMessage(error.response));
   },
   data() {
     return {
