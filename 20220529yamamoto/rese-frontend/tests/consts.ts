@@ -1,5 +1,5 @@
 import { course, genre, region, reservation, review, shop, user } from "~/types/api";
-import { newReservationResponse, reservationCollectionResponse, shopCollectionResponse, shopResponse, userResponse } from "~/types/axiosResponse";
+import { newReservationResponse, reservationCollectionResponse, reservationResponse, shopCollectionResponse, shopResponse, userResponse } from "~/types/axiosResponse";
 
 const REGION: region = {
   id: 100,
@@ -101,6 +101,12 @@ export const SHOP_COLLECTION_RESPONSE: shopCollectionResponse = {
 export const NEW_RESERVATION_RESPONSE: newReservationResponse = {
   data: {
     newData: RESERVATION,
+  },
+};
+
+export const RESERVATION_RESPONSE: reservationResponse = {
+  data: {
+    data: RESERVATION,
   },
 };
 

@@ -5,6 +5,7 @@ import { shop } from "~/types/api";
 import { NuxtAppOptions } from "@nuxt/types";
 import { indexInitData } from "~/types/pageData";
 import { favoriteRequest } from "~/types/axiosRequest";
+import { shopCollectionResponse } from "~/types/axiosResponse";
 
 export default class indexService implements indexServiceInterface {
   readonly shopRepository: shopRepositoryInterface;
@@ -15,42 +16,38 @@ export default class indexService implements indexServiceInterface {
     this.favoriteRepository = favoriteRepository;
   }
 
-  async getData({ $accessor }: NuxtAppOptions): Promise<indexInitData> {
+  async getData(userId: number): Promise<indexInitData> {
     const shopPromise = this.shopRepository.index();
-    if ($accessor.loggedIn) {  // ログインしている場合はお気に入りのデータも取得
-      const favoritePromise = this.shopRepository.getFavoriteShops($accessor.user.id);
-      const res = await Promise.all([shopPromise, favoritePromise])
+    let res: shopCollectionResponse[] | shopCollectionResponse;
+    let shopResponse: shopCollectionResponse['data']['data'];
+    let favoriteResponse: shopCollectionResponse['data']['data'] | undefined;
+
+    if (userId) {  // ログインしている場合はお気に入りのデータを含めて取得
+      const favoritePromise = this.shopRepository.getFavoriteShops(userId);
+      res = await Promise.all([shopPromise, favoritePromise])
         .catch(error => {
           throw error;
         });
       
-      const shopResponse = res[0].data.data;
-      const favoriteResponse = res[1].data.data;
-
-      return  {
-        shops: shopResponse.shops,
-        regionIds: shopResponse.regionIds,
-        genreIds: shopResponse.genreIds,
-        favoriteShopIds: favoriteResponse.shopIds,
-        searchResults: shopResponse.shops,
-        userId: $accessor.user.id,
-      }
+      shopResponse = res[0].data.data;
+      favoriteResponse = res[1].data.data;
     } else {  // ログインしていない場合は店舗データのみ取得
-      const res = await shopPromise
+      res = await shopPromise
         .catch(error => {
           throw error;
         });
 
-      const shopResponse = res.data.data;
+      shopResponse = res.data.data;
+      favoriteResponse = undefined;
+    }
 
-      return {
-        shops: shopResponse.shops,
-        regionIds: shopResponse.regionIds,
-        genreIds: shopResponse.genreIds,
-        favoriteShopIds: [],
-        searchResults: shopResponse.shops,
-        userId: $accessor.user.id,
-      }
+    return  {
+      shops: shopResponse.shops,
+      regionIds: shopResponse.regionIds,
+      genreIds: shopResponse.genreIds,
+      favoriteShopIds: (favoriteResponse) ? favoriteResponse.shopIds : [],
+      searchResults: shopResponse.shops,
+      userId: userId,
     }
   }
   

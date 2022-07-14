@@ -24,6 +24,37 @@ const mockDeleteFavorite = jest.spyOn(favoriteRepositoryInstance, 'delete')
 /* テスト用のindexServiceインスタンスを作成 */
 const testingIndexService: indexServiceInterface = new indexService(shopRepositoryInstance, favoriteRepositoryInstance);
 
+describe('test getData', () => {
+  const expectedRes = {
+    shops: [SHOP],
+    regionIds: [SHOP.region.id],
+    genreIds: [SHOP.genre.id],
+    favoriteShopIds: [SHOP.id],
+    searchResults: [SHOP],
+    userId: 100,
+  }
+
+  test('get data being logged in', async () => {
+    const res = await testingIndexService.getData(100);
+
+    expect(mockShopIndex).toBeCalled();
+    expect(mockGetFavoriteShops).toBeCalledWith(100);
+    expect(res).toEqual(expectedRes);
+  });
+
+  test('get data being logged out', async () => {
+    mockShopIndex.mockClear();
+    mockGetFavoriteShops.mockClear();
+    expectedRes.favoriteShopIds = [];
+    expectedRes.userId = 0;
+    const res = await testingIndexService.getData(0);
+
+    expect(mockShopIndex).toBeCalled();
+    expect(mockGetFavoriteShops).not.toBeCalled();
+    expect(res).toEqual(expectedRes);
+  });
+});
+
 describe('test toggleFavorite', () => {
   test('register favorite', async () => {
     const res = await testingIndexService.toggleFavorite([200], 100, 100);

@@ -9,7 +9,7 @@ import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import adminShopService from "~/service/adminShop/adminShopService";
 import { newCourse, newShop } from "~/types/api";
 import { courseRequest, shopRequest } from "~/types/axiosRequest";
-import { COURSE, HISTORY, RESERVATION, SHOP, SHOP_RESPONSE, SHOP_RESPONSE_WITH_RESERVATIONS } from "../consts";
+import { COURSE, HISTORY, RESERVATION, SHOP, SHOP_RESPONSE, SHOP_RESPONSE_WITH_RESERVATIONS, SHOP_WITH_RESERVATIONS } from "../consts";
 
 /* shopRepositoryのインスタンスを作成、必要なメソッドをモック化 */
 const shopRepositoryInstance: shopRepositoryInterface = new shopRepository(axios as NuxtAxiosInstance);
@@ -37,12 +37,32 @@ const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
 /* window.confirmをモック化(chの値に応じて戻り値を切り替え) */
 let ch: boolean;
-const mockConfirm = jest.spyOn(window, 'confirm').mockImplementation(() => ch ? true : false);
+jest.spyOn(window, 'confirm').mockImplementation(() => ch ? true : false);
 
 /* テスト用のadminShopServiceインスタンスを作成 */
 const testingAdminShopService = new adminShopService(shopRepositoryInstance, courseRepositoryInstance, reservationRepositoryInstance);
 
 beforeEach(() => mockGetShopById.mockClear());
+
+test('test getData', async () => {
+  const expectedRes = {
+    representativeId: 100,
+    shop: SHOP_WITH_RESERVATIONS,
+    newShop: {
+      name: SHOP.name,
+      description: SHOP.description,
+      region_id: SHOP.region.id,
+      genre_id: SHOP.genre.id,
+    },
+    reservations: [RESERVATION],
+    histories: [HISTORY],
+  };
+
+  const res = await testingAdminShopService.getData(100, 100);
+
+  expect(mockGetShopByIdAsRepresentative).toBeCalledWith(100, 100);
+  expect(res).toEqual(expectedRes);
+});
 
 test('test updateShop', async () => {
   const newShop: newShop = {

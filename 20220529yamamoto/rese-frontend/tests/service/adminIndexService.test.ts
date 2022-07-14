@@ -21,7 +21,26 @@ const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
 /* テスト用のadminIndexServiceインスタンスを作成 */
 const testingAdminIndexService: adminIndexServiceInterface = new adminIndexService(shopRepositoryInstance);
 
+test('test getData', async () => {
+  const expectedRes = {
+    shops: [SHOP],
+    newShop: {
+      representative_id: 100,
+      name: '',
+      description: '',
+      region_id: 0,
+      genre_id: 0,
+    },
+  };
+
+  const res = await testingAdminIndexService.getData(100);
+
+  expect(mockGetByRepresentativeId).toBeCalledWith(100);
+  expect(res).toEqual(expectedRes);
+});
+
 test('test registerShop', async () => {
+  mockGetByRepresentativeId.mockClear();
   const sendData: newShop = {
     name: 'test',
     representative_id: 100,

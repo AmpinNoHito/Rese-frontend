@@ -21,10 +21,9 @@ export default class mypageService implements mypageServiceInterface{
     this.favoriteRepository = favoriteRepository;
   }
 
-  async getData({ $accessor, $getTodaysDate }: NuxtAppOptions): Promise<mypageInitData> {
-    const user = $accessor.user;
-    const reservationPromise = this.reservationRepository.getByUserId(user.id);
-    const shopPromise = this.shopRepository.getFavoriteShops(user.id);
+  async getData(userId: number, today: string): Promise<mypageInitData> {
+    const reservationPromise = this.reservationRepository.getByUserId(userId);
+    const shopPromise = this.shopRepository.getFavoriteShops(userId);
     const res = await Promise.all([reservationPromise, shopPromise])
       .catch(error => {
         throw error;
@@ -34,8 +33,8 @@ export default class mypageService implements mypageServiceInterface{
     const favoriteResponse = res[1].data.data;
 
     return {
-      userId: user.id,
-      today: $getTodaysDate(),
+      userId: userId,
+      today: today,
       reservations: reservationResponse.reservations,
       histories: reservationResponse.histories,
       favoriteShops: favoriteResponse.shops,

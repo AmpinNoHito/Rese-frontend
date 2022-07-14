@@ -1,4 +1,3 @@
-import { Stripe } from 'stripe';
 import reservationRepositoryInterface from "~/repository/reservation/reservationRepositoryInterface";
 import payServiceInterface from "./payServiceInterface";
 import { payInitData } from "~/types/pageData";

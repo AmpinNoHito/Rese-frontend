@@ -3,9 +3,7 @@ import reservationRepositoryInterface from "~/repository/reservation/reservation
 import shopServiceInterface from "./shopServiceInterface";
 import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import { Location } from "vue-router";
-import { shopInitData } from "~/types/pageData";
-import { NuxtAppOptions } from "@nuxt/types/app";
-import { Dictionary } from 'vue-router/types/router';
+import { shopInitData, shopQuery } from "~/types/pageData";
 import { reservationRequest } from "~/types/axiosRequest";
 
 
@@ -18,7 +16,7 @@ export default class shopService implements shopServiceInterface {
     this.reservationRepository = reservationRepository;
   }
 
-  async getData(shopId: number, app: NuxtAppOptions, query: Dictionary<string | (string | null)[]>): Promise<shopInitData> {
+  async getData(shopId: number, today: string, query: shopQuery): Promise<shopInitData> {
     const res = await this.shopRepository.getById(shopId)
       .catch(error => {
         throw error;
@@ -26,19 +24,13 @@ export default class shopService implements shopServiceInterface {
     
     const shop = res.data.data;
     
-    /* クエリパラメータをstring型に変換 */
-    const date = app.$queryToString(query.dt);
-    const time = app.$queryToString(query.tm);
-    const number = app.$queryToString(query.nm);
-    const selectedCourseIndex = app.$queryToString(query.sc);
-
     return {
       shop: shop,
       newReservation: {
-        date: date ?? app.$getTodaysDate(),
-        time: time ?? '',
-        number: number ?? '',
-        selectedCourseIndex: (selectedCourseIndex) ? +selectedCourseIndex : undefined,
+        date: query.dt ?? today,
+        time: query.tm ?? '',
+        number: query.nm ?? '',
+        selectedCourseIndex: (query.sc) ? +query.sc : undefined,
         selectedReservationId: 0,
         courses: shop.courses,
       },

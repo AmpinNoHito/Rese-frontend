@@ -1,10 +1,8 @@
 import { newReservation } from "~/types/api";
 import { Location } from 'vue-router';
-import { shopInitData } from "~/types/pageData";
-import { NuxtAppOptions } from "@nuxt/types/app";
-import { Dictionary } from 'vue-router/types/router';
+import { shopInitData, shopQuery } from "~/types/pageData";
 
 export default interface shopServiceInterface {
-  getData(shopId: number, app: NuxtAppOptions, query: Dictionary<string | (string | null)[]>): Promise<shopInitData>;
+  getData(shopId: number, today: string, query: shopQuery): Promise<shopInitData>;
   registerReservation(data: newReservation, userId: number, shopId: number): Promise<Location>;
 }

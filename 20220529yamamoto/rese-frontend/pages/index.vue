@@ -42,7 +42,8 @@ export default Vue.extend({
     IndexTemplate,
   },
   async asyncData({ app }: Context) {
-    return await app.$service.index.getData(app);
+    const userId = app.$accessor.user.id;
+    return await app.$service.index.getData(userId);
   },
   data() {
     return {

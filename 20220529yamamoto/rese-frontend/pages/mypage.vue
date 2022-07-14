@@ -71,7 +71,9 @@ export default Vue.extend({
     MypageTemplate,
   },
   async asyncData({ app }: Context) {
-    return await app.$service.mypage.getData(app);
+    const userId = app.$accessor.user.id;
+    const today = app.$getTodaysDate();
+    return await app.$service.mypage.getData(userId, today);
   },
   data() {
     return {

@@ -17,7 +17,7 @@ export default class adminShopService implements adminShopServiceInterface {
     this.reservationRepository = reservationRepository;
   }
 
-  async getData(representativeId: number, shopId: number): Promise<adminShopInitData> {
+  async getData(shopId: number, representativeId: number): Promise<adminShopInitData> {
     const res = await this.shopRepository.getByIdAsRepresentative(shopId, representativeId)
       .catch(error => {
         throw error;
@@ -31,8 +31,8 @@ export default class adminShopService implements adminShopServiceInterface {
       newShop : { 
         name: shop.name,
         description: shop.description,
-        genre_id: shop.genre.id,
         region_id: shop.region.id,
+        genre_id: shop.genre.id,
       },
       reservations: shop.reservations ?? [],
       histories: shop.histories ?? [],

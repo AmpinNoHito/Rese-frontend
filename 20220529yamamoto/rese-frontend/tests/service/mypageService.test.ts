@@ -11,6 +11,7 @@ import shopRepositoryInterface from "~/repository/shop/shopRepositoryInterface";
 import mypageService from "~/service/mypage/mypageService";
 import { newReservation, newReview } from "~/types/api";
 import { reservationRequest, reviewRequest } from "~/types/axiosRequest";
+import { mypageInitData } from "~/types/pageData";
 import { COURSE, HISTORY, RESERVATION, RESERVATION_COLLECTION_RESPONSE, REVIEW, SHOP, SHOP_COLLECTION_RESPONSE } from "../consts";
 
 /* reservationRepositoryのインスタンスを作成、必要なメソッドをモック化 */
@@ -46,7 +47,7 @@ const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
 /* window.confirmをモック化(chの値に応じて戻り値を切り替え) */
 let ch: boolean;
-const mockConfirm = jest.spyOn(window, 'confirm').mockImplementation(() => ch ? true : false);
+jest.spyOn(window, 'confirm').mockImplementation(() => ch ? true : false);
 
 /* テスト用のmypageServiceインスタンスを作成 */
 const testingMypageService = new mypageService(reservationRepositoryInstance, shopRepositoryInstance, reviewRepositoryInstance, favoriteRepositoryInstance);
@@ -54,6 +55,21 @@ const testingMypageService = new mypageService(reservationRepositoryInstance, sh
 beforeEach(() =>{
   mockGetReservationByUserId.mockClear();
   mockAlert.mockClear();
+});
+
+test('test getData', async () => {
+  const expectedRes: mypageInitData = {
+    userId: 100,
+    today: '2023-01-01',
+    reservations: [RESERVATION],
+    histories: [HISTORY],
+    favoriteShops: [SHOP],
+  }
+
+  const res = await testingMypageService.getData(100, '2023-01-01');
+
+  expect(mockGetReservationByUserId).toBeCalledWith(100);
+  expect(res).toEqual(expectedRes);
 });
 
 const newReservation: newReservation = {

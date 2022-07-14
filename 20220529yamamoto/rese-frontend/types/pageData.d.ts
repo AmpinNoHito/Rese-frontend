@@ -1,7 +1,8 @@
-import { course, newCourse, newReservation, newReview, newShop, reservation, review, sendData, shop } from "./api"
+import { newCourse, newReservation, newReview, newShop, reservation, shop } from "./api"
+import { authRequest } from "./axiosRequest";
 import { errors } from "./errors";
 
-/* data */
+/* data用 */
 export interface indexData {
   shops: shop[],
   regionIds: number[],
@@ -58,7 +59,7 @@ export interface adminShopData {
 }
 
 export interface authData {
-  form: sendData,
+  form: authRequest,
   errors: errors,
 }
 
@@ -66,8 +67,7 @@ export interface payData {
   reservation: reservation,
 }
 
-
-/* asyncData */
+/* asyncData用 */
 export interface indexInitData {
   shops: shop[],
   regionIds: number[],
@@ -88,6 +88,14 @@ export interface mypageInitData {
 export interface shopInitData {
   shop: shop,
   newReservation: newReservation,
+}
+
+/* shopページのクエリパラメータを文字列化したもの */
+export interface shopQuery {
+  dt?: string,
+  tm?: string,
+  nm?: string,
+  sc?: string,
 }
 
 export interface payInitData {
