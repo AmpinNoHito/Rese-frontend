@@ -31,7 +31,7 @@ import IconBack from '~/components/atoms/Icon/IconBack.vue';
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
 import SpanAtom from '~/components/atoms/Text/Span.vue';
-import HeaderUnit from '~/components/molecules/Text/HeaderUnit.vue';
+import HeaderUnit from '~/components/molecules/Text/Header.vue';
 import ShopImage from '~/components/molecules/Image/ShopImage.vue';
 import CourseList from '~/components/organisms/List/Courses.vue';
 

@@ -44,7 +44,7 @@ import CrossAtom from '~/components/atoms/Icon/Cross.vue';
 import ImageAtom from '~/components/atoms/Image/Image.vue';
 import DarkButtonAtom from '~/components/atoms/Button/DarkButton.vue';
 import NestedText from '~/components/molecules/Text/NestedText.vue';
-import HeaderUnit from '~/components/molecules/Text/HeaderUnit.vue';
+import HeaderUnit from '~/components/molecules/Text/Header.vue';
 
 export default Vue.extend({
   components: {

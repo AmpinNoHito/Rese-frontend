@@ -29,6 +29,7 @@ export default Vue.extend({
 
 <style lang="scss">
 .header-unit {
+  position: relative;
   &__span {
     font-weight: normal;
     cursor: pointer;

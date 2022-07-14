@@ -41,7 +41,7 @@ import Vue from 'vue';
 import LinkAtom from '~/components/atoms/Text/Link.vue';
 import ButtonAtom from '~/components/atoms/Button/Button.vue';
 import ShopCardImage from '~/components/molecules/Image/ShopCardImage.vue';
-import HashTag from '~/components/molecules/Text/HashTagUnit.vue';
+import HashTag from '~/components/molecules/Text/HashTag.vue';
 import FavoriteButton from '~/components/molecules/Utils/FavoriteButton.vue';
 
 export default Vue.extend({

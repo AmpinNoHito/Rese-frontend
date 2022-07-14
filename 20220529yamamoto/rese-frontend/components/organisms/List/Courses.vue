@@ -28,7 +28,7 @@
 import Vue from 'vue';
 import HeaderAtom from '~/components/atoms/Text/Header.vue';
 import ParagraphAtom from '~/components/atoms/Text/Paragraph.vue';
-import HeaderUnit from '~/components/molecules/Text/HeaderUnit.vue';
+import HeaderUnit from '~/components/molecules/Text/Header.vue';
 import ShopCourse from '~/components/molecules/Text/ShopCourse.vue';
 
 export default Vue.extend({
