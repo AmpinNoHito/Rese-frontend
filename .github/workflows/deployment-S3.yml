@@ -4,6 +4,12 @@ on:
   push:
     branches: main
 
+env:
+  API_URL: ${{ secrets.API_URL }}
+  STORAGE_URL: ${{ secrets.STORAGE_URL }}
+  STRIPE_PK: ${{ secrets.STRIPE_PK }}
+  STRIPE_SK: ${{ secrets.STRIPE_SK }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
