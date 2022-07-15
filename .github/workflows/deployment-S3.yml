@@ -1,0 +1,57 @@
+name: deploy to AWS S3
+
+on: 
+  push:
+    branches: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: SetUp Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.15.0'
+
+    - run: yarn install
+    - run: yarn run build
+    - run: yarn run generate
+
+    - name: Upload build result
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: dist/
+
+  deploy:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download build result
+      uses: actions/download-artifact@v2
+      with:
+        name: build
+        path: dist/
+
+    - name: Upload to AWS S3
+      uses: opspresso/action-s3-sync@master
+      env: 
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: "ap-northeast-1"
+        FROM_PATH: "dist/"
+        DEST_PATH: "s3://rese-backet-5785-1438-4113/app/"
+
+    - name: Clear cache in CloudFront
+      uses: chetan/invalidate-cloudfront-action@v1.2
+      env:
+        DISTRIBUTION: ${{ secrets.DISTRIBUTION }}
+        PATHS: "/*"
+        AWS_REGION: "ap-northeast-1"
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
