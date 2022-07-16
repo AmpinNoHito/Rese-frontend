@@ -10,7 +10,7 @@ declare global {
   interface Window { Stripe: Stripe }
 }
 
-export default async () => {
+export default () => {
   Vue.component('StripeCheckout', StripeCheckout);
   Vue.component('StripeElementCard', StripeElementCard);
   const interval = setInterval(() => {
