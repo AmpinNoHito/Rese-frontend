@@ -28,6 +28,7 @@ test('test getData', async () => {
     nm: '1人',
     sc: '0',
   };
+  
   const expectedRes: ShopInitData = {
     shop: SHOP,
     newReservation: {

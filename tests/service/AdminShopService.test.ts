@@ -9,6 +9,7 @@ import ShopRepositoryInterface from "~/repository/shop/ShopRepositoryInterface";
 import AdminShopService from "~/service/adminShop/AdminShopService";
 import { NewCourse, NewShop } from "~/types/api";
 import { CourseRequest, ShopRequest } from "~/types/axiosRequest";
+import { AdminShopInitData } from "~/types/pageData";
 import { COURSE, HISTORY, RESERVATION, SHOP, SHOP_RESPONSE, SHOP_RESPONSE_WITH_RESERVATIONS, SHOP_WITH_RESERVATIONS } from "../consts";
 
 /* shopRepositoryのインスタンスを作成、必要なメソッドをモック化 */
@@ -45,7 +46,7 @@ const testingAdminShopService = new AdminShopService(shopRepositoryInstance, cou
 beforeEach(() => mockGetShopById.mockClear());
 
 test('test getData', async () => {
-  const expectedRes = {
+  const expectedRes: AdminShopInitData = {
     representativeId: 100,
     shop: SHOP_WITH_RESERVATIONS,
     newShop: {

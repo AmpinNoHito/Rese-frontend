@@ -2,14 +2,14 @@ import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import axios from 'axios';
 import ShopRepositoryInterface from '~/repository/shop/ShopRepositoryInterface';
 import ShopRepository from "~/repository/shop/ShopRepository";
-import { SHOP } from '../consts';
+import { SHOP, SHOP_COLLECTION_RESPONSE, SHOP_RESPONSE } from '../consts';
 import { ShopCollectionResponse, ShopResponse } from '~/types/axiosResponse';
 
 /* モック化されたaxiosの戻り値の型 */
-type mockAxiosResponse = ShopResponse | ShopCollectionResponse;
+type MockAxiosResponse = ShopResponse | ShopCollectionResponse;
 
 /* axiosをモック化 */
-let mockAxiosResponse: mockAxiosResponse;
+let mockAxiosResponse: MockAxiosResponse;
 jest.mock('axios', () => ({
   get: jest.fn(() => Promise.resolve(mockAxiosResponse)),
   post: jest.fn(() => Promise.resolve()),
@@ -30,98 +30,63 @@ test('test register', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 test('test index', async () => {
-  mockAxiosResponse = {
-    data: {
-      data: {
-        shops: [SHOP],
-        shopIds: [SHOP.id],
-        regionIds: [SHOP.region.id],
-        genreIds: [SHOP.genre.id],
-      }
-    }
-  };
+  mockAxiosResponse = SHOP_COLLECTION_RESPONSE;
 
   const returnedPromise = testingShopRepository.index();
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.data.shops[0]).toEqual(SHOP));
+  const res = await returnedPromise;
+  expect(res.data.data.shops[0]).toEqual(SHOP);
 });
 
 test('test getById', async () => {
-  mockAxiosResponse = {
-    data: {
-      data: SHOP,
-    }
-  };
+  mockAxiosResponse = SHOP_RESPONSE;
 
   const returnedPromise = testingShopRepository.getById(100);
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.data).toEqual(SHOP));
+  const res = await returnedPromise;
+  expect(res.data.data).toEqual(SHOP);
 });
 
 test('test getByRepresentativeId', async () => {
-  mockAxiosResponse = {
-    data: {
-      data: {
-        shops: [SHOP],
-        shopIds: [SHOP.id],
-        regionIds: [SHOP.region.id],
-        genreIds: [SHOP.genre.id],
-      }
-    }
-  };
+  mockAxiosResponse = SHOP_COLLECTION_RESPONSE;
 
   const returnedPromise = testingShopRepository.getByRepresentativeId(100);
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.data.shops[0]).toEqual(SHOP));
+  const res = await returnedPromise;
+  expect(res.data.data.shops[0]).toEqual(SHOP);
 });
 
 test('test getByIdAsRepresentative', async () => {
-  mockAxiosResponse = {
-    data: {
-      data: SHOP,
-    }
-  };
+  mockAxiosResponse = SHOP_RESPONSE;
 
   const returnedPromise = testingShopRepository.getByIdAsRepresentative(100, 100);
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.data).toEqual(SHOP));
+  const res = await returnedPromise;
+  expect(res.data.data).toEqual(SHOP);
 });
 
 test('test getFavoriteShops', async () => {
-  mockAxiosResponse = {
-    data: {
-      data: {
-        shops: [SHOP],
-        shopIds: [SHOP.id],
-        regionIds: [SHOP.region.id],
-        genreIds: [SHOP.genre.id],
-      }
-    }
-  };
+  mockAxiosResponse = SHOP_COLLECTION_RESPONSE;
 
   const returnedPromise = testingShopRepository.getFavoriteShops(100);
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.data.shops[0]).toEqual(SHOP));
+  const res = await returnedPromise;
+  expect(res.data.data.shops[0]).toEqual(SHOP);
 });
 
 test('test update', async () => {
@@ -136,6 +101,6 @@ test('test update', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });

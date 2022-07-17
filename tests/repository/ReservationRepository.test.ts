@@ -2,14 +2,14 @@ import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import axios from 'axios';
 import ReservationRepositoryInterface from '~/repository/reservation/ReservationRepositoryInterface';
 import ReservationRepository from "~/repository/reservation/ReservationRepository";
-import { HISTORY, RESERVATION } from '../consts';
+import { HISTORY, NEW_RESERVATION_RESPONSE, RESERVATION, RESERVATION_COLLECTION_RESPONSE, RESERVATION_RESPONSE } from '../consts';
 import { NewReservationResponse, ReservationCollectionResponse, ReservationResponse } from '~/types/axiosResponse';
 
 /* モック化されたaxiosの戻り値の型 */
-type mockAxiosResponse = ReservationResponse | NewReservationResponse | ReservationCollectionResponse;
+type MockAxiosResponse = ReservationResponse | NewReservationResponse | ReservationCollectionResponse;
 
 /* axiosをモック化 */
-let mockAxiosResponse: mockAxiosResponse;
+let mockAxiosResponse: MockAxiosResponse;
 let sw: boolean = false;
 jest.mock('axios', () => ({
   get: jest.fn(() => Promise.resolve(mockAxiosResponse)),
@@ -22,11 +22,7 @@ const testingReservationRepository: ReservationRepositoryInterface = new Reserva
 
 /* 以下、各メソッドのテスト */
 test('test register', async () => {
-  mockAxiosResponse = {
-    data: {
-      newData: RESERVATION,
-    },
-  };
+  mockAxiosResponse = NEW_RESERVATION_RESPONSE;
 
   const returnedPromise = testingReservationRepository.register({
     user_id: 100,
@@ -37,43 +33,30 @@ test('test register', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.newData).toEqual(RESERVATION));
+  const res = await returnedPromise;
+  expect(res.data.newData).toEqual(RESERVATION);
 });
 
 test('test getById', async () => {
-  mockAxiosResponse = {
-    data: {
-      data: RESERVATION,
-    },
-  };
+  mockAxiosResponse = RESERVATION_RESPONSE;
   const returnedPromise = testingReservationRepository.getById(100);
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.data).toEqual(RESERVATION));
+  const res = await returnedPromise;
+  expect(res.data.data).toEqual(RESERVATION);
 });
 
 test('test getByUserId', async () => {
-  mockAxiosResponse = {
-    data: {
-      data: {
-        reservations: [RESERVATION],
-        histories: [HISTORY],
-      },
-    },
-  };
+  mockAxiosResponse = RESERVATION_COLLECTION_RESPONSE;
 
   const returnedPromise = testingReservationRepository.getByUserId(100);
   
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => {
-      expect(res.data.data.reservations[0]).toEqual(RESERVATION);
-      expect(res.data.data.histories[0]).toEqual(HISTORY);
-    });
+  const res = await returnedPromise;
+  expect(res.data.data.reservations[0]).toEqual(RESERVATION);
+  expect(res.data.data.histories[0]).toEqual(HISTORY);
 });
 
 test('test update', async () => {
@@ -86,8 +69,8 @@ test('test update', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 test('test delete', async () => {
@@ -95,8 +78,8 @@ test('test delete', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 
@@ -109,8 +92,8 @@ test('test pay', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 test('test visit', async () => {
@@ -118,6 +101,6 @@ test('test visit', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });

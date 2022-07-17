@@ -5,6 +5,7 @@ import ShopRepository from "~/repository/shop/ShopRepository";
 import IndexService from "~/service/index/IndexService";
 import IndexServiceInterface from "~/service/index/IndexServiceInterface";
 import { FavoriteRequest } from "~/types/axiosRequest";
+import { IndexInitData } from "~/types/pageData";
 import { SHOP, SHOP_COLLECTION_RESPONSE } from "../consts";
 
 /* shopRepositoryのインスタンスを作成、必要なメソッドをモック化 */
@@ -25,7 +26,7 @@ const mockDeleteFavorite = jest.spyOn(favoriteRepositoryInstance, 'delete')
 const testingIndexService: IndexServiceInterface = new IndexService(shopRepositoryInstance, favoriteRepositoryInstance);
 
 describe('test getData', () => {
-  const expectedRes = {
+  const expectedRes: IndexInitData = {
     shops: [SHOP],
     regionIds: [SHOP.region.id],
     genreIds: [SHOP.genre.id],

@@ -2,14 +2,14 @@ import { NuxtAxiosInstance } from '@nuxtjs/axios';
 import axios from 'axios';
 import UserRepositoryInterface from '~/repository/user/UserRepositoryInterface';
 import UserRepository from "~/repository/user/UserRepository";
-import { USER } from '../consts';
+import { USER, USER_RESPONSE } from '../consts';
 import { tokenResponse, UserResponse } from '~/types/axiosResponse';
 
 /* モック化されたaxiosの戻り値の型 */
-type mockAxiosResponse = UserResponse | tokenResponse;
+type MockAxiosResponse = UserResponse | tokenResponse;
 
 /* axiosをモック化 */
-let mockAxiosResponse: mockAxiosResponse;
+let mockAxiosResponse: MockAxiosResponse;
 let sw: boolean = true;
 jest.mock('axios', () => ({
   get: jest.fn(() => Promise.resolve(mockAxiosResponse)),
@@ -27,8 +27,8 @@ test('test register', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 test('test registerRepresentative', async () => {
@@ -40,8 +40,8 @@ test('test registerRepresentative', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 test('test logout', async () => {
@@ -49,8 +49,8 @@ test('test logout', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 test('test login', async () => {
@@ -64,21 +64,17 @@ test('test login', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.token).toEqual('test'));
+  const res = await returnedPromise;
+  expect(res.data.token).toEqual('test');
 });
 
 test('test getUser', async () => {
-  mockAxiosResponse = {
-    data: {
-      user: USER,
-    },
-  };
+  mockAxiosResponse = USER_RESPONSE;
 
   const returnedPromise = testingUserRepository.getUser('token');
 
   expect(returnedPromise).toEqual(Promise.resolve(mockAxiosResponse));
 
-  await returnedPromise
-    .then(res => expect(res.data.user).toEqual(USER));
+  const res = await returnedPromise;
+  expect(res.data.user).toEqual(USER);
 });

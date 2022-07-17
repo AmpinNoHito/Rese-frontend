@@ -19,8 +19,8 @@ test('test register', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });
 
 test('test delete', async () => {
@@ -28,6 +28,6 @@ test('test delete', async () => {
 
   expect(returnedPromise).toEqual(Promise.resolve());
 
-  await returnedPromise
-    .then(res => expect(res).toBeNull);
+  const res = await returnedPromise;
+  expect(res).toBeNull;
 });

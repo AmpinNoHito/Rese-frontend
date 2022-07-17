@@ -6,6 +6,7 @@ import AdminIndexService from "~/service/adminIndex/AdminIndexService";
 import AdminIndexServiceInterface from "~/service/adminIndex/AdminIndexServiceInterface";
 import { NewShop } from "~/types/api";
 import { ShopRequest } from "~/types/axiosRequest";
+import { AdminIndexInitData } from "~/types/pageData";
 import { SHOP, SHOP_COLLECTION_RESPONSE } from "../consts";
 
 /* shopRepositoryのインスタンスを作成、必要なメソッドをモック化 */
@@ -22,7 +23,7 @@ const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
 const testingAdminIndexService: AdminIndexServiceInterface = new AdminIndexService(shopRepositoryInstance);
 
 test('test getData', async () => {
-  const expectedRes = {
+  const expectedRes: AdminIndexInitData = {
     shops: [SHOP],
     newShop: {
       representative_id: 100,
