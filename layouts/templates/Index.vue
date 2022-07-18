@@ -24,7 +24,7 @@ export default {
     margin-top: 80px;
 
     &__message {
-      margin-top: 170px;
+      margin-top: 200px;
       &--representative {
         margin-top: 50px;
       }
