@@ -10,10 +10,10 @@ export default class CourseRepository implements CourseRepositoryInterface {
   }
 
   async register(sendData: CourseRequest): Promise<void> {
-    return this.axios.post('/api/admin/courses', sendData);
+    return this.axios.post('/api/courses', sendData);
   }
 
   async delete(id: number): Promise<void> {
-    return this.axios.delete(`/api/admin/courses/${id}`);
+    return this.axios.delete(`/api/courses/${id}`);
   }
 }

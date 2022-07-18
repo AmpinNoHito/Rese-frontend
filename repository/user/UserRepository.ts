@@ -15,7 +15,7 @@ export default class UserRepository implements UserRepositoryInterface {
   }
 
   async registerRepresentative(sendData: AuthRequest): Promise<void> {
-    return this.axios.post('/api/admin/representatives', sendData);
+    return this.axios.post('/api/admin/register', sendData);
   }
 
   async login(sendData: AuthRequest): Promise<tokenResponse> {
