@@ -17,11 +17,23 @@ export default Vue.extend({
   components: {
     PayCard,
   },
-  async asyncData ({ app, query }) {
-    if (query.rs) {
-      return await app.$service.pay.getData(+query.rs)
-        .catch(error => app.$alertErrorMessage(error.response));
+  async asyncData ({ app, query, redirect }) {
+    if (!query.rs) {
+      return redirect(403, "/");
     }
+    
+    const initData = await app.$service.pay.getData(+query.rs)
+      .catch(error => {
+        throw app.$alertErrorMessage(error.response)
+      });
+
+    /* ユーザーIDが一致しない場合はトップページにリダイレクト */
+    const userId = app.$accessor.user.id;
+    if (initData?.reservation.user.id !== userId) {
+      return redirect(403, "/");
+    }
+
+    return initData;
   },
   data() {
     return {
