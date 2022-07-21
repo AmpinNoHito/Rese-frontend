@@ -1,7 +1,7 @@
 <template>
   <div class="review-edit-card">
     <CrossAtom class="review-edit-card__cross" :clicked="() => {$hideModal('review'); initializeErrors}"/>
-    <HeaderAtom class="card-common-style__header" :text="'レビュー編集'"/>
+    <HeaderAtom class="card-common-style__header" :text="'レビュー新規投稿'"/>
     <RatingStars
       :pointer="true"
       :rates="newReview.rate"
@@ -22,12 +22,7 @@
     <DarkButtonAtom
       class="review-edit-card__button"
       :text="'送信'"
-      :clicked="updateClicked"
-    />
-    <DarkButtonAtom
-      class="review-edit-card__button review-edit-card__button--delete"
-      :text="'レビュー削除'"
-      :clicked="deleteClicked"
+      :clicked="registerClicked"
     />
   </div>
 </template>
@@ -55,70 +50,9 @@ export default Vue.extend({
     starClicked: Function,
     titleChanged: Function,
     contentChanged: Function,
-    updateClicked: Function,
-    deleteClicked: Function,
+    registerClicked: Function,
     errors: Object,
     initializeErrors: Function,
   },
 });
 </script>
-
-<style lang="scss">
-.review-edit-card {
-  @include flex(column, flex-start, stretch);
-  color: #fff;
-  background-color: $c-blue;
-  width: 50%;
-  min-height: 350px;
-  height: fit-content;
-  padding: 20px;
-  border-radius: 5px;
-  @include shadow(2);
-  position: relative;
-
-  &__cross {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: 18px;
-    right: 20px;
-  }
-
-  &__stars {
-    text-align: center;
-    margin: 20px 0;
-  }
-
-  &__star {
-    cursor: pointer;
-    margin: 5px;
-    width: 25px;
-    height: 25px;
-  }
-
-  &__button {
-    &--delete {
-      margin-top: 10px;
-      color: #EF454A;
-    }
-  }
-
-  @include mq() {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-
-    &__cross {
-      width: 30px;
-      height: 30px;
-    }
-
-    &__star {
-      width: 40px;
-      height: 40px;
-      margin: 5px;
-    }
-  }
-}
-</style>
