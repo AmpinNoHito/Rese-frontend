@@ -3,7 +3,6 @@ import { Context, Inject } from "@nuxt/types/app";
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $setData(value: (string | number | undefined)): (string | number | undefined), 
     $getTodaysDate(): string,
     $stopScroll(): void
     $restartScroll(): void
@@ -14,7 +13,6 @@ declare module 'vue/types/vue' {
 
 declare module '@nuxt/types' {
   interface NuxtAppOptions {
-    $setData(value: (string | number | undefined)): (string | number | undefined), 
     $getTodaysDate(): string,
     $stopScroll(): void
     $restartScroll(): void
@@ -25,7 +23,6 @@ declare module '@nuxt/types' {
 
 declare module 'vuex/types/index' {
   interface Store<S> {
-    $setData(value: (string | number | undefined)): (string | number | undefined), 
     $getTodaysDate(): string,
     $stopScroll(): void
     $restartScroll(): void
@@ -35,10 +32,6 @@ declare module 'vuex/types/index' {
 }
 
 const utils: Plugin = (context: Context, inject: Inject) => {
-  const setData = (value: (string | number | undefined)): (string | number | undefined) => {
-    return value;
-  }
-
   const getTodaysDate = (): string => {
     const now = new Date();
     const year = now.getFullYear();
@@ -83,11 +76,10 @@ const utils: Plugin = (context: Context, inject: Inject) => {
     return Array.isArray(value) ? value[0] || undefined : value;
   }
 
-  inject('processImage', processImage);
-  inject('setData', setData);
   inject('getTodaysDate', getTodaysDate);
   inject('stopScroll', stopScroll);
   inject('restartScroll', restartScroll);
+  inject('processImage', processImage);
   inject('queryToString', queryToString);
 }
 

@@ -17,7 +17,7 @@ export default class AdminIndexService implements AdminIndexServiceInterface {
       });
 
     return {
-      shops: res.data.data.shops ?? [],
+      shops: res.data.data.shops,
       newShop: {
         representative_id: representativeId,
         name: '',
