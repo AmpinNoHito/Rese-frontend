@@ -45,7 +45,6 @@ export default Vue.extend({
     color: #000;
     background-color: #fff;
     padding: 10px;
-    border-radius: 5px;
   }
 
   &__title {
