@@ -32,6 +32,7 @@ input {
 
 select,
 textarea {
+  font-family: inherit;
   border: none;
   &:focus {
     outline: none;
@@ -43,7 +44,6 @@ select {
 }
 
 textarea {
-  font-family: inherit;
   resize: none;
 }
 
