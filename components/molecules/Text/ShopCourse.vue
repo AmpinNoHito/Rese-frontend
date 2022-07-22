@@ -47,15 +47,12 @@ export default Vue.extend({
   padding: 20px 0;
   border-top: 1px solid $c-tp;
 
-  &__name {
-    font-size: $fz-mid-large;
-  }
-
   &__price {
     margin-left: 20px;
   }
 
   &__description {
+    font-size: $fz-smaller;
     margin-top: 1em;
     margin-left: 1em;
   }
