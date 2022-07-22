@@ -95,6 +95,8 @@ export default Vue.extend({
         courses: [],
         selectedCourseIndex: undefined,
         selectedReservationId: 0,
+        selectedReservationAmount: 0,
+        hasBeenPaid: false,
       },
       /* レビュー作成、編集用データ */
       newReview: {

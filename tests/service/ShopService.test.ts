@@ -38,6 +38,7 @@ test('test getData', async () => {
       selectedCourseIndex: 0,
       selectedReservationId: 0,
       courses: SHOP.courses,
+      hasBeenPaid: false,
     }
   };
 
@@ -56,6 +57,7 @@ test('test registerReservation', async () => {
     number: '1人',
     selectedReservationId: 0,
     selectedCourseIndex: 0,
+    hasBeenPaid: false,
   }
 
   const res = await testingShopService.registerReservation(newReservation, 100, 100);

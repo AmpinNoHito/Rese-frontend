@@ -33,6 +33,7 @@ export default class ShopService implements ShopServiceInterface {
         selectedCourseIndex: (query.sc) ? +query.sc : undefined,
         selectedReservationId: 0,
         courses: shop.courses,
+        hasBeenPaid: false,
       },
     }
   };

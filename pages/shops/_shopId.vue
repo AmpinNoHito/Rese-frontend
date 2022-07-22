@@ -67,6 +67,7 @@ export default Vue.extend({
         number: '',
         selectedReservationId: 0,
         selectedCourseIndex: 0,
+        hasBeenPaid: false,
       },
       errors: {
         datetime: [],

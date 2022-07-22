@@ -42,8 +42,8 @@ export default class MypageService implements MypageServiceInterface{
 
   setNewReservationData(selectedReservation: Reservation): NewReservation {
     let selectedCourseIndex: (number | undefined);
-    if (selectedReservation.course) { // 予約のコースが指定されている場合
-      const selectedCourse = selectedReservation.course;
+    const selectedCourse = selectedReservation.course;
+    if (selectedCourse) { // 予約のコースが指定されている場合
       selectedCourseIndex = selectedReservation.shop.courses?.findIndex(course => course.id === selectedCourse.id);
     } else {  // 指定されていない場合
       selectedCourseIndex = undefined;
@@ -58,10 +58,14 @@ export default class MypageService implements MypageServiceInterface{
       /* 変更する予約のidを記録 */
       selectedReservationId: selectedReservation.id,
       selectedCourseIndex: selectedCourseIndex,
+      /* もともとの合計金額、事前支払情報を記録 */
+      selectedReservationAmount: selectedReservation.amount ?? undefined,
+      hasBeenPaid: Boolean(selectedReservation.advance_payment),
     };
   }
 
   async updateReservation(data: NewReservation, userId: number): Promise<Reservation[]> {
+    let canUpdate = true;  // 更新可能かどうかを判断するための変数を定義
     /* 入力値から送信用データを作成 */
     const sendData: ReservationRequest = {
       datetime: (data.date && data.time) ? `${data.date} ${data.time}` : '',
@@ -73,22 +77,33 @@ export default class MypageService implements MypageServiceInterface{
     const newCourseIndex: (number | undefined) = data.selectedCourseIndex;
     if (newCourseIndex !== undefined) {
       const courses = data.courses as Course[];
-      sendData.course_id = courses[newCourseIndex].id;
+      const selectedCourse = courses[newCourseIndex];
+      sendData.course_id = selectedCourse.id;
+      
+      /* 事前支払済、かつ更新後の合計金額が更新前の合計金額と異なる場合は更新不可に */
+      const newAmount = selectedCourse.price * sendData.number;
+      if (data.hasBeenPaid && newAmount !== data.selectedReservationAmount) {
+        canUpdate = false;
+      }
     }
 
-      /* 予約内容変更処理 */
+    /* 予約内容変更処理 */
+    if (canUpdate) {
       await this.reservationRepository.update(data.selectedReservationId, sendData)
         .catch(error => {
           throw error;
         });
-      alert('予約内容を変更しました。');
+        alert('予約内容を変更しました。');
+    } else {
+      alert('支払済みのご予約は来店日時のみが変更可能です。\nその他の予約情報の変更をご希望の場合はRese運営事務局までご連絡ください。');
+    }
 
-      /* 変更後の予約データを取得 */
-      const res = await this.reservationRepository.getByUserId(userId)
-        .catch(error => {
-          throw error;
-        });
-      return res.data.data.reservations;
+    /* 変更後の予約データを取得 */
+    const res = await this.reservationRepository.getByUserId(userId)
+      .catch(error => {
+        throw error;
+      });
+    return res.data.data.reservations;
   }
 
   async deleteReservation(reservationIndex: number, reservationId: number, reservations: Reservation[]): Promise<void> {

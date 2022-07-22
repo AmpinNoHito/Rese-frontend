@@ -42,7 +42,7 @@ export default Vue.extend({
   },
   methods: {
     async pay (token: Stripe.Token): Promise<void> {
-      await this.$service.pay.pay(this.reservation.id, token.id, this.reservation.amount)
+      await this.$service.pay.pay(this.reservation.id, token.id, this.reservation.amount as number)
         .catch(error => {
           throw this.$alertErrorMessage(error.response);
         });

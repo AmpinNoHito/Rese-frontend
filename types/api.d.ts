@@ -55,7 +55,7 @@ export interface Reservation {
   date: string,
   time: string,
   number: string,
-  amount: number,
+  amount?: number,
   visit_completed: number,
   advance_payment: number,
 }
@@ -84,6 +84,8 @@ export interface NewReservation {
   courses?: Course[],
   selectedCourseIndex?: number,
   selectedReservationId: number,
+  selectedReservationAmount?: number,
+  hasBeenPaid: boolean,
 }
 
 export interface NewReview {

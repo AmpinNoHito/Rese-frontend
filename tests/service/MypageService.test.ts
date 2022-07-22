@@ -72,44 +72,38 @@ test('test getData', async () => {
   expect(res).toEqual(expectedRes);
 });
 
+/* RESERVATIONを引き数としてsetNewReservationDataを呼びだした場合に期待される戻り値 */
 const newReservation: NewReservation = {
-  name: RESERVATION.shop.name,
-  date: RESERVATION.date,
-  time: RESERVATION.time,
-  number: RESERVATION.number,
-  courses: RESERVATION.shop.courses,
-  selectedReservationId: RESERVATION.id,
+  name: 'test',
+  date: '2023-01-01',
+  time: '10:00',
+  number:  '1人',
+  courses: [COURSE],
+  selectedCourseIndex: 0,
+  selectedReservationId: 100,
+  selectedReservationAmount: 10000,
+  hasBeenPaid: true,
 };
 
-describe('test setNewReservationData', () => {
-  test('set reservation without course', () => {
-    const res = testingMypageService.setNewReservationData(RESERVATION);
+test('test setNewReservationData', () => {
+  const reservationWithCourse = {
+    ...RESERVATION,
+    course: COURSE,
+  }
+  newReservation.selectedCourseIndex = 0;
+  const res = testingMypageService.setNewReservationData(reservationWithCourse);
 
-    expect(res).toEqual(newReservation);
-  });
-
-  test('set reservation with course', () => {
-    const reservationWithCourse = {
-      ...RESERVATION,
-      course: COURSE,
-    }
-    newReservation.selectedCourseIndex = 0;
-    const res = testingMypageService.setNewReservationData(reservationWithCourse);
-
-    expect(res).toEqual(newReservation);
-  });
+  expect(res).toEqual(newReservation);
 });
 
 describe('test updateReservation', () => {
   const expectedSendData: ReservationRequest = {
     datetime: '2023-01-01 10:00',
     number: 1,
-    course_id: undefined,
+    course_id: 100,
   };
 
-  test('update without course', async () => {
-    newReservation.selectedCourseIndex = undefined;
-    
+  test('update without amount change', async () => {
     const res = await testingMypageService.updateReservation(newReservation, 100);
     
     expect(mockUpdateReservation).toBeCalledWith(newReservation.selectedReservationId, expectedSendData);
@@ -118,16 +112,17 @@ describe('test updateReservation', () => {
     expect(res).toEqual([RESERVATION]);
   });
 
-  test('update with course', async () => {
+  test('update with amount change', async () => {
     mockUpdateReservation.mockClear();
-    expectedSendData.course_id = 100;
-    newReservation.selectedCourseIndex = 0;
+    /* 人数を2人に変更 */
+    newReservation.number = '2人';
+    expectedSendData.number = 2;
     
     const res = await testingMypageService.updateReservation(newReservation, 100);
 
-    expect(mockUpdateReservation).toBeCalledWith(newReservation.selectedReservationId, expectedSendData);
+    expect(mockUpdateReservation).not.toBeCalled();
     expect(mockGetReservationByUserId).toBeCalledWith(100);
-    expect(mockAlert).toBeCalledWith('予約内容を変更しました。');
+    expect(mockAlert).toBeCalledWith('支払済みのご予約は来店日時のみが変更可能です。\nその他の予約情報の変更をご希望の場合はRese運営事務局までご連絡ください。');
     expect(res).toEqual([RESERVATION]);
   });
 });

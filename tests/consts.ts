@@ -51,6 +51,7 @@ export const RESERVATION: Reservation = {
   time: '10:00',
   number: '1人',
   amount: 10000,
+  course: COURSE,
   visit_completed: 0,
   advance_payment: 1,
 };
